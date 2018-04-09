@@ -8,10 +8,8 @@ use ChamiloSession as Session;
  *
  * @package chamilo.document
  */
-
 require_once __DIR__.'/../inc/global.inc.php';
 
-$_SESSION['whereami'] = 'document/create';
 $this_section = SECTION_COURSES;
 $groupRights = Session::read('group_member_with_upload_rights');
 $htmlHeadXtra[] = '
@@ -37,7 +35,7 @@ $(document).on("change", ".selectpicker", function () {
     $.ajax({
         contentType: "application/x-www-form-urlencoded",
         data: "dirValue="+dirValue,
-        url: "' . api_get_path(WEB_AJAX_PATH).'document.ajax.php?a=document_destination",
+        url: "'.api_get_path(WEB_AJAX_PATH).'document.ajax.php?a=document_destination",
         type: "POST",
         success: function(response) {
             $("[name=\'dirValue\']").val(response)
@@ -49,7 +47,7 @@ function setFocus() {
    $("#document_title").focus();
 }
 
-$(window).load(function () {
+$(window).on("load", function () {
 	setFocus();
 });
 
@@ -59,17 +57,16 @@ $(window).load(function () {
 $is_certificate_mode = false;
 
 if (isset($_REQUEST['certificate']) && $_REQUEST['certificate'] == 'true') {
-	$is_certificate_mode = true;
+    $is_certificate_mode = true;
 }
 
 if ($is_certificate_mode) {
-	$nameTools = get_lang('CreateCertificate');
+    $nameTools = get_lang('CreateCertificate');
 } else {
-	$nameTools = get_lang('CreateDocument');
+    $nameTools = get_lang('CreateDocument');
 }
 
-/*	Constants and variables */
-
+/* Constants and variables */
 $doc_table = Database::get_course_table(TABLE_DOCUMENT);
 $course_id = api_get_course_int_id();
 $courseCode = api_get_course_id();
@@ -77,7 +74,7 @@ $sessionId = api_get_session_id();
 $userId = api_get_user_id();
 $_course = api_get_course_info();
 $groupId = api_get_group_id();
-$document_data = array();
+$document_data = [];
 
 if (isset($_REQUEST['id'])) {
     $document_data = DocumentManager::get_document_data_by_id(
@@ -118,33 +115,38 @@ if (empty($document_data)) {
     $dir = $document_data['path'];
 }
 
-/*	MAIN CODE */
-
 // Please, do not modify this dirname formatting
 if (strstr($dir, '..')) {
-	$dir = '/';
+    $dir = '/';
 }
 
 if ($dir[0] == '.') {
-	$dir = substr($dir, 1);
+    $dir = substr($dir, 1);
 }
 
 if ($dir[0] != '/') {
-	$dir = '/'.$dir;
+    $dir = '/'.$dir;
 }
 
 if ($dir[strlen($dir) - 1] != '/') {
-	$dir .= '/';
+    $dir .= '/';
 }
 
 if ($is_certificate_mode) {
-	$document_id = DocumentManager::get_document_id(api_get_course_info(), '/certificates');
-	$document_data = DocumentManager::get_document_data_by_id($document_id, api_get_course_id(), true);
-	$folder_id = $document_data['id'];
-	$dir = '/certificates/';
+    $document_id = DocumentManager::get_document_id(
+        api_get_course_info(),
+        '/certificates'
+    );
+    $document_data = DocumentManager::get_document_data_by_id(
+        $document_id,
+        api_get_course_id(),
+        true
+    );
+    $folder_id = $document_data['id'];
+    $dir = '/certificates/';
 }
 
-$doc_tree  = explode('/', $dir);
+$doc_tree = explode('/', $dir);
 $count_dir = count($doc_tree) - 2; // "2" because at the begin and end there are 2 "/"
 
 if (api_is_in_group()) {
@@ -152,7 +154,7 @@ if (api_is_in_group()) {
 
     // Level correction for group documents.
     if (!empty($group_properties['directory'])) {
-    	$count_dir = $count_dir > 0 ? $count_dir - 1 : 0;
+        $count_dir = $count_dir > 0 ? $count_dir - 1 : 0;
     }
 }
 $relative_url = '';
@@ -165,8 +167,7 @@ if ($relative_url == '') {
 }
 
 $is_allowed_to_edit = api_is_allowed_to_edit(null, true);
-
-$editorConfig = array(
+$editorConfig = [
     'ToolbarSet' => ($is_allowed_to_edit ? 'Documents' : 'DocumentsStudent'),
     'Width' => '100%',
     'Height' => '400',
@@ -177,8 +178,8 @@ $editorConfig = array(
     'CreateDocumentWebDir' => (empty($group_properties['directory']))
                                 ? api_get_path(WEB_COURSE_PATH).$_course['path'].'/document/'
                                 : api_get_path(WEB_COURSE_PATH).api_get_course_path().'/document'.$group_properties['directory'].'/',
-    'BaseHref' => api_get_path(WEB_COURSE_PATH).$_course['path'].'/document'.$dir
-);
+    'BaseHref' => api_get_path(WEB_COURSE_PATH).$_course['path'].'/document'.$dir,
+];
 
 if ($is_certificate_mode) {
     $editorConfig['CreateDocumentDir'] = api_get_path(WEB_COURSE_PATH).$_course['path'].'/document/';
@@ -195,25 +196,24 @@ if (!is_dir($filepath)) {
 
 if (!$is_certificate_mode) {
     if (api_is_in_group()) {
-        $interbreadcrumb[] = array(
+        $interbreadcrumb[] = [
             "url" => "../group/group_space.php?".api_get_cidreq(),
             "name" => get_lang('GroupSpace'),
-        );
-        $noPHP_SELF = true;
+        ];
         $path = explode('/', $dir);
         if ('/'.$path[1] != $group_properties['directory']) {
             api_not_allowed(true);
         }
     }
-    $interbreadcrumb[] = array(
+    $interbreadcrumb[] = [
         "url" => "./document.php?curdirpath=".urlencode($dir)."&".api_get_cidreq(),
         "name" => get_lang('Documents'),
-    );
+    ];
 } else {
-    $interbreadcrumb[] = array(
-        'url' => '../gradebook/'.$_SESSION['gradebook_dest'],
+    $interbreadcrumb[] = [
+        'url' => Category::getUrl(),
         'name' => get_lang('Gradebook'),
-    );
+    ];
 }
 
 if (!api_is_allowed_in_course()) {
@@ -240,6 +240,7 @@ if (isset($group_properties)) {
 
 $select_cat = isset($_GET['selectcat']) ? intval($_GET['selectcat']) : null;
 $curDirPath = isset($_GET['curdirpath']) ? Security::remove_XSS($_GET['curdirpath']) : null;
+
 // Create a new form
 $form = new FormValidator(
     'create_document',
@@ -256,7 +257,7 @@ if ($is_certificate_mode) {//added condition for certicate in gradebook
         'hidden',
         'certificate',
         'true',
-        array('id' => 'certificate')
+        ['id' => 'certificate']
     );
     if (isset($_GET['selectcat'])) {
         $form->addElement('hidden', 'selectcat', $select_cat);
@@ -265,14 +266,14 @@ if ($is_certificate_mode) {//added condition for certicate in gradebook
 
 // Hidden element with current directory
 $form->addElement('hidden', 'id');
-$defaults = array();
+$defaults = [];
 $defaults['id'] = $folder_id;
 
 // Filename
 $form->addElement('hidden', 'title_edited', 'false', 'id="title_edited"');
 
 /**
- * Check if a document width the chosen filename already exists
+ * Check if a document width the chosen filename already exists.
  */
 function document_exists($filename)
 {
@@ -292,14 +293,29 @@ function document_exists($filename)
 
 // Add group to the form
 if ($is_certificate_mode) {
-    $form->addText('title', get_lang('CertificateName'), true, array('cols-size' => [2, 10, 0], 'autofocus'));
+    $form->addText(
+        'title',
+        get_lang('CertificateName'),
+        true,
+        ['cols-size' => [2, 10, 0], 'autofocus']
+    );
 } else {
-    $form->addText('title', get_lang('Title'), true, array('cols-size' => [2, 10, 0], 'autofocus'));
+    $form->addText(
+        'title',
+        get_lang('Title'),
+        true,
+        ['cols-size' => [2, 10, 0], 'autofocus']
+    );
 }
 
 // Show read-only box only in groups
 if (!empty($groupId)) {
-    $group[] = $form->createElement('checkbox', 'readonly', '', get_lang('ReadOnly'));
+    $group[] = $form->createElement(
+        'checkbox',
+        'readonly',
+        '',
+        get_lang('ReadOnly')
+    );
 }
 $form->addRule('title', get_lang('ThisFieldIsRequired'), 'required');
 $form->addRule('title', get_lang('FileExists'), 'callback', 'document_exists');
@@ -325,7 +341,7 @@ $folders = DocumentManager::get_all_document_folders(
 // new document created
 
 if (!$is_certificate_mode &&
-	!DocumentManager::is_my_shared_folder($userId, $dir, $current_session_id)
+    !DocumentManager::is_my_shared_folder($userId, $dir, $current_session_id)
 ) {
     $folders = DocumentManager::get_all_document_folders(
         $_course,
@@ -337,19 +353,21 @@ if (!$is_certificate_mode &&
         'curdirpath',
         get_lang('DestinationDirectory'),
         null,
-        array('cols-size' => [2, 10, 0])
+        ['cols-size' => [2, 10, 0]]
     );
 
-    $folder_titles = array();
+    $folder_titles = [];
     if (is_array($folders)) {
-        $escaped_folders = array();
-        foreach ($folders as $key => & $val) {
+        $escaped_folders = [];
+        foreach ($folders as $key => &$val) {
             // Hide some folders
             if ($val == '/HotPotatoes_files' || $val == '/certificates' || basename($val) == 'css') {
                 continue;
             }
             // Admin setting for Hide/Show the folders of all users
-            if (api_get_setting('show_users_folders') == 'false' && (strstr($val, '/shared_folder') || strstr($val, 'shared_folder_session_'))) {
+            if (api_get_setting('show_users_folders') == 'false' &&
+                (strstr($val, '/shared_folder') || strstr($val, 'shared_folder_session_'))
+            ) {
                 continue;
             }
             // Admin setting for Hide/Show Default folders to all users
@@ -368,19 +386,19 @@ if (!$is_certificate_mode &&
         $sql = "SELECT * FROM $doc_table
 				WHERE
 				    c_id = $course_id AND
-				    filetype='folder' AND
+				    filetype = 'folder' AND
 				    path IN ('".$folder_sql."')";
         $res = Database::query($sql);
-        $folder_titles = array();
+        $folder_titles = [];
         while ($obj = Database::fetch_object($res)) {
             $folder_titles[$obj->path] = $obj->title;
         }
     }
 
     if (empty($group_dir)) {
-        $parent_select -> addOption(get_lang('HomeDirectory'), '/');
+        $parent_select->addOption(get_lang('HomeDirectory'), '/');
         if (is_array($folders)) {
-            foreach ($folders as & $folder) {
+            foreach ($folders as &$folder) {
                 //Hide some folders
                 if ($folder == '/HotPotatoes_files' || $folder == '/certificates' || basename($folder) == 'css') {
                     continue;
@@ -420,7 +438,7 @@ if (!$is_certificate_mode &&
                 } else {
                     $label = ' &mdash; '.$folder_titles[$folder];
                 }
-                $parent_select -> addOption($label, $folder);
+                $parent_select->addOption($label, $folder);
                 if ($selected != '') {
                     $parent_select->setSelected($folder);
                 }
@@ -428,7 +446,7 @@ if (!$is_certificate_mode &&
         }
     } else {
         if (is_array($folders) && !empty($folders)) {
-            foreach ($folders as & $folder) {
+            foreach ($folders as &$folder) {
                 $selected = (substr($dir, 0, -1) == $folder) ? ' selected="selected"' : '';
                 $label = $folder_titles[$folder];
                 if ($folder == $group_dir) {
@@ -506,7 +524,6 @@ if ($form->validate()) {
     }
 
     if ($fp = @fopen($filepath.$filename.'.'.$extension, 'w')) {
-
         $content = str_replace(
             api_get_path(WEB_COURSE_PATH),
             api_get_configuration_value('url_append').api_get_path(REL_COURSE_PATH),
@@ -598,16 +615,16 @@ if ($form->validate()) {
     // Breadcrumb for the current directory root path
     if (!empty($document_data)) {
         if (empty($document_data['parents'])) {
-            $interbreadcrumb[] = array(
+            $interbreadcrumb[] = [
                 'url' => '#',
-                'name' => $document_data['title']
-            );
+                'name' => $document_data['title'],
+            ];
         } else {
             foreach ($document_data['parents'] as $document_sub_data) {
-                $interbreadcrumb[] = array(
+                $interbreadcrumb[] = [
                     'url' => $document_sub_data['document_url'],
-                    'name' => $document_sub_data['title']
-                );
+                    'name' => $document_sub_data['title'],
+                ];
             }
         }
     }
@@ -617,19 +634,19 @@ if ($form->validate()) {
 
     // link back to the documents overview
     if ($is_certificate_mode) {
-            $actionsLeft = '<a href="document.php?certificate=true&id='.$folder_id.'&selectcat='.Security::remove_XSS($_GET['selectcat']).'">'.
-                Display::return_icon('back.png', get_lang('Back').' '.get_lang('To').' '.get_lang('CertificateOverview'), '', ICON_SIZE_MEDIUM).'</a>';
-            $actionsLeft .= '<a id="hide_bar_template" href="#" role="button">'.
-                Display::return_icon('expand.png', get_lang('Back'), array('id'=>'expand'), ICON_SIZE_MEDIUM).Display::return_icon('contract.png', get_lang('Back'), array('id'=>'contract', 'class'=>'hide'), ICON_SIZE_MEDIUM).'</a>';
-        } else {
-            $actionsLeft = '<a href="document.php?curdirpath='.Security::remove_XSS($dir).'">'.
-                Display::return_icon('back.png', get_lang('Back').' '.get_lang('To').' '.get_lang('DocumentsOverview'), '', ICON_SIZE_MEDIUM).'</a>';
-            $actionsLeft .= '<a id="hide_bar_template" href="#" role="button">'.
-                Display::return_icon('expand.png', get_lang('Expand'), array('id'=>'expand'), ICON_SIZE_MEDIUM).
-                Display::return_icon('contract.png', get_lang('Collapse'), array('id'=>'contract', 'class'=>'hide'), ICON_SIZE_MEDIUM).'</a>';
-        }
+        $actionsLeft = '<a href="document.php?certificate=true&id='.$folder_id.'&selectcat='.Security::remove_XSS($_GET['selectcat']).'">'.
+            Display::return_icon('back.png', get_lang('Back').' '.get_lang('To').' '.get_lang('CertificateOverview'), '', ICON_SIZE_MEDIUM).'</a>';
+        $actionsLeft .= '<a id="hide_bar_template" href="#" role="button">'.
+            Display::return_icon('expand.png', get_lang('Back'), ['id' => 'expand'], ICON_SIZE_MEDIUM).Display::return_icon('contract.png', get_lang('Back'), ['id' => 'contract', 'class' => 'hide'], ICON_SIZE_MEDIUM).'</a>';
+    } else {
+        $actionsLeft = '<a href="document.php?curdirpath='.Security::remove_XSS($dir).'">'.
+            Display::return_icon('back.png', get_lang('Back').' '.get_lang('To').' '.get_lang('DocumentsOverview'), '', ICON_SIZE_MEDIUM).'</a>';
+        $actionsLeft .= '<a id="hide_bar_template" href="#" role="button">'.
+            Display::return_icon('expand.png', get_lang('Expand'), ['id' => 'expand'], ICON_SIZE_MEDIUM).
+            Display::return_icon('contract.png', get_lang('Collapse'), ['id' => 'contract', 'class' => 'hide'], ICON_SIZE_MEDIUM).'</a>';
+    }
 
-    echo $toolbar = Display::toolbarAction('actions-documents', array($actionsLeft));
+    echo $toolbar = Display::toolbarAction('actions-documents', [$actionsLeft]);
 
     if ($is_certificate_mode) {
         $all_information_by_create_certificate = DocumentManager::get_all_info_to_certificate(

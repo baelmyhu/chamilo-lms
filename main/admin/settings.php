@@ -9,6 +9,7 @@ use ChamiloSession as Session;
  *
  * @author Patrick Cool
  * @author Julio Montoya - Multiple URL site
+ *
  * @package chamilo.admin
  */
 
@@ -32,19 +33,19 @@ if (isset($_POST['save']) && isset($_GET['category']) && $_GET['category'] === '
 }
 
 // Settings to avoid
-$settings_to_avoid = array(
+$settings_to_avoid = [
     'use_session_mode' => 'true',
     'gradebook_enable' => 'false',
     // ON by default - now we have this option when  we create a course
-    'example_material_course_creation' => 'true'
-);
+    'example_material_course_creation' => 'true',
+];
 
-$convert_byte_to_mega_list = array(
+$convert_byte_to_mega_list = [
     'dropbox_max_filesize',
     'message_max_upload_filesize',
     'default_document_quotum',
-    'default_group_quotum'
-);
+    'default_group_quotum',
+];
 
 if (isset($_POST['style'])) {
     Display::$preview_style = $_POST['style'];
@@ -54,7 +55,7 @@ if (isset($_POST['style'])) {
 $table_settings_current = Database::get_main_table(TABLE_MAIN_SETTINGS_CURRENT);
 
 // Setting breadcrumbs.
-$interbreadcrumb[] = array('url' => 'index.php', 'name' => get_lang('PlatformAdmin'));
+$interbreadcrumb[] = ['url' => 'index.php', 'name' => get_lang('PlatformAdmin')];
 
 // Setting the name of the tool.
 $tool_name = get_lang('PlatformConfigSettings');
@@ -77,17 +78,17 @@ $form_search = new FormValidator(
     'get',
     api_get_self(),
     null,
-    array(),
+    [],
     FormValidator::LAYOUT_INLINE
 );
-$form_search->addElement('text', 'search_field', null, array(
+$form_search->addElement('text', 'search_field', null, [
     'id' => 'search_field',
-    'aria-label' => get_lang('Search')
-));
+    'aria-label' => get_lang('Search'),
+]);
 $form_search->addElement('hidden', 'category', 'search_setting');
 $form_search->addButtonSearch(get_lang('Search'), 'submit_button');
 $form_search->setDefaults(
-    array('search_field' => isset($_REQUEST['search_field']) ? $_REQUEST['search_field'] : null)
+    ['search_field' => isset($_REQUEST['search_field']) ? $_REQUEST['search_field'] : null]
 );
 
 $form_search_html = $form_search->returnForm();
@@ -95,68 +96,13 @@ $form_search_html = $form_search->returnForm();
 $url_id = api_get_current_access_url_id();
 
 $settings = null;
-/**
- * @param string $category
- * @return array
- */
-function get_settings($category = '')
-{
-    $url_id = api_get_current_access_url_id();
-    $settings_by_access_list = array();
-
-    if ($url_id == 1) {
-        $settings = api_get_settings($category, 'group', $url_id);
-    } else {
-        $url_info = api_get_access_url($url_id);
-        if ($url_info['active'] == 1) {
-            $categoryToSearch = $category;
-            if ($category == 'search_setting') {
-                $categoryToSearch = '';
-            }
-            // The default settings of Chamilo
-            $settings = api_get_settings($categoryToSearch, 'group', 1, 0);
-            // The settings that are changeable from a particular site.
-            $settings_by_access = api_get_settings($categoryToSearch, 'group', $url_id, 1);
-
-            foreach ($settings_by_access as $row) {
-                if (empty($row['variable'])) {
-                    $row['variable'] = 0;
-                }
-                if (empty($row['subkey'])) {
-                    $row['subkey'] = 0;
-                }
-                if (empty($row['category'])) {
-                    $row['category'] = 0;
-                }
-
-                // One more validation if is changeable.
-                if ($row['access_url_changeable'] == 1) {
-                    $settings_by_access_list[$row['variable']][$row['subkey']][$row['category']] = $row;
-                } else {
-                    $settings_by_access_list[$row['variable']][$row['subkey']][$row['category']] = array();
-                }
-            }
-        }
-    }
-
-    if (isset($category) && $category == 'search_setting') {
-        if (!empty($_REQUEST['search_field'])) {
-            $settings = searchSetting($_REQUEST['search_field']);
-        }
-    }
-
-    return array(
-        'settings' => $settings,
-        'settings_by_access_list' => $settings_by_access_list
-    );
-}
 
 // Build the form.
 if (!empty($_GET['category']) &&
-    !in_array($_GET['category'], array('Plugins', 'stylesheets', 'Search'))
+    !in_array($_GET['category'], ['Plugins', 'stylesheets', 'Search'])
 ) {
     $my_category = isset($_GET['category']) ? $_GET['category'] : null;
-    $settings_array = get_settings($my_category);
+    $settings_array = getCategorySettings($my_category);
     $settings = $settings_array['settings'];
     $settings_by_access_list = $settings_array['settings_by_access_list'];
     $form = generateSettingsForm($settings, $settings_by_access_list);
@@ -191,22 +137,22 @@ if (!empty($_GET['category']) &&
                             $changeable = 1;
                         }
 
-                        $params = array('variable = ?' => array($key));
+                        $params = ['variable = ?' => [$key]];
                         $data = api_get_settings_params($params);
 
                         if (!empty($data)) {
                             foreach ($data as $item) {
-                                $params = array(
+                                $params = [
                                     'id' => $item['id'],
                                     'access_url_changeable' => $changeable,
-                                );
+                                ];
                                 api_set_setting_simple($params);
                             }
                         }
                     }
                 }
-                //Reload settings
-                $settings_array = get_settings($my_category);
+                // Reload settings
+                $settings_array = getCategorySettings($my_category);
                 $settings = $settings_array['settings'];
                 $settings_by_access_list = $settings_array['settings_by_access_list'];
                 $form = generateSettingsForm(
@@ -266,7 +212,7 @@ if (!empty($_GET['category']) &&
         }
 
         // Save the settings.
-        $keys = array();
+        $keys = [];
 
         foreach ($values as $key => $value) {
             if (strcmp($key, 'MAX_FILE_SIZE') === 0) {
@@ -436,39 +382,39 @@ $action_images['facebook'] = 'facebook.png';
 $action_images['crons'] = 'crons.png';
 $action_images['webservices'] = 'webservices.png';
 
-$action_array = array();
-$resultcategories = array();
+$action_array = [];
+$resultcategories = [];
 
-$resultcategories[] = array('category' => 'Platform');
-$resultcategories[] = array('category' => 'Course');
-$resultcategories[] = array('category' => 'Session');
-$resultcategories[] = array('category' => 'Languages');
-$resultcategories[] = array('category' => 'User');
-$resultcategories[] = array('category' => 'Tools');
-$resultcategories[] = array('category' => 'Editor');
-$resultcategories[] = array('category' => 'Security');
-$resultcategories[] = array('category' => 'Tuning');
-$resultcategories[] = array('category' => 'Gradebook');
-$resultcategories[] = array('category' => 'Timezones');
-$resultcategories[] = array('category' => 'Tracking');
-$resultcategories[] = array('category' => 'Search');
-$resultcategories[] = array('category' => 'Stylesheets');
-$resultcategories[] = array('category' => 'Templates');
-$resultcategories[] = array('category' => 'Plugins');
-$resultcategories[] = array('category' => 'LDAP');
-$resultcategories[] = array('category' => 'CAS');
-$resultcategories[] = array('category' => 'Shibboleth');
-$resultcategories[] = array('category' => 'Facebook');
+$resultcategories[] = ['category' => 'Platform'];
+$resultcategories[] = ['category' => 'Course'];
+$resultcategories[] = ['category' => 'Session'];
+$resultcategories[] = ['category' => 'Languages'];
+$resultcategories[] = ['category' => 'User'];
+$resultcategories[] = ['category' => 'Tools'];
+$resultcategories[] = ['category' => 'Editor'];
+$resultcategories[] = ['category' => 'Security'];
+$resultcategories[] = ['category' => 'Tuning'];
+$resultcategories[] = ['category' => 'Gradebook'];
+$resultcategories[] = ['category' => 'Timezones'];
+$resultcategories[] = ['category' => 'Tracking'];
+$resultcategories[] = ['category' => 'Search'];
+$resultcategories[] = ['category' => 'Stylesheets'];
+$resultcategories[] = ['category' => 'Templates'];
+$resultcategories[] = ['category' => 'Plugins'];
+$resultcategories[] = ['category' => 'LDAP'];
+$resultcategories[] = ['category' => 'CAS'];
+$resultcategories[] = ['category' => 'Shibboleth'];
+$resultcategories[] = ['category' => 'Facebook'];
 $resultcategories[] = ['category' => 'Crons'];
 $resultcategories[] = ['category' => 'WebServices'];
 
 foreach ($resultcategories as $row) {
-    $url = array();
+    $url = [];
     $url['url'] = api_get_self()."?category=".$row['category'];
     $url['content'] = Display::return_icon(
         $action_images[strtolower($row['category'])],
         api_ucfirst(get_lang($row['category'])),
-        '',
+        [],
         ICON_SIZE_MEDIUM
     );
     if (strtolower($row['category']) == strtolower($_GET['category'])) {

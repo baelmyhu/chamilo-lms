@@ -2,7 +2,7 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * Responses to AJAX calls
+ * Responses to AJAX calls.
  */
 require_once __DIR__.'/../global.inc.php';
 
@@ -23,19 +23,38 @@ switch ($action) {
             unset($list_sessions);
         }
         break;
+    case 'order':
+        api_protect_admin_script();
+        $allowOrder = api_get_configuration_value('session_list_order');
+        if ($allowOrder) {
+            $order = isset($_GET['order']) ? $_GET['order'] : [];
+            $order = json_decode($order);
+            if (!empty($order)) {
+                $table = Database::get_main_table(TABLE_MAIN_SESSION);
+                foreach ($order as $data) {
+                    if (isset($data->order) && isset($data->id)) {
+                        $orderId = (int) $data->order;
+                        $sessionId = (int) $data->id;
+                        $sql = "UPDATE $table SET position = $orderId WHERE id = $sessionId ";
+                        Database::query($sql);
+                    }
+                }
+            }
+        }
+        break;
     case 'search_session':
         if (api_is_platform_admin()) {
             $sessions = SessionManager::get_sessions_list(
                 [
                     's.name' => [
                         'operator' => 'LIKE',
-                        'value' => "%".$_REQUEST['q']."%"
-                    ]
+                        'value' => "%".$_REQUEST['q']."%",
+                    ],
                 ]
             );
 
             $list = [
-                'items' => []
+                'items' => [],
             ];
 
             if (empty($sessions)) {
@@ -46,7 +65,7 @@ switch ($action) {
             foreach ($sessions as $session) {
                 $list['items'][] = [
                     'id' => $session['id'],
-                    'text' => $session['name']
+                    'text' => $session['name'],
                 ];
             }
 
@@ -56,15 +75,15 @@ switch ($action) {
     case 'search_session_all':
         if (api_is_platform_admin()) {
             $results = SessionManager::get_sessions_list(
-                array(
-                    's.name' => array('operator' => 'like', 'value' => "%".$_REQUEST['q']."%"),
-                    'c.id' => array('operator' => '=', 'value' => $_REQUEST['course_id'])
-                )
+                [
+                    's.name' => ['operator' => 'like', 'value' => "%".$_REQUEST['q']."%"],
+                    'c.id' => ['operator' => '=', 'value' => $_REQUEST['course_id']],
+                ]
             );
-            $results2 = array();
+            $results2 = [];
             if (!empty($results)) {
                 foreach ($results as $item) {
-                    $item2 = array();
+                    $item2 = [];
                     foreach ($item as $id => $internal) {
                         if ($id == 'id') {
                             $item2[$id] = $internal;
@@ -75,29 +94,29 @@ switch ($action) {
                     }
                     $results2[] = $item2;
                 }
-                $results2[] = array('T', 'text' => 'TODOS', 'id' => 'T');
+                $results2[] = ['T', 'text' => 'TODOS', 'id' => 'T'];
                 echo json_encode($results2);
             } else {
-                echo json_encode(array(array('T', 'text' => 'TODOS', 'id' => 'T')));
+                echo json_encode([['T', 'text' => 'TODOS', 'id' => 'T']]);
             }
         }
         break;
     case 'search_session_by_course':
         if (api_is_platform_admin()) {
             $results = SessionManager::get_sessions_list(
-                array(
-                    's.name' => array('operator' => 'like', 'value' => "%".$_REQUEST['q']."%"),
-                    'c.id' => array('operator' => '=', 'value' => $_REQUEST['course_id'])
-                )
+                [
+                    's.name' => ['operator' => 'like', 'value' => "%".$_REQUEST['q']."%"],
+                    'c.id' => ['operator' => '=', 'value' => $_REQUEST['course_id']],
+                ]
             );
             $json = [
                 'items' => [
-                    ['id' => 'T', 'text' => get_lang('All')]
-                ]
+                    ['id' => 'T', 'text' => get_lang('All')],
+                ],
             ];
             if (!empty($results)) {
                 foreach ($results as $item) {
-                    $item2 = array();
+                    $item2 = [];
                     foreach ($item as $id => $internal) {
                         if ($id == 'id') {
                             $item2[$id] = $internal;
@@ -111,6 +130,36 @@ switch ($action) {
             }
 
             echo json_encode($json);
+        }
+        break;
+    case 'session_info':
+        $sessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '';
+        $sessionInfo = api_get_session_info($sessionId);
+
+        $extraFieldValues = new ExtraFieldValue('session');
+        $extraField = new ExtraField('session');
+        $values = $extraFieldValues->getAllValuesByItem($sessionId);
+        $load = isset($_GET['load_empty_extra_fields']) ? true : false;
+
+        if ($load) {
+            $allExtraFields = $extraField->get_all();
+            $valueList = array_column($values, 'id');
+            foreach ($allExtraFields as $extra) {
+                if (!in_array($extra['id'], $valueList)) {
+                    $values[] = [
+                        'id' => $extra['id'],
+                        'variable' => $extra['variable'],
+                        'value' => '',
+                        'field_type' => $extra['field_type'],
+                    ];
+                }
+            }
+        }
+
+        $sessionInfo['extra_fields'] = $values;
+
+        if (!empty($sessionInfo)) {
+            echo json_encode($sessionInfo);
         }
         break;
     case 'get_description':
@@ -131,7 +180,7 @@ switch ($action) {
         }
 
         $list = [
-            'items' => []
+            'items' => [],
         ];
 
         $entityManager = Database::getManager();
@@ -141,7 +190,7 @@ switch ($action) {
         foreach ($users as $user) {
             $list['items'][] = [
                 'id' => $user->getId(),
-                'text' => $user->getCompleteName()
+                'text' => $user->getCompleteName(),
             ];
         }
 
@@ -184,7 +233,7 @@ switch ($action) {
                 $courseInfo = api_get_course_info_by_id($courseId);
                 $courseListToSelect[] = [
                     'id' => $courseInfo['real_id'],
-                    'name' => $courseInfo['title']
+                    'name' => $courseInfo['title'],
                 ];
             }
         }

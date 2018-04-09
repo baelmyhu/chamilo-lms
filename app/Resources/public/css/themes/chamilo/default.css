@@ -35,7 +35,7 @@ body {
 }
  
 a {
-  color: #0099FF;
+  color: #337AB7;
   text-decoration: none;
 }
 a:hover,
@@ -148,7 +148,4 @@ a:focus {
 }
 .bgfooter a{
   color: #ffffff;
-}
-.page-header{
-  margin: 10px 0 10px;
 }

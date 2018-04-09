@@ -4,16 +4,20 @@
 use ChamiloSession as Session;
 
 /**
- * Responses to AJAX calls
+ * Responses to AJAX calls.
  */
-
 require_once __DIR__.'/../global.inc.php';
 api_protect_course_script(true);
-$action = $_REQUEST['a'];
+
+$debug = false;
+$action = isset($_REQUEST['a']) ? $_REQUEST['a'] : '';
 
 $course_id = api_get_course_int_id();
-$tbl_lp_item = Database::get_course_table(TABLE_LP_ITEM);
 $sessionId = api_get_session_id();
+
+if ($debug) {
+    error_log('----------lp.ajax-------------- action '.$action);
+}
 
 switch ($action) {
     case 'get_documents':
@@ -37,13 +41,14 @@ switch ($action) {
             false,
             $folderId
         );
-
         break;
     case 'add_lp_item':
         if (api_is_allowed_to_edit(null, true)) {
-            if ($_SESSION['oLP']) {
+            /** @var learnpath $learningPath */
+            $learningPath = Session::read('oLP');
+            if ($learningPath) {
                 // Updating the lp.modified_on
-                $_SESSION['oLP']->set_modified_on();
+                $learningPath->set_modified_on();
                 $title = $_REQUEST['title'];
                 if ($_REQUEST['type'] == TOOL_QUIZ) {
                     $title = Exercise::format_title_variable($title);
@@ -52,7 +57,7 @@ switch ($action) {
                 $parentId = isset($_REQUEST['parent_id']) ? $_REQUEST['parent_id'] : '';
                 $previousId = isset($_REQUEST['previous_id']) ? $_REQUEST['previous_id'] : '';
 
-                echo $_SESSION['oLP']->add_item(
+                echo $learningPath->add_item(
                     $parentId,
                     $previousId,
                     $_REQUEST['type'],
@@ -67,7 +72,7 @@ switch ($action) {
         if (api_is_allowed_to_edit(null, true)) {
             $new_order = $_POST['new_order'];
             $sections = explode('^', $new_order);
-            $new_array = array();
+            $new_array = [];
 
             // We have to update parent_item_id, previous_item_id, next_item_id, display_order in the database
             $LP_item_list = new LP_item_order_list();
@@ -101,22 +106,24 @@ switch ($action) {
                 }
             }
 
+            $table = Database::get_course_table(TABLE_LP_ITEM);
+
             foreach ($LP_item_list->list as $LP_item) {
-                $params = array();
+                $params = [];
                 $params['display_order'] = $LP_item->display_order;
                 $params['previous_item_id'] = $LP_item->previous_item_id;
                 $params['next_item_id'] = $LP_item->next_item_id;
                 $params['parent_item_id'] = $LP_item->parent_item_id;
 
                 Database::update(
-                    $tbl_lp_item,
+                    $table,
                     $params,
-                    array(
-                        'id = ? AND c_id = ? ' => array(
+                    [
+                        'id = ? AND c_id = ? ' => [
                             intval($LP_item->id),
                             $course_id,
-                        ),
-                    )
+                        ],
+                    ]
                 );
             }
             echo Display::return_message(get_lang('Saved'), 'confirm');
@@ -136,7 +143,7 @@ switch ($action) {
             exit;
         }
 
-        foreach (array('video', 'audio') as $type) {
+        foreach (['video', 'audio'] as $type) {
             if (isset($_FILES["${type}-blob"])) {
                 $fileName = $_POST["${type}-filename"];
                 //$file = $_FILES["${type}-blob"]["tmp_name"];
@@ -187,7 +194,11 @@ switch ($action) {
             break;
         }
 
-        $learningPath = learnpath::getLpFromSession(api_get_course_id(), $lpId, api_get_user_id());
+        $learningPath = learnpath::getLpFromSession(
+            api_get_course_id(),
+            $lpId,
+            api_get_user_id()
+        );
         $lpItem = $learningPath->getItem($lpItemId);
 
         if (empty($lpItem)) {
@@ -201,7 +212,7 @@ switch ($action) {
 
         if (!$lpHasForum) {
             echo json_encode([
-                'error' => true
+                'error' => true,
             ]);
             break;
         }
@@ -221,7 +232,7 @@ switch ($action) {
                     [
                         'lp_id' => 0,
                         'forum_category_title' => get_lang('LearningPaths'),
-                        'forum_category_comment' => null
+                        'forum_category_comment' => null,
                     ],
                     [],
                     false
@@ -239,7 +250,7 @@ switch ($action) {
 
         if (!$lpItemHasThread) {
             echo json_encode([
-                'error' => true
+                'error' => true,
             ]);
             break;
         }
@@ -255,7 +266,7 @@ switch ($action) {
         echo json_encode([
             'error' => false,
             'forumId' => intval($forum['forum_id']),
-            'threadId' => intval($forumThreadId)
+            'threadId' => intval($forumThreadId),
         ]);
         break;
     case 'update_gamification':
@@ -263,7 +274,7 @@ switch ($action) {
 
         $jsonGamification = [
             'stars' => 0,
-            'score' => 0
+            'score' => 0,
         ];
 
         if ($lp) {
@@ -285,11 +296,48 @@ switch ($action) {
         echo json_encode($position);
 
         break;
+    case 'get_parent_names':
+        $newItemId = isset($_GET['new_item']) ? intval($_GET['new_item']) : 0;
+
+        if (!$newItemId) {
+            break;
+        }
+
+        /** @var \learnpath $lp */
+        $lp = Session::read('oLP');
+        $parentNames = $lp->getCurrentItemParentNames($newItemId);
+        $response = '';
+        foreach ($parentNames as $parentName) {
+            $response .= '<p class="h5 hidden-xs hidden-md">'.$parentName.'</p>';
+        }
+
+        echo $response;
+        break;
+    case 'get_item_prerequisites':
+        /** @var learnpath $lp */
+        $lp = Session::read('oLP');
+        $itemId = isset($_GET['item_id']) ? (int) $_GET['item_id'] : 0;
+        if (empty($lp) || empty($itemId)) {
+            exit;
+        }
+        $result = $lp->prerequisites_match($itemId);
+        if ($result) {
+            echo '1';
+        } else {
+            if (!empty($lp->error)) {
+                echo $lp->error;
+            } else {
+                echo get_lang('LearnpathPrereqNotCompleted');
+            }
+        }
+        $lp->error = '';
+        exit;
+
+        break;
     default:
         echo '';
 }
 exit;
-
 
 /*
  * Classes to create a special data structure to manipulate LP Items
@@ -300,11 +348,11 @@ exit;
 
 class LP_item_order_list
 {
-    public $list = array();
+    public $list = [];
 
     public function __construct()
     {
-        $this->list = array();
+        $this->list = [];
     }
 
     public function add($in_LP_item_order_item)
@@ -326,7 +374,7 @@ class LP_item_order_list
 
     public function get_list_of_parents()
     {
-        $tab_out_res = array();
+        $tab_out_res = [];
         foreach ($this->list as $LP_item) {
             if (!in_array($LP_item->parent_item_id, $tab_out_res)) {
                 $tab_out_res[] = $LP_item->parent_item_id;
@@ -345,7 +393,6 @@ class LP_item_order_list
             }
         }
     }
-
 }
 
 class LP_item_order_item
@@ -361,5 +408,4 @@ class LP_item_order_item
         $this->id = $in_id;
         $this->parent_item_id = $in_parent_id;
     }
-
 }

@@ -1,17 +1,17 @@
 <?php
 /* For licensing terms, see /license.txt */
 
-use Chamilo\CourseBundle\Component\CourseCopy\CourseSelectForm;
 use Chamilo\CourseBundle\Component\CourseCopy\CourseArchiver;
 use Chamilo\CourseBundle\Component\CourseCopy\CourseRestorer;
+use Chamilo\CourseBundle\Component\CourseCopy\CourseSelectForm;
 
 /**
  * Import a backup.
  *
  * @author Bart Mollet <bart.mollet@hogent.be>
+ *
  * @package chamilo.backup
  */
-
 require_once __DIR__.'/../inc/global.inc.php';
 
 $current_course_tool = TOOL_COURSE_MAINTENANCE;
@@ -32,10 +32,10 @@ if (function_exists('ini_set')) {
 $this_section = SECTION_COURSES;
 
 // Breadcrumbs
-$interbreadcrumb[] = array(
+$interbreadcrumb[] = [
     'url' => '../course_info/maintenance.php',
-    'name' => get_lang('Maintenance')
-);
+    'name' => get_lang('Maintenance'),
+];
 
 // Displaying the header
 $nameTools = get_lang('ImportBackup');
@@ -60,14 +60,15 @@ if (Security::check_token('post') && (
     Security::clear_token();
 
     $error = false;
-    if (isset($_POST['action']) && $_POST['action'] == 'course_select_form') {
+    if (isset($_POST['action']) &&
+        $_POST['action'] == 'course_select_form'
+    ) {
         // Partial backup here we recover the documents posted
         // This gets $_POST['course']. Beware that when using Suhosin,
         // the post.max_value_length limit might get in the way of the
         // restoration of a course with many items. A value of 1,000,000 bytes
         // might be too short.
         $course = CourseSelectForm::get_posted_course();
-
     } else {
         if ($_POST['backup_type'] == 'server') {
             $filename = $_POST['backup_server'];
@@ -117,7 +118,6 @@ if (Security::check_token('post') && (
         }
     }
     CourseArchiver::cleanBackupDir();
-
 } elseif (Security::check_token('post') && (
         isset($_POST['import_option']) &&
         $_POST['import_option'] == 'select_items'
@@ -159,7 +159,7 @@ if (Security::check_token('post') && (
         'post',
         api_get_path(WEB_CODE_PATH).'coursecopy/import_backup.php?'.api_get_cidreq(),
         '',
-        array('enctype' => 'multipart/form-data')
+        ['enctype' => 'multipart/form-data']
     );
     $form->addElement('header', get_lang('SelectBackupFile'));
     $renderer = $form->defaultRenderer();
@@ -270,19 +270,18 @@ if (Security::check_token('post') && (
 
     $form->addProgress();
     // When progress bar appears we have to hide the title "Select backup file".
-    $form->updateAttributes(array(
+    $form->updateAttributes([
         'onsubmit' => str_replace(
             'javascript: ',
             'javascript: page_title = getElementById(\'page_title\'); if (page_title) { setTimeout(\'page_title.style.display = \\\'none\\\';\', 2000); } ',
             $form->getAttribute('onsubmit')
-        )
-    ));
+        ),
+    ]);
 
     // Add Security token
     $token = Security::get_token();
     $form->addElement('hidden', 'sec_token');
-    $form->setConstants(array('sec_token' => $token));
-
+    $form->setConstants(['sec_token' => $token]);
     $form->display();
 }
 

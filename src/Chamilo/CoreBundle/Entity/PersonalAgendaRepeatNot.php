@@ -1,11 +1,12 @@
 <?php
+/* For licensing terms, see /license.txt */
 
 namespace Chamilo\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * PersonalAgendaRepeatNot
+ * PersonalAgendaRepeatNot.
  *
  * @ORM\Table(name="personal_agenda_repeat_not")
  * @ORM\Entity
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class PersonalAgendaRepeatNot
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="cal_id", type="integer")
      * @ORM\Id
@@ -22,7 +23,7 @@ class PersonalAgendaRepeatNot
     private $calId;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="cal_date", type="integer")
      * @ORM\Id
@@ -30,12 +31,11 @@ class PersonalAgendaRepeatNot
      */
     private $calDate;
 
-
-
     /**
-     * Set calId
+     * Set calId.
      *
-     * @param integer $calId
+     * @param int $calId
+     *
      * @return PersonalAgendaRepeatNot
      */
     public function setCalId($calId)
@@ -46,9 +46,9 @@ class PersonalAgendaRepeatNot
     }
 
     /**
-     * Get calId
+     * Get calId.
      *
-     * @return integer
+     * @return int
      */
     public function getCalId()
     {
@@ -56,9 +56,10 @@ class PersonalAgendaRepeatNot
     }
 
     /**
-     * Set calDate
+     * Set calDate.
      *
-     * @param integer $calDate
+     * @param int $calDate
+     *
      * @return PersonalAgendaRepeatNot
      */
     public function setCalDate($calDate)
@@ -69,9 +70,9 @@ class PersonalAgendaRepeatNot
     }
 
     /**
-     * Get calDate
+     * Get calDate.
      *
-     * @return integer
+     * @return int
      */
     public function getCalDate()
     {

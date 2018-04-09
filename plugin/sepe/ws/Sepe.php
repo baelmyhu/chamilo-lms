@@ -1,11 +1,10 @@
 <?php
 
 /**
- * Class Sepe
+ * Class Sepe.
  */
 class Sepe
 {
-    
     /**
      * @param crearCentroInput[] $crearCentroInput
      *
@@ -15,14 +14,14 @@ class Sepe
     {
         /* Tracking log */
         $tableLog = Database::get_main_table('plugin_sepe_log');
-        $paramsLog = array(
+        $paramsLog = [
             'ip' => $_SERVER['REMOTE_ADDR'],
             'action' => "crearCentro",
-            'fecha' => date("Y-m-d H:i:s")
-        );
+            'fecha' => date("Y-m-d H:i:s"),
+        ];
         Database::insert($tableLog, $paramsLog);
         /* End tracking log */
-        
+
         // Code
         $crearCentroInput = $crearCentroInput->DATOS_IDENTIFICATIVOS;
         $centerOrigin = $crearCentroInput->ID_CENTRO->ORIGEN_CENTRO;
@@ -42,13 +41,14 @@ class Sepe
             empty($mail)
         ) {
             error_log('no data');
-            return array(
-                "RESPUESTA_DATOS_CENTRO" => array(
+
+            return [
+                "RESPUESTA_DATOS_CENTRO" => [
                     "CODIGO_RETORNO" => "2",
                     "ETIQUETA_ERROR" => "Error en parametro",
-                    "DATOS_IDENTIFICATIVOS" => $crearCentroInput
-                )
-            );
+                    "DATOS_IDENTIFICATIVOS" => $crearCentroInput,
+                ],
+            ];
         }
 
         $table = Database::get_main_table('plugin_sepe_center');
@@ -58,20 +58,20 @@ class Sepe
             // Check if exists actions
             $table_actions = Database::get_main_table('plugin_sepe_actions');
             if (Database::count_rows($table_actions) > 0) {
-                return array(
-                    "RESPUESTA_DATOS_CENTRO" => array(
+                return [
+                    "RESPUESTA_DATOS_CENTRO" => [
                         "CODIGO_RETORNO" => "1",
                         "ETIQUETA_ERROR" => "Centro con acciones",
-                        "DATOS_IDENTIFICATIVOS" => $crearCentroInput
-                    )
-                );
+                        "DATOS_IDENTIFICATIVOS" => $crearCentroInput,
+                    ],
+                ];
             } else {
                 $sql = "DELETE FROM $table";
                 Database::query($sql);
             }
         }
 
-        $params = array(
+        $params = [
             'center_origin' => $centerOrigin,
             'center_code' => $centerCode,
             'center_name' => $centerName,
@@ -79,45 +79,44 @@ class Sepe
             'tracking_url' => $urlTracking,
             'phone' => $phone,
             'mail' => $mail,
-        );
+        ];
 
         $id = Database::insert($table, $params);
 
         if (empty($id)) {
-            return array(
-                "RESPUESTA_DATOS_CENTRO" => array(
+            return [
+                "RESPUESTA_DATOS_CENTRO" => [
                     "CODIGO_RETORNO" => "-1",
                     "ETIQUETA_ERROR" => "Problema base de datos",
-                    "DATOS_IDENTIFICATIVOS" => $crearCentroInput
-                )
-            );
+                    "DATOS_IDENTIFICATIVOS" => $crearCentroInput,
+                ],
+            ];
         } else {
-            return array(
-                "RESPUESTA_DATOS_CENTRO" => array(
+            return [
+                "RESPUESTA_DATOS_CENTRO" => [
                     "CODIGO_RETORNO" => "0",
                     "ETIQUETA_ERROR" => "Correcto",
-                    "DATOS_IDENTIFICATIVOS" => $crearCentroInput
-                )
-            );
+                    "DATOS_IDENTIFICATIVOS" => $crearCentroInput,
+                ],
+            ];
         }
     }
 
     /**
-     *
-     * @return array
+     * @return stdClass
      */
     public function obtenerDatosCentro()
     {
         /* Tracking Log */
         $tableLog = Database::get_main_table('plugin_sepe_log');
-        $paramsLog = array(
+        $paramsLog = [
             'ip' => $_SERVER['REMOTE_ADDR'],
             'action' => "obtenerDatosCentro",
-            'fecha' => date("Y-m-d H:i:s")
-        );
+            'fecha' => date("Y-m-d H:i:s"),
+        ];
         Database::insert($tableLog, $paramsLog);
         /* End tracking log */
-        
+
         // Code
         $table = Database::get_main_table('plugin_sepe_center');
 
@@ -127,11 +126,11 @@ class Sepe
             $sql = "SELECT * FROM $table;";
             $rs = Database::query($sql);
             if (!$rs) {
-                return array(
+                return [
                     "CODIGO_RETORNO" => "-1",
                     "ETIQUETA_ERROR" => "Problema acceso base de datos",
-                    "DATOS_IDENTIFICATIVOS" => ''
-                );
+                    "DATOS_IDENTIFICATIVOS" => '',
+                ];
             } else {
                 $row = Database::fetch_assoc($rs);
                 $centerOrigin = $row['center_origin'];
@@ -191,26 +190,27 @@ class Sepe
             $result = new stdClass();
             $result->RESPUESTA_DATOS_CENTRO = new SoapVar($obj, SOAP_ENC_OBJECT);
             */
-            return $result; 
+            return $result;
         }
     }
 
     /**
      * @param $crearAccionInput
+     *
      * @return array
      */
     public function crearAccion($crearAccionInput)
     {
         /* Tracking Log */
         $tableLog = Database::get_main_table('plugin_sepe_log');
-        $paramsLog = array(
+        $paramsLog = [
             'ip' => $_SERVER['REMOTE_ADDR'],
             'action' => "crearAccion",
-            'fecha' => date("Y-m-d H:i:s")
-        );
+            'fecha' => date("Y-m-d H:i:s"),
+        ];
         Database::insert($tableLog, $paramsLog);
         /* End tracking log */
-        
+
         $array = json_decode(json_encode($crearAccionInput), true);
         $crearAccionInputArray = (array) $array;
         // Code
@@ -231,17 +231,17 @@ class Sepe
         $schedule = $crearAccionInput->ACCION_FORMATIVA->DESCRIPCION_ACCION->HORARIOS;
         $requerements = $crearAccionInput->ACCION_FORMATIVA->DESCRIPCION_ACCION->REQUISITOS;
         $contactAction = $crearAccionInput->ACCION_FORMATIVA->DESCRIPCION_ACCION->CONTACTO_ACCION;
-      
 
         if (empty($actionOrigin) || empty($actionCode)) {
             error_log('2 - error en parametros - l244');
-            return array(
-                "RESPUESTA_OBT_ACCION" => array(
-                    "CODIGO_RETORNO"=>"2",
-                    "ETIQUETA_ERROR"=>"Error en parametro",
-                    "ACCION_FORMATIVA"=> $crearAccionInputArray['ACCION_FORMATIVA']
-                )
-            );
+
+            return [
+                "RESPUESTA_OBT_ACCION" => [
+                    "CODIGO_RETORNO" => "2",
+                    "ETIQUETA_ERROR" => "Error en parametro",
+                    "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                ],
+            ];
         }
 
         // Comprobamos si existen datos almacenados previamente
@@ -251,14 +251,13 @@ class Sepe
         $rs = Database::query($sql);
 
         if (Database::num_rows($rs) > 0) {
-            return array(
-                "RESPUESTA_OBT_ACCION" => array(
-                    "CODIGO_RETORNO"=>"1",
-                    "ETIQUETA_ERROR"=>"Acción existente",
-                    "ACCION_FORMATIVA"=>$crearAccionInputArray['ACCION_FORMATIVA']
-                )
-            );
-            
+            return [
+                "RESPUESTA_OBT_ACCION" => [
+                    "CODIGO_RETORNO" => "1",
+                    "ETIQUETA_ERROR" => "Acción existente",
+                    "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                ],
+            ];
         }
 
         $startDate = self::fixDate($startDate);
@@ -269,13 +268,13 @@ class Sepe
 
         $rs = Database::query($sql);
         if (!$rs) {
-            return array(
-                "RESPUESTA_OBT_ACCION" => array(
-                    "CODIGO_RETORNO"=>"-1",
-                    "ETIQUETA_ERROR"=>"Problema base de datos - insertando acciones formativas",
-                    "ACCION_FORMATIVA"=>$crearAccionInputArray['ACCION_FORMATIVA']
-                )
-            );
+            return [
+                "RESPUESTA_OBT_ACCION" => [
+                    "CODIGO_RETORNO" => "-1",
+                    "ETIQUETA_ERROR" => "Problema base de datos - insertando acciones formativas",
+                    "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                ],
+            ];
         }
         $actionId = Database::insert_id();
 
@@ -285,9 +284,9 @@ class Sepe
         $specialties = $crearAccionInput->ACCION_FORMATIVA->ESPECIALIDADES_ACCION;
         foreach ($specialties as $specialtyList) {
             if (!is_array($specialtyList)) {
-                $auxList = array();
+                $auxList = [];
                 $auxList[] = $specialtyList;
-                $specialtyList = $auxList;    
+                $specialtyList = $auxList;
             }
             foreach ($specialtyList as $specialty) {
                 $specialtyOrigin = $specialty->ID_ESPECIALIDAD->ORIGEN_ESPECIALIDAD;
@@ -347,14 +346,14 @@ class Sepe
                 $startDate = self::fixDate($startDate);
                 $endDate = self::fixDate($endDate);
 
-                $params = array(
+                $params = [
                     'action_id' => $actionId,
                     'specialty_origin' => $specialtyOrigin,
                     'professional_area' => $professionalArea,
-                    'specialty_code' =>$specialtyCode ,
+                    'specialty_code' => $specialtyCode,
                     'center_origin' => $centerOrigin,
                     'center_code' => $centerCode,
-                    'start_date' => $startDate ,
+                    'start_date' => $startDate,
                     'end_date' => $endDate,
                     'modality_impartition' => $modalityImpartition,
                     'classroom_hours' => $classroomHours,
@@ -369,60 +368,60 @@ class Sepe
                     'night_access_number' => $nightAccessNumber,
                     'night_total_duration' => $nightTotalDuration,
                     'attendees_count' => $attendeesCount,
-                    'learning_activity_count' => $learningActivityCount ,
+                    'learning_activity_count' => $learningActivityCount,
                     'attempt_count' => $attemptCount,
-                    'evaluation_activity_count' => $evaluationActivityCount
-                );
+                    'evaluation_activity_count' => $evaluationActivityCount,
+                ];
 
                 $specialtyId = Database::insert($table, $params);
 
                 if (empty($specialtyId)) {
-                    return array(
-                        "RESPUESTA_OBT_ACCION" => array(
+                    return [
+                        "RESPUESTA_OBT_ACCION" => [
                             "CODIGO_RETORNO" => "-1",
                             "ETIQUETA_ERROR" => "Problema base de datos - insertando datos de especialidad de la accion",
-                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA']
-                        )
-                    );
+                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                        ],
+                    ];
                 }
 
-                
                 if ($specialtyId) {
                     $tableSpecialtyClassroom = Database::get_main_table('plugin_sepe_specialty_classroom');
                     $tableCenters = Database::get_main_table('plugin_sepe_centers');
                     foreach ($specialty->CENTROS_SESIONES_PRESENCIALES->CENTRO_PRESENCIAL as $centroList) {
                         if (!is_array($centroList)) {
-                            $auxList = array();
+                            $auxList = [];
                             $auxList[] = $centroList;
-                            $centroList = $auxList;    
+                            $centroList = $auxList;
                         }
                         foreach ($centroList as $centro) {
                             $centerOrigin = $centro->ORIGEN_CENTRO;
                             $centerCode = $centro->CODIGO_CENTRO;
-                            $sql = "SELECT id FROM $tableCenters WHERE center_origin='".$centerOrigin."' AND center_code='".$centerCode."';";
+                            $sql = "SELECT id FROM $tableCenters 
+                                    WHERE center_origin='".$centerOrigin."' AND center_code='".$centerCode."';";
                             $res = Database::query($sql);
-                            if (Database::num_rows($res)>0) {
+                            if (Database::num_rows($res) > 0) {
                                 $aux_row = Database::fetch_assoc($res);
                                 $centerId = $aux_row['id'];
                             } else {
                                 $sql = "INSERT INTO $tableCenters (center_origin, center_code)
-                                        VALUES ('" . $centerOrigin . "','" . $centerCode . "');";
+                                        VALUES ('".$centerOrigin."','".$centerCode."');";
                                 Database::query($sql);
                                 $centerId = Database::insert_id();
                             }
                             $sql = "INSERT INTO $tableSpecialtyClassroom (specialty_id, center_id)
-                                    VALUES ('" . $specialtyId . "','" . $centerId . "')";
+                                    VALUES ('".$specialtyId."','".$centerId."')";
                             Database::query($sql);
                             $id = Database::insert_id();
-                                
+
                             if (empty($id)) {
-                                return array(
-                                    "RESPUESTA_OBT_ACCION" => array(
+                                return [
+                                    "RESPUESTA_OBT_ACCION" => [
                                         "CODIGO_RETORNO" => "-1",
                                         "ETIQUETA_ERROR" => "Problema base de datos - insertando centro presenciales",
-                                        "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA']
-                                    )
-                                );
+                                        "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                                    ],
+                                ];
                             }
                         }
                     }
@@ -433,9 +432,9 @@ class Sepe
                     if (!empty($specialty->TUTORES_FORMADORES)) {
                         foreach ($specialty->TUTORES_FORMADORES as $tutorList) {
                             if (!is_array($tutorList)) {
-                                $auxList = array();
+                                $auxList = [];
                                 $auxList[] = $tutorList;
-                                $tutorList = $auxList;    
+                                $tutorList = $auxList;
                             }
                             foreach ($tutorList as $tutor) {
                                 $documentType = $tutor->ID_TUTOR->TIPO_DOCUMENTO;
@@ -446,31 +445,33 @@ class Sepe
                                 $teachingCompetence = $tutor->COMPETENCIA_DOCENTE;
                                 $experienceTeleforming = $tutor->EXPERIENCIA_MODALIDAD_TELEFORMACION;
                                 $trainingTeleforming = $tutor->FORMACION_MODALIDAD_TELEFORMACION;
-                                
+
                                 /* check tutor not exists */
                                 $sql = "SELECT id FROM $tableTutors WHERE 
-                                document_type='".$documentType."' AND document_number='".$documentNumber."' AND document_letter='".$documentLetter."';";
+                                          document_type='".$documentType."' AND 
+                                          document_number='".$documentNumber."' AND 
+                                          document_letter='".$documentLetter."';";
                                 $res = Database::query($sql);
-                                if (Database::num_rows($res)>0) {
+                                if (Database::num_rows($res) > 0) {
                                     $aux_row = Database::fetch_assoc($res);
                                     $tutorId = $aux_row['id'];
                                 } else {
                                     $sql = "INSERT INTO $tableTutors (document_type, document_number, document_letter)
-                                        VALUES ('" . $documentType . "','" . $documentNumber . "','" . $documentLetter . "');";
+                                        VALUES ('".$documentType."','".$documentNumber."','".$documentLetter."');";
                                     Database::query($sql);
                                     $tutorId = Database::insert_id();
                                 }
                                 if (empty($tutorId)) {
-                                    return array(
-                                        "RESPUESTA_OBT_ACCION" => array(
+                                    return [
+                                        "RESPUESTA_OBT_ACCION" => [
                                             "CODIGO_RETORNO" => "-1",
                                             "ETIQUETA_ERROR" => "Problema base de datos - insertando tutores",
-                                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA']
-                                        )
-                                    );
+                                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                                        ],
+                                    ];
                                 }
                                 $sql = "INSERT INTO $tableSpecialityTutors (specialty_id, tutor_id, tutor_accreditation, professional_experience, teaching_competence, experience_teleforming, training_teleforming)
-                                        VALUES ('" . $specialtyId . "','" . $tutorId . "','" . $tutorAccreditation . "','" . $professionalExperience . "','" . $teachingCompetence . "','" . $experienceTeleforming . "','" . $trainingTeleforming . "');";
+                                        VALUES ('".$specialtyId."','".$tutorId."','".$tutorAccreditation."','".$professionalExperience."','".$teachingCompetence."','".$experienceTeleforming."','".$trainingTeleforming."');";
                                 Database::query($sql);
                             }
                         }
@@ -484,9 +485,9 @@ class Sepe
         $participants = $crearAccionInput->ACCION_FORMATIVA->PARTICIPANTES;
         foreach ($participants as $participantList) {
             if (!is_array($participantList)) {
-                $auxList = array();
+                $auxList = [];
                 $auxList[] = $participantList;
-                $participantList = $auxList;    
+                $participantList = $auxList;
             }
             foreach ($participantList as $participant) {
                 $documentType = $participant->ID_PARTICIPANTE->TIPO_DOCUMENTO;
@@ -512,43 +513,50 @@ class Sepe
                     $documentLetterCompany = isset($participant->CONTRATO_FORMACION->ID_TUTOR_EMPRESA->LETRA_NIF) ? $participant->CONTRATO_FORMACION->ID_TUTOR_EMPRESA->LETRA_NIF : null;
                     if (!empty($documentTypeCompany) || !empty($documentNumberCompany) || !empty($documentLetterCompany)) {
                         $tmp_e = Database::query('SELECT id FROM '.$tableTutorsCompany.' WHERE document_type="'.$documentTypeCompany.'" AND document_number="'.$documentNumberCompany.'" AND document_letter="'.$documentLetterCompany.'";');
-                        if (Database::num_rows($tmp_e)>0) {
+                        if (Database::num_rows($tmp_e) > 0) {
                             $row_tmp = Database::fetch_assoc($tmp_e);
                             $tutorIdCompany = $row_tmp['id'];
                             Database::query("UPDATE $tableTutorsCompany SET company='1' WHERE id='".$tutorIdCompany."'");
                         } else {
-                            $params_tmp = array(
+                            $params_tmp = [
                                 'document_type' => $documentTypeCompany,
                                 'document_number' => $documentNumberCompany,
                                 'document_letter' => $documentLetterCompany,
-                                'company' => '1'
-                            );
+                                'company' => '1',
+                            ];
                             $tutorIdCompany = Database::insert($tableTutorsCompany, $params_tmp);
                         }
                     }
-                    
+
                     $documentTypeTraining = isset($participant->CONTRATO_FORMACION->ID_TUTOR_FORMACION->TIPO_DOCUMENTO) ? $participant->CONTRATO_FORMACION->ID_TUTOR_FORMACION->TIPO_DOCUMENTO : null;
                     $documentNumberTraining = isset($participant->CONTRATO_FORMACION->ID_TUTOR_FORMACION->NUM_DOCUMENTO) ? $participant->CONTRATO_FORMACION->ID_TUTOR_FORMACION->NUM_DOCUMENTO : null;
                     $documentLetterTraining = isset($participant->CONTRATO_FORMACION->ID_TUTOR_FORMACION->LETRA_NIF) ? $participant->CONTRATO_FORMACION->ID_TUTOR_FORMACION->LETRA_NIF : null;
                     if (!empty($documentTypeTraining) || !empty($documentNumberTraining) || !empty($documentLetterTraining)) {
-                        $tmp_f = Database::query('SELECT id FROM '.$tableTutorsCompany.' WHERE document_type="'.$documentTypeTraining.'" AND document_number="'.$documentNumberTraining.'" AND document_letter="'.$documentLetterTraining.'";');
-                        if (Database::num_rows($tmp_f)>0) {
+                        $tmp_f = Database::query(
+                            '
+                            SELECT id FROM '.$tableTutorsCompany.' 
+                            WHERE
+                                document_type="'.$documentTypeTraining.'" AND 
+                                document_number="'.$documentNumberTraining.'" AND 
+                                document_letter="'.$documentLetterTraining.'";'
+                        );
+                        if (Database::num_rows($tmp_f) > 0) {
                             $row_tmp = Database::fetch_assoc($tmp_f);
                             $tutorIdTraining = $row_tmp['id'];
                             Database::query("UPDATE $tableTutorsCompany SET training='1' WHERE id='".$tutorIdTraining."'");
                         } else {
-                            $params_tmp = array(
+                            $params_tmp = [
                                 'document_type' => $documentTypeTraining,
                                 'document_number' => $documentNumberTraining,
                                 'document_letter' => $documentLetterTraining,
-                                'training' => '1'
-                            );
+                                'training' => '1',
+                            ];
                             $tutorIdTraining = Database::insert($tableTutorsCompany, $params_tmp);
                         }
                     }
                 }
 
-                $params = array(
+                $params = [
                     'action_id' => $actionId,
                     'document_type' => $documentType,
                     'document_number' => $documentNumber,
@@ -557,26 +565,26 @@ class Sepe
                     'contract_id' => $contractId,
                     'company_fiscal_number' => $companyFiscalNumber,
                     'company_tutor_id' => $tutorIdCompany,
-                    'training_tutor_id' => $tutorIdTraining
-                );
+                    'training_tutor_id' => $tutorIdTraining,
+                ];
                 $participantId = Database::insert($tableParticipants, $params);
                 if (empty($participantId)) {
-                    return array(
-                        "RESPUESTA_OBT_ACCION" => array(
+                    return [
+                        "RESPUESTA_OBT_ACCION" => [
                             "CODIGO_RETORNO" => "-1",
                             "ETIQUETA_ERROR" => "Problema base de datos - insertando participantes",
-                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA']
-                        )
-                    );
+                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                        ],
+                    ];
                 }
 
                 $participantId = Database::insert_id();
-                
+
                 foreach ($participant->ESPECIALIDADES_PARTICIPANTE as $valueList) {
                     if (!is_array($participantList)) {
-                        $auxList = array();
+                        $auxList = [];
                         $auxList[] = $valueList;
-                        $valueList = $auxList;    
+                        $valueList = $auxList;
                     }
                     foreach ($valueList as $value) {
                         $specialtyOrigin = null;
@@ -621,49 +629,49 @@ class Sepe
 
                         $startDate = self::fixDate($startDate);
                         $endDate = self::fixDate($endDate);
-                        
+
                         $table_aux = Database::get_main_table('plugin_sepe_participants_specialty');
                         $sql = "INSERT INTO $table_aux (participant_id,specialty_origin,professional_area,specialty_code,registration_date,leaving_date,center_origin,center_code,start_date,end_date,final_result,final_qualification,final_score)
-                                VALUES ('" . $participantId . "','" . $specialtyOrigin . "','" . $professionalArea . "','" . $specialtyCode . "','" . $registrationDate . "','" . $leavingDate . "','" . $centerOrigin . "','" . $centerCode . "','" . $startDate . "','" . $endDate . "','" . $finalResult . "','" . $finalQualification . "','" . $finalScore . "');";
+                                VALUES ('".$participantId."','".$specialtyOrigin."','".$professionalArea."','".$specialtyCode."','".$registrationDate."','".$leavingDate."','".$centerOrigin."','".$centerCode."','".$startDate."','".$endDate."','".$finalResult."','".$finalQualification."','".$finalScore."');";
                         Database::query($sql);
                         $participantSpecialtyId = Database::insert_id();
                         if (empty($participantSpecialtyId)) {
-                            return array(
-                                "RESPUESTA_OBT_ACCION" => array(
+                            return [
+                                "RESPUESTA_OBT_ACCION" => [
                                     "CODIGO_RETORNO" => "-1",
                                     "ETIQUETA_ERROR" => "Problema base de datos - insertando especialidad participante",
-                                    "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA']
-                                )
-                            );
+                                    "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                                ],
+                            ];
                         }
 
                         foreach ($value->TUTORIAS_PRESENCIALES as $tutorialList) {
                             if (!is_array($tutorialList)) {
-                                $auxList = array();
+                                $auxList = [];
                                 $auxList[] = $tutorialList;
-                                $tutorialList = $auxList;    
+                                $tutorialList = $auxList;
                             }
                             foreach ($tutorialList as $tutorial) {
                                 $centerOrigin = $tutorial->CENTRO_PRESENCIAL_TUTORIA->ORIGEN_CENTRO;
                                 $centerCode = $tutorial->CENTRO_PRESENCIAL_TUTORIA->CODIGO_CENTRO;
                                 $startDate = $tutorial->FECHA_INICIO;
                                 $endDate = $tutorial->FECHA_FIN;
-    
+
                                 $startDate = self::fixDate($startDate);
                                 $endDate = self::fixDate($endDate);
-                                
+
                                 $table_aux2 = Database::get_main_table('plugin_sepe_participants_specialty_tutorials');
                                 $sql = "INSERT INTO $table_aux2 (participant_specialty_id,center_origin,center_code,start_date,end_date)
-                                        VALUES ('" . $participantSpecialtyId . "','" . $centerOrigin . "','" . $centerCode . "','" . $startDate . "','" . $endDate . "');";
+                                        VALUES ('".$participantSpecialtyId."','".$centerOrigin."','".$centerCode."','".$startDate."','".$endDate."');";
                                 $rs = Database::query($sql);
                                 if (!$rs) {
-                                    return array(
-                                        "RESPUESTA_OBT_ACCION" => array(
+                                    return [
+                                        "RESPUESTA_OBT_ACCION" => [
                                             "CODIGO_RETORNO" => "-1",
                                             "ETIQUETA_ERROR" => "Problema base de datos - insertando tutorias presenciales participante",
-                                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA']
-                                        )
-                                    );
+                                            "ACCION_FORMATIVA" => $crearAccionInputArray['ACCION_FORMATIVA'],
+                                        ],
+                                    ];
                                 }
                             }
                         }
@@ -678,6 +686,7 @@ class Sepe
         $obtenerAccionInput->ID_ACCION->CODIGO_ACCION = $actionCode;
 
         $result = self::obtenerAccion($obtenerAccionInput);
+
         return $result;
     }
 
@@ -685,26 +694,26 @@ class Sepe
     {
         /* Tracking Log */
         $tableLog = Database::get_main_table('plugin_sepe_log');
-        $paramsLog = array(
+        $paramsLog = [
             'ip' => $_SERVER['REMOTE_ADDR'],
             'action' => "obtenerAccion",
-            'fecha' => date("Y-m-d H:i:s")
-        );
+            'fecha' => date("Y-m-d H:i:s"),
+        ];
         Database::insert($tableLog, $paramsLog);
 
         /* End tracking log */
-        
+
         $actionOrigin = $obtenerAccionInput->ID_ACCION->ORIGEN_ACCION;
         $actionCode = $obtenerAccionInput->ID_ACCION->CODIGO_ACCION;
 
         if (empty($actionOrigin) || empty($actionCode)) {
-            return array(
-                "RESPUESTA_OBT_ACCION" => array(
+            return [
+                "RESPUESTA_OBT_ACCION" => [
                     "CODIGO_RETORNO" => "2",
                     "ETIQUETA_ERROR" => "Error en parametro",
-                    "ACCION_FORMATIVA" => ""
-                )
-            );
+                    "ACCION_FORMATIVA" => "",
+                ],
+            ];
         }
 
         $table = Database::get_main_table('plugin_sepe_actions');
@@ -725,39 +734,39 @@ class Sepe
         $rs = Database::query($sql);
         if (Database::num_rows($rs) > 0) {
             $row = Database::fetch_assoc($rs);
-            $mainSpecialty = array(
+            $mainSpecialty = [
                 'ORIGEN_ESPECIALIDAD' => $row['specialty_origin'],
                 'AREA_PROFESIONAL' => $row['professional_area'],
-                'CODIGO_ESPECIALIDAD' => $row['specialty_code']
-            );
-            $actionDescription = array(
+                'CODIGO_ESPECIALIDAD' => $row['specialty_code'],
+            ];
+            $actionDescription = [
                 'DENOMINACION_ACCION' => $row['action_name'],
                 'INFORMACION_GENERAL' => $row['global_info'],
                 'HORARIOS' => $row['schedule'],
                 'REQUISITOS' => $row['requirements'],
-                'CONTACTO_ACCION' => $row['contact_action']
-            );
+                'CONTACTO_ACCION' => $row['contact_action'],
+            ];
 
             $tableSpeciality = Database::get_main_table('plugin_sepe_specialty');
             $tableParticipants = Database::get_main_table('plugin_sepe_participants');
             $sql = "SELECT * FROM $tableSpeciality
                     WHERE action_id ='".$row['id']."'";
             $rs = Database::query($sql);
-            $specialty = array();
+            $specialty = [];
             if (Database::num_rows($rs) > 0) {
                 while ($aux = Database::fetch_assoc($rs)) {
                     $specialtyId = $aux['id'];
                     $sql = "SELECT * FROM $classRoomTable
-                            WHERE specialty_id='" . $specialtyId . "'";
+                            WHERE specialty_id='".$specialtyId."'";
                     $resultClassroom = Database::query($sql);
                     if (Database::num_rows($resultClassroom) === 0) {
-                        return array(
-                            "RESPUESTA_OBT_ACCION" => array(
+                        return [
+                            "RESPUESTA_OBT_ACCION" => [
                                 "CODIGO_RETORNO" => "-1",
                                 "ETIQUETA_ERROR" => "Problema base de datos - consulta de centros presenciales",
-                                "ACCION_FORMATIVA" => ''
-                            )
-                        );
+                                "ACCION_FORMATIVA" => '',
+                            ],
+                        ];
                     }
 
                     $classroomCenterList = new ArrayObject();
@@ -765,24 +774,30 @@ class Sepe
                         $sql = "SELECT * FROM $tableCenters WHERE id='".$tmp['center_id']."';";
                         $resultCenter = Database::query($sql);
                         $auxCenter = Database::fetch_assoc($resultCenter);
-                        
+
                         $classroomCenter = new stdClass();
                         $classroomCenter->ORIGEN_CENTRO = $auxCenter['center_origin'];
                         $classroomCenter->CODIGO_CENTRO = $auxCenter['center_code'];
-                        $classroomCenter = new SoapVar($classroomCenter, SOAP_ENC_OBJECT, null, null, 'CENTRO_PRESENCIAL');
+                        $classroomCenter = new SoapVar(
+                            $classroomCenter,
+                            SOAP_ENC_OBJECT,
+                            null,
+                            null,
+                            'CENTRO_PRESENCIAL'
+                        );
                         $classroomCenterList->append($classroomCenter);
                     }
                     $sql = "SELECT * FROM $specialityTutorTable
-                            WHERE specialty_id='" . $specialtyId . "'";
+                            WHERE specialty_id='".$specialtyId."'";
                     $resultSpecialtyTutor = Database::query($sql);
 
                     $trainingTutors = new ArrayObject();
                     if (Database::num_rows($resultSpecialtyTutor)) {
                         while ($tmp_aux = Database::fetch_assoc($resultSpecialtyTutor)) {
                             $sql = "SELECT * FROM $tutorTable
-                                    WHERE id='" . $tmp_aux['tutor_id'] . "'
+                                    WHERE id='".$tmp_aux['tutor_id']."'
                                     LIMIT 1";
-                              $rs_tutor = Database::query($sql);
+                            $rs_tutor = Database::query($sql);
                             if (Database::num_rows($rs_tutor)) {
                                 $tmp = Database::fetch_assoc($rs_tutor);
 
@@ -810,24 +825,80 @@ class Sepe
                     $idEspecialidad->AREA_PROFESIONAL = $aux['professional_area'];
                     $idEspecialidad->CODIGO_ESPECIALIDAD = $aux['specialty_code'];
 
-                    $params[0] = new SoapVar($idEspecialidad, SOAP_ENC_OBJECT, NULL, null, 'ID_ESPECIALIDAD', null);
+                    $params[0] = new SoapVar(
+                        $idEspecialidad,
+                        SOAP_ENC_OBJECT,
+                        null,
+                        null,
+                        'ID_ESPECIALIDAD',
+                        null
+                    );
 
                     $centroImparticion = new stdClass();
                     $centroImparticion->ORIGEN_CENTRO = $aux['center_origin'];
                     $centroImparticion->CODIGO_CENTRO = $aux['center_code'];
 
-                    $params[1] = new SoapVar($centroImparticion, SOAP_ENC_OBJECT, NULL, null, 'CENTRO_IMPARTICION', null);
-                    $params[2] = new SoapVar(self::undoFixDate($aux['start_date']), XSD_STRING, NULL, null, 'FECHA_INICIO', null);
-                    $params[3] = new SoapVar(self::undoFixDate($aux['end_date']), XSD_STRING, NULL, null, 'FECHA_FIN', null);
-                    $params[4] = new SoapVar($aux['modality_impartition'], XSD_STRING, NULL, null, 'MODALIDAD_IMPARTICION', null);
+                    $params[1] = new SoapVar(
+                        $centroImparticion,
+                        SOAP_ENC_OBJECT,
+                        null,
+                        null,
+                        'CENTRO_IMPARTICION',
+                        null
+                    );
+                    $params[2] = new SoapVar(
+                        self::undoFixDate($aux['start_date']),
+                        XSD_STRING,
+                        null,
+                        null,
+                        'FECHA_INICIO',
+                        null
+                    );
+                    $params[3] = new SoapVar(
+                        self::undoFixDate($aux['end_date']),
+                        XSD_STRING,
+                        null,
+                        null,
+                        'FECHA_FIN',
+                        null
+                    );
+                    $params[4] = new SoapVar(
+                        $aux['modality_impartition'],
+                        XSD_STRING,
+                        null,
+                        null,
+                        'MODALIDAD_IMPARTICION',
+                        null
+                    );
 
                     $obj = new stdClass();
                     $obj->HORAS_PRESENCIAL = $aux['classroom_hours'];
                     $obj->HORAS_TELEFORMACION = $aux['distance_hours'];
 
-                    $params[5] = new SoapVar($obj, SOAP_ENC_OBJECT, NULL, null, 'DATOS_DURACION', null);
-                    $params[6] = new SoapVar($classroomCenterList, SOAP_ENC_OBJECT, null, null, 'CENTROS_SESIONES_PRESENCIALES', null);
-                    $params[7] = new SoapVar($trainingTutors, SOAP_ENC_OBJECT, null, null, 'TUTORES_FORMADORES', null);
+                    $params[5] = new SoapVar(
+                        $obj,
+                        SOAP_ENC_OBJECT,
+                        null,
+                        null,
+                        'DATOS_DURACION',
+                        null
+                    );
+                    $params[6] = new SoapVar(
+                        $classroomCenterList,
+                        SOAP_ENC_OBJECT,
+                        null,
+                        null,
+                        'CENTROS_SESIONES_PRESENCIALES',
+                        null
+                    );
+                    $params[7] = new SoapVar(
+                        $trainingTutors,
+                        SOAP_ENC_OBJECT,
+                        null,
+                        null,
+                        'TUTORES_FORMADORES',
+                        null
+                    );
 
                     $obj = new stdClass();
 
@@ -851,8 +922,8 @@ class Sepe
                         $obj->HORARIO_TARDE->DURACION_TOTAL = $aux['afternoon_total_duration'];
                     }
 
-                    if (!empty($aux['night_participants_number'])  ||
-                        !empty($aux['night_access_number'])  ||
+                    if (!empty($aux['night_participants_number']) ||
+                        !empty($aux['night_access_number']) ||
                         !empty($aux['night_total_duration'])
                     ) {
                         $obj->HORARIO_NOCHE = new stdClass();
@@ -861,9 +932,9 @@ class Sepe
                         $obj->HORARIO_NOCHE->DURACION_TOTAL = $aux['night_total_duration'];
                     }
 
-                    if (!empty($aux['attendees_count'])  ||
-                        !empty($aux['learning_activity_count'])  ||
-                        !empty($aux['attempt_count'])  ||
+                    if (!empty($aux['attendees_count']) ||
+                        !empty($aux['learning_activity_count']) ||
+                        !empty($aux['attempt_count']) ||
                         !empty($aux['evaluation_activity_count'])
                     ) {
                         $obj->SEGUIMIENTO_EVALUACION = new stdClass();
@@ -873,37 +944,50 @@ class Sepe
                         $obj->SEGUIMIENTO_EVALUACION->NUMERO_ACTIVIDADES_EVALUACION = $aux['evaluation_activity_count'];
                     }
 
-                    $params[8] = new SoapVar($obj, SOAP_ENC_OBJECT, null, null, 'USO', null);
-                    $specialty[] = new SoapVar($params, SOAP_ENC_OBJECT, null, null, 'ESPECIALIDAD');
+                    $params[8] = new SoapVar(
+                        $obj,
+                        SOAP_ENC_OBJECT,
+                        null,
+                        null,
+                        'USO',
+                        null
+                    );
+                    $specialty[] = new SoapVar(
+                        $params,
+                        SOAP_ENC_OBJECT,
+                        null,
+                        null,
+                        'ESPECIALIDAD'
+                    );
                 }
             } else {
-                return array(
-                    "RESPUESTA_OBT_ACCION" => array(
-                        "CODIGO_RETORNO"=>"-1",
-                        "ETIQUETA_ERROR"=>"Problema base de datos - consulta especialidad de accion",
-                        "ACCION_FORMATIVA"=>''
-                    )
-                );
+                return [
+                    "RESPUESTA_OBT_ACCION" => [
+                        "CODIGO_RETORNO" => "-1",
+                        "ETIQUETA_ERROR" => "Problema base de datos - consulta especialidad de accion",
+                        "ACCION_FORMATIVA" => '',
+                    ],
+                ];
             }
 
             $sql = "SELECT * FROM $tableParticipants
                     WHERE action_id ='".$row['id']."'";
             $resultParticipants = Database::query($sql);
-            $specialtyMainParticipant = array();
+            $specialtyMainParticipant = [];
             if (Database::num_rows($resultParticipants)) {
                 while ($aux = Database::fetch_assoc($resultParticipants)) {
                     $participantId = $aux['id'];
 
                     $sql = "SELECT * FROM $participantsSpecialityTable
-                            WHERE participant_id='" . $participantId . "'";
+                            WHERE participant_id='".$participantId."'";
                     $resultParticipantSpecialty = Database::query($sql);
-                    
+
                     $namespace = null;
-                    $specialtyParticipant = array();
+                    $specialtyParticipant = [];
                     while ($tmp = Database::fetch_assoc($resultParticipantSpecialty)) {
                         $participantSpecialtyId = $tmp['id'];
                         $sql = "SELECT * FROM $participantsSpecialityTutorialsTable
-                                WHERE participant_specialty_id='" . $participantSpecialtyId . "'";
+                                WHERE participant_specialty_id='".$participantSpecialtyId."'";
                         $resultTutorials = Database::query($sql);
                         $classroomTutorials = new ArrayObject();
 
@@ -921,7 +1005,13 @@ class Sepe
                                 $obj->FECHA_FIN = $endDate;
                             }
 
-                            $obj = new SoapVar($obj, SOAP_ENC_OBJECT, null, null, 'TUTORIA_PRESENCIAL');
+                            $obj = new SoapVar(
+                                $obj,
+                                SOAP_ENC_OBJECT,
+                                null,
+                                null,
+                                'TUTORIA_PRESENCIAL'
+                            );
                             $classroomTutorials->append($obj);
                         }
 
@@ -943,7 +1033,14 @@ class Sepe
                             $obj->FECHA_BAJA = $leavingDate;
                         }
 
-                        $obj->TUTORIAS_PRESENCIALES = new SoapVar($classroomTutorials, SOAP_ENC_OBJECT, null, null, 'TUTORIAS_PRESENCIALES', null);
+                        $obj->TUTORIAS_PRESENCIALES = new SoapVar(
+                            $classroomTutorials,
+                            SOAP_ENC_OBJECT,
+                            null,
+                            null,
+                            'TUTORIAS_PRESENCIALES',
+                            null
+                        );
                         $obj->EVALUACION_FINAL = new stdClass();
 
                         if (!empty($tmp['center_origin']) && !empty($tmp['center_code'])) {
@@ -975,7 +1072,13 @@ class Sepe
                         if (isset($tmp['final_score']) && $tmp['final_score'] != '') {
                             $obj->RESULTADOS->PUNTUACION_FINAL = $tmp['final_score'];
                         }
-                        $specialtyParticipant[] = new SoapVar($obj, SOAP_ENC_OBJECT, null, null, 'ESPECIALIDAD');
+                        $specialtyParticipant[] = new SoapVar(
+                            $obj,
+                            SOAP_ENC_OBJECT,
+                            null,
+                            null,
+                            'ESPECIALIDAD'
+                        );
                     }
 
                     $params = new stdClass();
@@ -1022,7 +1125,6 @@ class Sepe
                         }
                     }
 
-
                     $params->ESPECIALIDADES_PARTICIPANTE = new SoapVar(
                         $specialtyParticipant,
                         SOAP_ENC_OBJECT,
@@ -1067,13 +1169,13 @@ class Sepe
             return $result;
         } else {
             // Existe la accion
-            return array(
-                "RESPUESTA_OBT_ACCION" => array(
+            return [
+                "RESPUESTA_OBT_ACCION" => [
                     "CODIGO_RETORNO" => "1",
                     "ETIQUETA_ERROR" => "Acción inexistente",
-                    "ACCION_FORMATIVA" => ""
-                )
-            );
+                    "ACCION_FORMATIVA" => "",
+                ],
+            ];
         }
     }
 
@@ -1081,14 +1183,14 @@ class Sepe
     {
         /* Tracking Log */
         $tableLog = Database::get_main_table('plugin_sepe_log');
-        $paramsLog = array(
+        $paramsLog = [
             'ip' => $_SERVER['REMOTE_ADDR'],
             'action' => "obtenerListaAcciones",
-            'fecha' => date("Y-m-d H:i:s")
-        );
+            'fecha' => date("Y-m-d H:i:s"),
+        ];
         Database::insert($tableLog, $paramsLog);
         /* End tracking log */
-        
+
         $table = Database::get_main_table('plugin_sepe_actions');
 
         $sql = "SELECT action_origin, action_code FROM $table";
@@ -1096,16 +1198,17 @@ class Sepe
 
         if (!$rs) {
             error_log('Problema base de datos ');
-            return array(
-                "RESPUESTA_OBT_LISTA_ACCIONES" => array(
+
+            return [
+                "RESPUESTA_OBT_LISTA_ACCIONES" => [
                     "CODIGO_RETORNO" => "-1",
                     "ETIQUETA_ERROR" => "Problema base de datos - consulta acciones disponible",
-                    "LISTA_ACCIONES" => ''
-                )
-            );
+                    "LISTA_ACCIONES" => '',
+                ],
+            ];
         }
 
-        $list = array();
+        $list = [];
         if (Database::num_rows($rs)) {
             while ($row = Database::fetch_assoc($rs)) {
                 $params = new stdClass();
@@ -1132,46 +1235,46 @@ class Sepe
     {
         /* Tracking Log */
         $tableLog = Database::get_main_table('plugin_sepe_log');
-        $paramsLog = array(
+        $paramsLog = [
             'ip' => $_SERVER['REMOTE_ADDR'],
             'action' => "eliminarAccion",
-            'fecha' => date("Y-m-d H:i:s")
-        );
+            'fecha' => date("Y-m-d H:i:s"),
+        ];
         Database::insert($tableLog, $paramsLog);
         /* End tracking log */
-        
+
         $actionOrigin = $eliminarAccionInput->ID_ACCION->ORIGEN_ACCION;
         $actionCode = $eliminarAccionInput->ID_ACCION->CODIGO_ACCION;
 
         if (empty($actionOrigin) || empty($actionCode)) {
-            return array(
-                "RESPUESTA_ELIMINAR_ACCION" => array(
+            return [
+                "RESPUESTA_ELIMINAR_ACCION" => [
                     "CODIGO_RETORNO" => "2",
-                    "ETIQUETA_ERROR" => "Error en parametro"
-                )
-            );
+                    "ETIQUETA_ERROR" => "Error en parametro",
+                ],
+            ];
         }
-        
+
         $table = Database::get_main_table('plugin_sepe_actions');
         $sql = "DELETE FROM $table
                 WHERE action_origin='".$actionOrigin."' AND action_code='".$actionCode."';";
-        
+
         $rs = Database::query($sql);
         if (!$rs) {
-            return array(
-                "RESPUESTA_ELIMINAR_ACCION" => array(
+            return [
+                "RESPUESTA_ELIMINAR_ACCION" => [
                     "CODIGO_RETORNO" => "-1",
-                    "ETIQUETA_ERROR" => "Problema base de datos - consulta acciones disponible"
-                )
-            );
+                    "ETIQUETA_ERROR" => "Problema base de datos - consulta acciones disponible",
+                ],
+            ];
         }
-        
-        return array(
-            "RESPUESTA_ELIMINAR_ACCION" => array(
+
+        return [
+            "RESPUESTA_ELIMINAR_ACCION" => [
                 "CODIGO_RETORNO" => "0",
-                "ETIQUETA_ERROR" => "Correcto"
-            )
-        );
+                "ETIQUETA_ERROR" => "Correcto",
+            ],
+        ];
     }
 
     // yyyy-mm-dd to dd/mm/yyyy
@@ -1182,8 +1285,9 @@ class Sepe
         }
 
         $date = explode('-', $date);
-        //
+
         $date = $date[2].'/'.$date[1].'/'.$date[0];
+
         return $date;
     }
 
@@ -1197,13 +1301,13 @@ class Sepe
         $date = explode('/', $date);
         // Year-month-day
         $date = $date[2].'-'.$date[1].'-'.$date[0];
+
         return $date;
     }
 
     protected function checkAuth()
     {
         if (!$this->authenticated) {
-//            HTML_Output::error(403);
             error_log('403');
         }
     }

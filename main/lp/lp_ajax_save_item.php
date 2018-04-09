@@ -6,7 +6,9 @@ use ChamiloSession as Session;
 /**
  * This script contains the server part of the AJAX interaction process.
  * The client part is located * in lp_api.php or other api's.
+ *
  * @package chamilo.learnpath
+ *
  * @author Yannick Warnier <ywarnier@beeznest.org>
  */
 
@@ -15,25 +17,27 @@ $use_anonymous = true;
 require_once __DIR__.'/../inc/global.inc.php';
 
 /**
- * Writes an item's new values into the database and returns the operation result
- * @param   int $lp_id Learnpath ID
- * @param   int $user_id User ID
- * @param   int $view_id View ID
- * @param   int $item_id Item ID
- * @param   float  $score Current score
- * @param   float  $max Maximum score
- * @param   float  $min Minimum score
- * @param   string  $status Lesson status
- * @param   int  $time Session time
- * @param   string  $suspend Suspend data
- * @param   string  $location Lesson location
- * @param   array   $interactions Interactions array
- * @param   string  $core_exit Core exit SCORM string
- * @param   int     $sessionId Session ID
- * @param   int     $courseId Course ID
- * @param   int     $lmsFinish Whether the call was issued from SCORM's LMSFinish()
- * @param   int     $userNavigatesAway Whether the user is moving to another item
- * @param   int     $statusSignalReceived Whether the SCO called SetValue(lesson_status)
+ * Writes an item's new values into the database and returns the operation result.
+ *
+ * @param int    $lp_id                Learnpath ID
+ * @param int    $user_id              User ID
+ * @param int    $view_id              View ID
+ * @param int    $item_id              Item ID
+ * @param float  $score                Current score
+ * @param float  $max                  Maximum score
+ * @param float  $min                  Minimum score
+ * @param string $status               Lesson status
+ * @param int    $time                 Session time
+ * @param string $suspend              Suspend data
+ * @param string $location             Lesson location
+ * @param array  $interactions         Interactions array
+ * @param string $core_exit            Core exit SCORM string
+ * @param int    $sessionId            Session ID
+ * @param int    $courseId             Course ID
+ * @param int    $lmsFinish            Whether the call was issued from SCORM's LMSFinish()
+ * @param int    $userNavigatesAway    Whether the user is moving to another item
+ * @param int    $statusSignalReceived Whether the SCO called SetValue(lesson_status)
+ *
  * @return bool|null|string The resulting JS string
  */
 function save_item(
@@ -48,7 +52,7 @@ function save_item(
     $time = 0,
     $suspend = '',
     $location = '',
-    $interactions = array(),
+    $interactions = [],
     $core_exit = 'none',
     $sessionId = null,
     $courseId = null,
@@ -56,11 +60,11 @@ function save_item(
     $userNavigatesAway = 0,
     $statusSignalReceived = 0
 ) {
-    //global $debug;
     $debug = 0;
     $return = null;
 
     if ($debug > 0) {
+        error_log('--------------------------------------');
         error_log('lp_ajax_save_item.php : save_item() params: ');
         error_log("item_id: $item_id");
         error_log("lp_id: $lp_id - user_id: - $user_id - view_id: $view_id - item_id: $item_id");
@@ -69,7 +73,15 @@ function save_item(
         error_log("finish: $lmsFinish - navigatesAway: $userNavigatesAway");
     }
 
-    $myLP = learnpath::getLpFromSession(api_get_course_id(), $lp_id, $user_id);
+    $courseCode = api_get_course_id();
+    if (!empty($courseId)) {
+        $courseInfo = api_get_course_info_by_id($courseId);
+        if ($courseInfo) {
+            $courseCode = $courseInfo['code'];
+        }
+    }
+
+    $myLP = learnpath::getLpFromSession($courseCode, $lp_id, $user_id);
 
     if (!is_a($myLP, 'learnpath')) {
         if ($debug) {
@@ -78,7 +90,6 @@ function save_item(
 
         return null;
     }
-
     $prerequisitesCheck = $myLP->prerequisites_match($item_id);
 
     /** @var learnpathItem $myLPI */
@@ -277,7 +288,7 @@ function save_item(
              * If a SCO sets the cmi.core.lesson_status then there is no problem.
              * However, the SCORM does not force the SCO to set the
              * cmi.core.lesson_status.  There is some additional requirements
-             * that must be adhered to successfully handle these cases:
+             * that must be adhered to successfully handle these cases:.
              */
             if (!$statusIsSet && empty($status) && !$statusSignalReceived) {
                 /**
@@ -301,7 +312,7 @@ function save_item(
                      *   cmi.core.score.raw, the LMS shall compare the cmi.core.score.raw
                      *   to the Mastery Score and set the cmi.core.lesson_status to
                      *   either "passed" or "failed".  If no Mastery Score is provided,
-                     *   the LMS will leave the cmi.core.lesson_status as "completed”
+                     *   the LMS will leave the cmi.core.lesson_status as "completed”.
                      */
                     if ($masteryScore && (isset($score) && $score != -1)) {
                         if ($score >= $masteryScore) {
@@ -361,6 +372,8 @@ function save_item(
                 }
                 $myLPI->set_time($time, 'scorm');
             }
+        } else {
+            $myLPI->current_stop_time = time();
         }
 
         if (isset($suspend) && $suspend != '' && $suspend != 'undefined') {
@@ -435,7 +448,7 @@ function save_item(
     }
     $return .= "update_progress_bar('$myComplete', '$myTotal', '$myProgressMode');";
 
-    if (!isset($_SESSION['login_as'])) {
+    if (!Session::read('login_as')) {
         // If $_SESSION['login_as'] is set, then the user is an admin logged as the user.
         $tbl_track_login = Database::get_main_table(TABLE_STATISTIC_TRACK_E_LOGIN);
 
@@ -458,21 +471,23 @@ function save_item(
     }
 
     if ($myLP->get_type() == 2) {
-         $return .= "update_stats();";
+        $return .= "update_stats();";
     }
 
     // To be sure progress is updated.
     $myLP->save_last();
 
     Session::write('lpobject', serialize($myLP));
+    Session::write('oLP', $myLP);
     if ($debug > 0) {
+        error_log("lp_view_session_id :".$myLP->lp_view_session_id);
         error_log('---------------- lp_ajax_save_item.php : save_item end ----- ');
     }
 
     return $return;
 }
 
-$interactions = array();
+$interactions = [];
 if (isset($_REQUEST['interact'])) {
     if (is_array($_REQUEST['interact'])) {
         foreach ($_REQUEST['interact'] as $idx => $interac) {

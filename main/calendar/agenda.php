@@ -50,7 +50,6 @@ function plus_repeated_event() {
     });
 </script>";
 
-
 $htmlHeadXtra[] = '<script>
 var counter_image = 1;
 function add_image_form() {
@@ -108,7 +107,7 @@ if ($allowToEdit) {
     switch ($action) {
         case 'add':
             $actionName = get_lang('Add');
-            $form = $agenda->getForm(array('action' => 'add'));
+            $form = $agenda->getForm(['action' => 'add']);
 
             if ($form->validate()) {
                 $values = $form->getSubmitValues();
@@ -160,7 +159,7 @@ if ($allowToEdit) {
                 header("Location: $agendaUrl");
                 exit;
             } else {
-                $content = $form->return_form();
+                $content = $form->returnForm();
             }
             break;
         case 'edit':
@@ -244,7 +243,7 @@ if ($allowToEdit) {
                     );
                 }
 
-                $deleteAttachmentList = isset($values['delete_attachment']) ? $values['delete_attachment'] : array();
+                $deleteAttachmentList = isset($values['delete_attachment']) ? $values['delete_attachment'] : [];
 
                 if (!empty($deleteAttachmentList)) {
                     foreach ($deleteAttachmentList as $deleteAttachmentId => $value) {
@@ -285,7 +284,9 @@ if ($allowToEdit) {
             $content = $form->returnForm();
             break;
         case "delete":
-            if (!(api_is_course_coach() && !api_is_element_in_the_session(TOOL_AGENDA, $eventId))) {
+            if (!(api_is_session_general_coach() &&
+                !api_is_element_in_the_session(TOOL_AGENDA, $eventId))
+            ) {
                 // a coach can only delete an element belonging to his session
                 $content = $agenda->deleteEvent($eventId);
             }
@@ -295,20 +296,20 @@ if ($allowToEdit) {
 
 if (!empty($group_id)) {
     $group_properties = GroupManager :: get_group_properties($group_id);
-    $interbreadcrumb[] = array(
+    $interbreadcrumb[] = [
         "url" => api_get_path(WEB_CODE_PATH)."group/group.php?".api_get_cidreq(),
-        "name" => get_lang('Groups')
-    );
-    $interbreadcrumb[] = array(
+        "name" => get_lang('Groups'),
+    ];
+    $interbreadcrumb[] = [
         "url" => api_get_path(WEB_CODE_PATH)."group/group_space.php?".api_get_cidreq(),
-        "name" => get_lang('GroupSpace').' '.$group_properties['name']
-    );
+        "name" => get_lang('GroupSpace').' '.$group_properties['name'],
+    ];
 }
 if (!empty($actionName)) {
-    $interbreadcrumb[] = array(
+    $interbreadcrumb[] = [
         "url" => $url,
-        "name" => get_lang('Agenda')
-    );
+        "name" => get_lang('Agenda'),
+    ];
 }
 
 // Tool introduction
@@ -318,5 +319,4 @@ $tpl = new Template($actionName);
 $tpl->assign('content', $content);
 $tpl->assign('actions', $actions);
 
-// Loading main Chamilo 1 col template
 $tpl->display_one_col_template();

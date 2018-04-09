@@ -2,7 +2,8 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * Script
+ * Script.
+ *
  * @package chamilo.gradebook
  */
 require_once __DIR__.'/../inc/global.inc.php';
@@ -25,7 +26,7 @@ if (!empty($select_cat)) {
 }
 
 $form = new EvalForm(
-    EvalForm :: TYPE_ADD,
+    EvalForm::TYPE_ADD,
     $evaladd,
     null,
     'add_eval_form',
@@ -69,7 +70,7 @@ if ($form->validate()) {
             //header('Location: gradebook_add_user.php?selecteval=' . $eval->get_id());
             exit;
         } else {
-            header('Location: '.Security::remove_XSS($_SESSION['gradebook_dest']).'?selectcat='.$eval->get_category_id().'&'.api_get_cidreq());
+            header('Location: '.Category::getUrl().'selectcat='.$eval->get_category_id());
             exit;
         }
     } else {
@@ -78,25 +79,25 @@ if ($form->validate()) {
             header('Location: gradebook_add_result.php?selecteval='.$eval->get_id().'&'.api_get_cidreq());
             exit;
         } else {
-            header('Location: '.Security::remove_XSS($_SESSION['gradebook_dest']).'?selectcat='.$eval->get_category_id().'&'.api_get_cidreq());
+            header('Location: '.Category::getUrl().'selectcat='.$eval->get_category_id());
             exit;
         }
     }
 }
 
-$interbreadcrumb[] = array(
-    'url' => Security::remove_XSS($_SESSION['gradebook_dest']).'?selectcat='.$select_cat.'&'.api_get_cidreq(),
-    'name' => get_lang('Gradebook'))
+$interbreadcrumb[] = [
+    'url' => Category::getUrl().'selectcat='.$select_cat,
+    'name' => get_lang('Gradebook'), ]
 ;
 $this_section = SECTION_COURSES;
 
-$htmlHeadXtra[] = '<script type="text/javascript">
+$htmlHeadXtra[] = '<script>
 $(document).ready( function() {
     $("#hid_category_id").change(function() {
        $("#hid_category_id option:selected").each(function () {
            var cat_id = $(this).val();
             $.ajax({
-                url: "' . api_get_path(WEB_AJAX_PATH).'gradebook.ajax.php?a=get_gradebook_weight",
+                url: "'.api_get_path(WEB_AJAX_PATH).'gradebook.ajax.php?a=get_gradebook_weight",
                 data: "cat_id="+cat_id,
                 success: function(return_value) {
                     if (return_value != 0 ) {

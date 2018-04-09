@@ -6,11 +6,12 @@
  * This intermediate page is needed because the user is not inside a course
  * when visiting the gradebook, and several course scripts rely on these
  * variables.
- * Most code here is ripped from /main/course_home/course_home.php
+ * Most code here is ripped from /main/course_home/course_home.php.
+ *
  * @author Bert Steppé
+ *
  * @package chamilo.gradebook
  */
-
 require_once __DIR__.'/../inc/global.inc.php';
 api_block_anonymous_users();
 $this_section = SECTION_COURSES;
@@ -19,7 +20,6 @@ $gradebook = Security::remove_XSS($_GET['gradebook']);
 $session_id = api_get_session_id();
 $cidReq = Security::remove_XSS($_GET['cidReq']);
 $type = Security::remove_XSS($_GET['type']);
-
 $doExerciseUrl = '';
 
 if (isset($_GET['doexercise'])) {
@@ -30,7 +30,7 @@ if (isset($_GET['doexercise'])) {
         'origin' => '',
         'learnpath_id' => '',
         'learnpath_item_id' => '',
-        'exerciseId' => intval($_GET['doexercise'])
+        'exerciseId' => intval($_GET['doexercise']),
     ]);
 }
 

@@ -3,35 +3,35 @@
 
 /**
  * Class HotpotatoesExerciseResult
- * Allows you to export exercises results in multiple presentation forms
+ * Allows you to export exercises results in multiple presentation forms.
+ *
  * @package chamilo.exercise
  */
 class HotpotatoesExerciseResult
 {
     //stores the list of exercises
-    private $exercises_list = array();
+    private $exercises_list = [];
 
     //stores the results
-    private $results = array();
+    private $results = [];
 
     /**
-     * Gets the results of all students (or just one student if access is limited)
-     * @param    string        The document path (for HotPotatoes retrieval)
-     * @param    integer        User ID. Optional. If no user ID is provided, we take all the results. Defauts to null
-     * @param string $document_path
+     * Gets the results of all students (or just one student if access is limited).
+     *
+     * @param string $document_path The document path (for HotPotatoes retrieval)
+     * @param    int        User ID. Optional. If no user ID is provided, we take all the results. Defauts to null
+     *
+     * @return bool
      */
     public function getExercisesReporting($document_path, $hotpotato_name)
     {
-        $return = array();
+        $return = [];
         $TBL_USER = Database::get_main_table(TABLE_MAIN_USER);
         $TBL_TRACK_HOTPOTATOES = Database::get_main_table(TABLE_STATISTIC_TRACK_E_HOTPOTATOES);
-
-        $cid = api_get_course_id();
         $course_id = api_get_course_int_id();
-        //$user_id         = intval($user_id);
         $user_id = null;
-        $session_id_and  = ' AND te.session_id = '.api_get_session_id().' ';
-        $hotpotato_name  = Database::escape_string($hotpotato_name);
+        $session_id_and = ' AND te.session_id = '.api_get_session_id().' ';
+        $hotpotato_name = Database::escape_string($hotpotato_name);
 
         if (!empty($exercise_id)) {
             $session_id_and .= " AND exe_exo_id = $exercise_id ";
@@ -60,14 +60,14 @@ class HotpotatoesExerciseResult
                     ORDER BY c_id ASC, exe_date ASC";
         }
 
-        $results = array();
+        $results = [];
 
         $resx = Database::query($sql);
         while ($rowx = Database::fetch_array($resx, 'ASSOC')) {
             $results[] = $rowx;
         }
 
-        $hpresults = array();
+        $hpresults = [];
         $resx = Database::query($sql);
         while ($rowx = Database::fetch_array($resx, 'ASSOC')) {
             $hpresults[] = $rowx;
@@ -76,7 +76,7 @@ class HotpotatoesExerciseResult
         // Print the Result of Hotpotatoes Tests
         if (is_array($hpresults)) {
             for ($i = 0; $i < sizeof($hpresults); $i++) {
-                $return[$i] = array();
+                $return[$i] = [];
                 $title = GetQuizName($hpresults[$i]['exe_name'], $document_path);
                 if ($title == '') {
                     $title = basename($hpresults[$i]['exe_name']);
@@ -99,11 +99,12 @@ class HotpotatoesExerciseResult
     }
 
     /**
-     * Exports the complete report as a CSV file
-     * @param string $document_path Document path inside the document tool
+     * Exports the complete report as a CSV file.
+     *
+     * @param string $document_path  Document path inside the document tool
      * @param string $hotpotato_name
-
-     * @return	boolean		False on error
+     *
+     * @return bool False on error
      */
     public function exportCompleteReportCSV($document_path = '', $hotpotato_name = '')
     {
@@ -140,11 +141,11 @@ class HotpotatoesExerciseResult
         // Results
         foreach ($this->results as $row) {
             if (api_is_western_name_order()) {
-              $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['first_name']), ENT_QUOTES, $charset)).';';
-              $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['last_name']), ENT_QUOTES, $charset)).';';
+                $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['first_name']), ENT_QUOTES, $charset)).';';
+                $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['last_name']), ENT_QUOTES, $charset)).';';
             } else {
-              $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['last_name']), ENT_QUOTES, $charset)).';';
-              $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['first_name']), ENT_QUOTES, $charset)).';';
+                $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['last_name']), ENT_QUOTES, $charset)).';';
+                $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['first_name']), ENT_QUOTES, $charset)).';';
             }
 
             $data .= str_replace("\r\n", '  ', api_html_entity_decode(strip_tags($row['email']), ENT_QUOTES, $charset)).';';
@@ -175,17 +176,20 @@ class HotpotatoesExerciseResult
         // @todo add this utf-8 header for all csv files
         echo "\xEF\xBB\xBF"; // force utf-8 header of csv file
         echo $data;
+
         return true;
     }
 
     /**
-     * Exports the complete report as an XLS file
+     * Exports the complete report as an XLS file.
+     *
      * @param string $document_path
-     * @param null $user_id
-     * @param bool $export_user_fields
-     * @param int $export_filter
-     * @param int $exercise_id
-     * @param null $hotpotato_name
+     * @param null   $user_id
+     * @param bool   $export_user_fields
+     * @param int    $export_filter
+     * @param int    $exercise_id
+     * @param null   $hotpotato_name
+     *
      * @return bool
      */
     public function exportCompleteReportXLS(
@@ -226,17 +230,37 @@ class HotpotatoesExerciseResult
         }
 
         if ($with_column_user) {
-            $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('Email'));
+            $worksheet->setCellValueByColumnAndRow(
+                $column,
+                $line,
+                get_lang('Email')
+            );
             $column++;
             if (api_is_western_name_order()) {
-                $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('FirstName'));
+                $worksheet->setCellValueByColumnAndRow(
+                    $column,
+                    $line,
+                    get_lang('FirstName')
+                );
                 $column++;
-                $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('LastName'));
+                $worksheet->setCellValueByColumnAndRow(
+                    $column,
+                    $line,
+                    get_lang('LastName')
+                );
                 $column++;
             } else {
-                $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('LastName'));
+                $worksheet->setCellValueByColumnAndRow(
+                    $column,
+                    $line,
+                    get_lang('LastName')
+                );
                 $column++;
-                $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('FirstName'));
+                $worksheet->setCellValueByColumnAndRow(
+                    $column,
+                    $line,
+                    get_lang('FirstName')
+                );
                 $column++;
             }
         }
@@ -267,19 +291,47 @@ class HotpotatoesExerciseResult
             }
         }
 
-        $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('Title'));
+        $worksheet->setCellValueByColumnAndRow(
+            $column,
+            $line,
+            get_lang('Title')
+        );
         $column++;
-        $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('StartDate'));
+        $worksheet->setCellValueByColumnAndRow(
+            $column,
+            $line,
+            get_lang('StartDate')
+        );
         $column++;
-        $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('EndDate'));
+        $worksheet->setCellValueByColumnAndRow(
+            $column,
+            $line,
+            get_lang('EndDate')
+        );
         $column++;
-        $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('Duration').' ('.get_lang('MinMinutes').')');
+        $worksheet->setCellValueByColumnAndRow(
+            $column,
+            $line,
+            get_lang('Duration').' ('.get_lang('MinMinutes').')'
+        );
         $column++;
-        $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('Score'));
+        $worksheet->setCellValueByColumnAndRow(
+            $column,
+            $line,
+            get_lang('Score')
+        );
         $column++;
-        $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('Total'));
+        $worksheet->setCellValueByColumnAndRow(
+            $column,
+            $line,
+            get_lang('Total')
+        );
         $column++;
-        $worksheet->setCellValueByColumnAndRow($column, $line, get_lang('Status'));
+        $worksheet->setCellValueByColumnAndRow(
+            $column,
+            $line,
+            get_lang('Status')
+        );
         $line++;
 
         foreach ($this->results as $row) {
@@ -298,14 +350,46 @@ class HotpotatoesExerciseResult
                 $column++;
 
                 if (api_is_western_name_order()) {
-                    $worksheet->setCellValueByColumnAndRow($column, $line, api_html_entity_decode(strip_tags($row['first_name']), ENT_QUOTES, $charset));
+                    $worksheet->setCellValueByColumnAndRow(
+                        $column,
+                        $line,
+                        api_html_entity_decode(
+                            strip_tags($row['first_name']),
+                            ENT_QUOTES,
+                            $charset
+                        )
+                    );
                     $column++;
-                    $worksheet->setCellValueByColumnAndRow($column, $line, api_html_entity_decode(strip_tags($row['last_name']), ENT_QUOTES, $charset));
+                    $worksheet->setCellValueByColumnAndRow(
+                        $column,
+                        $line,
+                        api_html_entity_decode(
+                            strip_tags($row['last_name']),
+                            ENT_QUOTES,
+                            $charset
+                        )
+                    );
                     $column++;
                 } else {
-                    $worksheet->setCellValueByColumnAndRow($column, $line, api_html_entity_decode(strip_tags($row['last_name']), ENT_QUOTES, $charset));
+                    $worksheet->setCellValueByColumnAndRow(
+                        $column,
+                        $line,
+                        api_html_entity_decode(
+                            strip_tags($row['last_name']),
+                            ENT_QUOTES,
+                            $charset
+                        )
+                    );
                     $column++;
-                    $worksheet->setCellValueByColumnAndRow($column, $line, api_html_entity_decode(strip_tags($row['first_name']), ENT_QUOTES, $charset));
+                    $worksheet->setCellValueByColumnAndRow(
+                        $column,
+                        $line,
+                        api_html_entity_decode(
+                            strip_tags($row['first_name']),
+                            ENT_QUOTES,
+                            $charset
+                        )
+                    );
                     $column++;
                 }
             }

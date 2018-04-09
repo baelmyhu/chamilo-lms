@@ -2,7 +2,7 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * Class ch_score
+ * Class ch_score.
  */
 class ch_score extends survey_question
 {
@@ -16,10 +16,16 @@ class ch_score extends survey_question
 
         $this->getForm()->addText('maximum_score', get_lang('MaximumScore'));
 
-        $config = array('ToolbarSet' => 'Survey', 'Width' => '100%', 'Height' => '120');
+        $config = ['ToolbarSet' => 'Survey', 'Width' => '100%', 'Height' => '120'];
         if (is_array($formData['answers'])) {
             foreach ($formData['answers'] as $key => $value) {
-                $this->getForm()->addHtmlEditor('answers['.$key.']', null, false, false, $config);
+                $this->getForm()->addHtmlEditor(
+                    'answers['.$key.']',
+                    null,
+                    false,
+                    false,
+                    $config
+                );
             }
         }
 
@@ -28,16 +34,16 @@ class ch_score extends survey_question
 
     /**
      * @param FormValidator $form
-     * @param array $questionData
-     * @param array $answers
+     * @param array         $questionData
+     * @param array         $answers
      */
-    public function render(FormValidator $form, $questionData = array(), $answers = array())
+    public function render(FormValidator $form, $questionData = [], $answers = [])
     {
         $defaults = [];
-        foreach ($questionData['options'] as $key => & $value) {
-            $options = array(
-                '--' => '--'
-            );
+        foreach ($questionData['options'] as $key => &$value) {
+            $options = [
+                '--' => '--',
+            ];
             for ($i = 1; $i <= $questionData['maximum_score']; $i++) {
                 $options[$i] = $i;
             }
@@ -45,7 +51,9 @@ class ch_score extends survey_question
             $name = 'question'.$questionData['question_id'].'['.$key.']';
 
             $form->addSelect(
-                $name, $value, $options
+                $name,
+                $value,
+                $options
             );
 
             if (!empty($answers)) {

@@ -2,8 +2,9 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * 	Saving the scores.
- * 	@package chamilo.exercise
+ * Saving the scores.
+ *
+ * @package chamilo.exercise
  */
 require_once __DIR__.'/../inc/global.inc.php';
 $courseInfo = api_get_course_info();
@@ -21,7 +22,7 @@ $TABLETRACK_HOTPOTATOES = Database::get_main_table(TABLE_STATISTIC_TRACK_E_HOTPO
 $TABLE_LP_ITEM_VIEW = Database::get_course_table(TABLE_LP_ITEM_VIEW);
 
 $score = $_REQUEST['score'];
-$origin = $_REQUEST['origin'];
+$origin = api_get_origin();
 $learnpath_item_id = intval($_REQUEST['learnpath_item_id']);
 $lpViewId = isset($_REQUEST['lp_view_id']) ? intval($_REQUEST['lp_view_id']) : null;
 $course_id = $courseInfo['real_id'];
@@ -31,10 +32,10 @@ $jscript2run = '';
  * Save the score for a HP quiz. Can be used by the learnpath tool as well
  * for HotPotatoes quizzes. When coming from the learning path, we
  * use the session variables telling us which item of the learning path has to
- * be updated (score-wise)
+ * be updated (score-wise).
+ *
  * @param	string	File is the exercise name (the file name for a HP)
- * @param	integer	Score to save inside the tracking tables (HP and learnpath)
- * @return	void
+ * @param	int	Score to save inside the tracking tables (HP and learnpath)
  */
 function save_scores($file, $score)
 {
@@ -62,7 +63,6 @@ function save_scores($file, $score)
         'exe_weighting' => $weighting,
     ];
     Database::insert($TABLETRACK_HOTPOTATOES, $params);
-
 
     if ($origin == 'learnpath') {
         //if we are in a learning path, save the score in the corresponding

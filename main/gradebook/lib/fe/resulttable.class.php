@@ -3,9 +3,11 @@
 
 /**
  * Class ResultTable
- * Table to display results for an evaluation
+ * Table to display results for an evaluation.
+ *
  * @author Stijn Konings
  * @author Bert Steppé
+ *
  * @package chamilo.gradebook
  */
 class ResultTable extends SortableTable
@@ -16,15 +18,26 @@ class ResultTable extends SortableTable
     private $iscourse;
 
     /**
-     * Constructor
+     * ResultTable constructor.
+     *
+     * @param string      $evaluation
+     * @param array       $results
+     * @param null|string $iscourse
+     * @param array       $addparams
+     * @param bool        $forprint
      */
-    public function __construct($evaluation, $results = array(), $iscourse, $addparams = null, $forprint = false)
-    {
+    public function __construct(
+        $evaluation,
+        $results = [],
+        $iscourse,
+        $addparams = [],
+        $forprint = false
+    ) {
         parent:: __construct(
             'resultlist',
             null,
             null,
-            (api_is_western_name_order() xor api_sort_by_first_name()) ? 2 : 1
+            api_is_western_name_order() ? 1 : 2
         );
 
         $this->datagen = new ResultsDataGenerator($evaluation, $results, true);
@@ -40,9 +53,9 @@ class ResultTable extends SortableTable
         $column = 0;
         if ($this->iscourse == '1') {
             $this->set_header($column++, '', false);
-            $this->set_form_actions(array(
-                    'delete' => get_lang('Delete')
-            ));
+            $this->set_form_actions([
+                    'delete' => get_lang('Delete'),
+            ]);
         }
         if (api_is_western_name_order()) {
             $this->set_header($column++, get_lang('FirstName'));
@@ -61,7 +74,7 @@ class ResultTable extends SortableTable
     }
 
     /**
-     * Function used by SortableTable to get total number of items in the table
+     * Function used by SortableTable to get total number of items in the table.
      */
     public function get_total_number_of_items()
     {
@@ -69,11 +82,16 @@ class ResultTable extends SortableTable
     }
 
     /**
-     * Function used by SortableTable to generate the data to display
+     * Function used by SortableTable to generate the data to display.
      */
-    public function get_table_data($from = 1, $per_page = null, $column = null, $direction = null, $sort = null) {
-
-        $is_western_name_order = api_is_western_name_order();
+    public function get_table_data(
+        $from = 1,
+        $per_page = null,
+        $column = null,
+        $direction = null,
+        $sort = null
+    ) {
+        $isWesternNameOrder = api_is_western_name_order();
         $scoredisplay = ScoreDisplay::instance();
 
         // determine sorting type
@@ -81,26 +99,26 @@ class ResultTable extends SortableTable
 
         switch ($this->column) {
             // first name or last name
-            case (0 + $col_adjust):
-                if ($is_western_name_order) {
+            case 0 + $col_adjust:
+                if ($isWesternNameOrder) {
                     $sorting = ResultsDataGenerator::RDG_SORT_FIRSTNAME;
                 } else {
                     $sorting = ResultsDataGenerator::RDG_SORT_LASTNAME;
                 }
                 break;
-            // first name or last name
-            case (1 + $col_adjust):
-                if ($is_western_name_order) {
+                // first name or last name
+            case 1 + $col_adjust:
+                if ($isWesternNameOrder) {
                     $sorting = ResultsDataGenerator::RDG_SORT_LASTNAME;
                 } else {
                     $sorting = ResultsDataGenerator::RDG_SORT_FIRSTNAME;
                 }
                 break;
-            //Score
-            case (2 + $col_adjust):
+                // Score
+            case 2 + $col_adjust:
                 $sorting = ResultsDataGenerator::RDG_SORT_SCORE;
                 break;
-            case (3 + $col_adjust):
+            case 3 + $col_adjust:
                 $sorting = ResultsDataGenerator::RDG_SORT_MASK;
                 break;
         }
@@ -114,13 +132,13 @@ class ResultTable extends SortableTable
         $data_array = $this->datagen->get_data($sorting, $from, $this->per_page);
 
         // generate the data to display
-        $sortable_data = array();
+        $sortable_data = [];
         foreach ($data_array as $item) {
-            $row = array();
+            $row = [];
             if ($this->iscourse == '1') {
-                 $row[] = $item['result_id'];
+                $row[] = $item['result_id'];
             }
-            if ($is_western_name_order) {
+            if ($isWesternNameOrder) {
                 $row[] = $item['firstname'];
                 $row[] = $item['lastname'];
             } else {
@@ -128,8 +146,12 @@ class ResultTable extends SortableTable
                 $row[] = $item['firstname'];
             }
 
-            $row[] = Display::bar_progress($item['percentage_score'], false, $item['score']);
-            //$row[] =  Display::bar_progress($item['percentage_score'], true);
+            $row[] = Display::bar_progress(
+                $item['percentage_score'],
+                false,
+                $item['score']
+            );
+
             if ($scoredisplay->is_custom()) {
                 $row[] = $item['display'];
             }
@@ -142,6 +164,11 @@ class ResultTable extends SortableTable
         return $sortable_data;
     }
 
+    /**
+     * @param array $item
+     *
+     * @return string
+     */
     private function build_edit_column($item)
     {
         $locked_status = $this->evaluation->get_locked();

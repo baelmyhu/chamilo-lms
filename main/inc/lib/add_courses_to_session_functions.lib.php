@@ -1,22 +1,29 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+use ChamiloSession as Session;
+
 /**
- * Class AddCourseToSession
+ * Class AddCourseToSession.
  */
 class AddCourseToSession
 {
     /**
-     * Searches a course, given a search string and a type of search box
-     * @param string $needle Search string
-     * @param string $type Type of search box ('single' or anything else)
+     * Searches a course, given a search string and a type of search box.
+     *
+     * @param string $needle     Search string
+     * @param string $type       Type of search box ('single' or anything else)
+     * @param int    $id_session
+     *
      * @return xajaxResponse XajaxResponse
      * @assert ('abc', 'single') !== null
      * @assert ('abc', 'multiple') !== null
      */
-    public static function search_courses($needle, $type)
+    public static function search_courses($needle, $type, $id_session)
     {
-        global $tbl_session_rel_course, $id_session;
+        $tbl_session_rel_course = Database::get_main_table(TABLE_MAIN_SESSION_COURSE);
+        // Session value set in file add_courses_to_session.php
+        $id_session = (int) $id_session;
         $tbl_course = Database::get_main_table(TABLE_MAIN_COURSE);
         $course_title = null;
         $xajax_response = new xajaxResponse();
@@ -98,26 +105,26 @@ class AddCourseToSession
             }
 
             $rs = Database::query($sql);
-            $course_list = array();
+            $course_list = [];
             if ($type == 'single') {
                 while ($course = Database::fetch_array($rs)) {
-                    $course_list[] = $course['code'];
+                    $course_list[] = $course['id'];
                     $course_title = str_replace("'", "\'", $course_title);
                     $return .= '<a href="javascript: void(0);" onclick="javascript: add_course_to_session(\''.$course['id'].'\',\''.$course_title.' ('.$course['visual_code'].')'.'\')">'.$course['title'].' ('.$course['visual_code'].')</a><br />';
                 }
-                $xajax_response -> addAssign('ajax_list_courses_single', 'innerHTML', api_utf8_encode($return));
+                $xajax_response->addAssign('ajax_list_courses_single', 'innerHTML', api_utf8_encode($return));
             } else {
                 $return .= '<select id="origin" name="NoSessionCoursesList[]" multiple="multiple" size="20" style="width:340px;">';
                 while ($course = Database::fetch_array($rs)) {
-                    $course_list[] = $course['code'];
+                    $course_list[] = $course['id'];
                     $course_title = str_replace("'", "\'", $course_title);
                     $return .= '<option value="'.$course['id'].'" title="'.htmlspecialchars($course['title'].' ('.$course['visual_code'].')', ENT_QUOTES).'">'.$course['title'].' ('.$course['visual_code'].')</option>';
                 }
                 $return .= '</select>';
-                $xajax_response -> addAssign('ajax_list_courses_multiple', 'innerHTML', api_utf8_encode($return));
+                $xajax_response->addAssign('ajax_list_courses_multiple', 'innerHTML', api_utf8_encode($return));
             }
         }
-        $_SESSION['course_list'] = $course_list;
+        Session::write('course_list', $course_list);
 
         return $xajax_response;
     }

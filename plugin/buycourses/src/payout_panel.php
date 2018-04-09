@@ -1,12 +1,12 @@
 <?php
 /**
- * User Panel
+ * User Panel.
+ *
  * @package chamilo.plugin.buycourses
  */
 /**
- * Initialization
+ * Initialization.
  */
-
 $cidReset = true;
 
 require_once __DIR__.'/../../../main/inc/global.inc.php';
@@ -26,12 +26,14 @@ foreach ($payouts as $payout) {
         'sale_id' => $payout['sale_id'],
         'reference' => $payout['sale_reference'],
         'date' => api_format_date($payout['date'], DATE_TIME_FORMAT_LONG_24H),
-        'payout_date' => ($payout['payout_date'] === '0000-00-00 00:00:00') ? '-' : api_format_date($payout['payout_date'], DATE_TIME_FORMAT_LONG_24H),
+        'payout_date' => ($payout['payout_date'] === '0000-00-00 00:00:00')
+            ? '-'
+            : api_format_date($payout['payout_date'], DATE_TIME_FORMAT_LONG_24H),
         'currency' => $payout['iso_code'],
         'price' => $payout['item_price'],
         'commission' => $payout['commission'],
         'paypal_account' => $payout['paypal_account'],
-        'status' => $payout['status']
+        'status' => $payout['status'],
     ];
 }
 

@@ -2,8 +2,10 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * This script manages the display of forum threads in flat view
+ * This script manages the display of forum threads in flat view.
+ *
  * @copyright Julio Montoya <gugli100@gmail.com> UI Improvements + lots of bugfixes
+ *
  * @package chamilo.forum
  */
 
@@ -35,32 +37,44 @@ if (isset($current_thread['thread_id'])) {
         LINK_FORUM_THREAD
     );
 
-    $closedPost = null;
+    $buttonReply = '';
+    $buttonQuote = '';
+    $closedPost = '';
+
     if (!empty($rows)) {
         $postCount = count($rows);
         foreach ($rows as $row) {
-            if ($row['user_id'] == '0') {
+            $posterId = isset($row['user_id']) ? $row['user_id'] : 0;
+            $name = '';
+            if (empty($posterId)) {
                 $name = prepare4display($row['poster_name']);
             } else {
-                $name = api_get_person_name($row['firstname'], $row['lastname']);
+                if (isset($row['complete_name'])) {
+                    $name = $row['complete_name'];
+                }
             }
 
-            $username = sprintf(get_lang('LoginX'), $row['username']);
+            $username = '';
+            if (isset($row['username'])) {
+                $username = sprintf(get_lang('LoginX'), $row['username']);
+            }
 
             if (($current_forum_category && $current_forum_category['locked'] == 0) &&
                 $current_forum['locked'] == 0 &&
                 $current_thread['locked'] == 0 ||
                 api_is_allowed_to_edit(false, true)
             ) {
-                if ($_user['user_id'] || ($current_forum['allow_anonymous'] == 1 && !$_user['user_id'])) {
-                    if (!api_is_anonymous() && api_is_allowed_to_session_edit(false, true)) {
+                if ($userId || ($current_forum['allow_anonymous'] == 1 && !$userId)) {
+                    if ((api_is_anonymous() && $current_forum['allow_anonymous'] == 1) ||
+                        (!api_is_anonymous() && api_is_allowed_to_session_edit(false, true))
+                    ) {
                         $buttonReply = Display::toolbarButton(
                             get_lang('ReplyToMessage'),
                             'reply.php?'.api_get_cidreq().'&'.http_build_query([
                                 'forum' => $clean_forum_id,
                                 'thread' => $clean_thread_id,
                                 'post' => $row['post_id'],
-                                'action' => 'replymessage'
+                                'action' => 'replymessage',
                             ]),
                             'reply',
                             'primary',
@@ -73,7 +87,7 @@ if (isset($current_thread['thread_id'])) {
                                 'forum' => $clean_forum_id,
                                 'thread' => $clean_thread_id,
                                 'post' => $row['post_id'],
-                                'action' => 'quote'
+                                'action' => 'quote',
                             ]),
                             'quote-left',
                             'success',
@@ -86,21 +100,21 @@ if (isset($current_thread['thread_id'])) {
                     $closedPost = Display::tag(
                         'div',
                         '<em class="fa fa-exclamation-triangle"></em> '.get_lang('ForumcategoryLocked'),
-                        array('class' => 'alert alert-warning post-closed')
+                        ['class' => 'alert alert-warning post-closed']
                     );
                 }
                 if ($current_forum['locked'] == 1) {
                     $closedPost = Display::tag(
                         'div',
                         '<em class="fa fa-exclamation-triangle"></em> '.get_lang('ForumLocked'),
-                        array('class' => 'alert alert-warning post-closed')
+                        ['class' => 'alert alert-warning post-closed']
                     );
                 }
                 if ($current_thread['locked'] == 1) {
                     $closedPost = Display::tag(
                         'div',
                         '<em class="fa fa-exclamation-triangle"></em> '.get_lang('ThreadLocked'),
-                        array('class' => 'alert alert-warning post-closed')
+                        ['class' => 'alert alert-warning post-closed']
                     );
                 }
             }
@@ -113,25 +127,25 @@ if (isset($current_thread['thread_id'])) {
 
             if ($origin != 'learnpath') {
                 if (api_get_course_setting('allow_user_image_forum')) {
-                    $html .= '<div class="thumbnail">'.display_user_image($row['user_id'], $name, $origin).'</div>';
+                    $html .= '<div class="thumbnail">'.display_user_image($posterId, $name, $origin).'</div>';
                 }
                 $html .= Display::tag(
                     'h4',
-                    display_user_link($row['user_id'], $name),
-                    array('class' => 'title-username')
+                    display_user_link($posterId, $name),
+                    ['class' => 'title-username']
                 );
             } else {
                 if (api_get_course_setting('allow_user_image_forum')) {
-                    $html .= '<div class="thumbnail">'.display_user_image($row['user_id'], $name, $origin).'</div>';
+                    $html .= '<div class="thumbnail">'.display_user_image($posterId, $name, $origin).'</div>';
                 }
                 $name = Display::tag('strong', "#".$postCount--, ['class' => 'text-info'])." | $name";
                 $html .= Display::tag(
                     'p',
                     $name,
-                    array(
+                    [
                         'title' => api_htmlentities($username, ENT_QUOTES),
-                        'class' => 'lead'
-                    )
+                        'class' => 'lead',
+                    ]
                 );
             }
 
@@ -139,13 +153,13 @@ if (isset($current_thread['thread_id'])) {
                 $html .= Display::tag(
                     'p',
                     Display::dateToStringAgoAndLongDate($row['post_date']),
-                    array('class' => 'post-date')
+                    ['class' => 'post-date']
                 );
             } else {
                 $html .= Display::tag(
                     'p',
                     Display::dateToStringAgoAndLongDate($row['post_date']),
-                    array('class' => 'text-muted')
+                    ['class' => 'text-muted']
                 );
             }
 
@@ -159,18 +173,18 @@ if (isset($current_thread['thread_id'])) {
             // The course admin him/herself can do this off course always
             $groupInfo = GroupManager::get_group_properties($groupId);
             if ((isset($groupInfo['iid']) && GroupManager::is_tutor_of_group($userId, $groupInfo)) ||
-                ($current_forum['allow_edit'] == 1 && $row['user_id'] == $_user['user_id']) ||
+                ($current_forum['allow_edit'] == 1 && $posterId == $userId) ||
                 (
                 api_is_allowed_to_edit(false, true) &&
-                !(api_is_course_coach() && $current_forum['session_id'] != $sessionId)
+                !(api_is_session_general_coach() && $current_forum['session_id'] != $sessionId)
                 )
             ) {
                 if (api_is_allowed_to_session_edit(false, true)) {
                     if ($locked == false && postIsEditableByStudent($current_forum, $row)) {
                         $iconEdit .= "<a href=\"editpost.php?".api_get_cidreq()."&forum=".$clean_forum_id
-                            . "&thread=".$clean_thread_id."&post=".$row['post_id']
-                            . "&edit=edition&id_attach=".$id_attach."\">"
-                            . Display::return_icon('edit.png', get_lang('Edit'), array(), ICON_SIZE_SMALL)."</a>";
+                            ."&thread=".$clean_thread_id."&post=".$row['post_id']
+                            ."&edit=edition&id_attach=".$id_attach."\">"
+                            .Display::return_icon('edit.png', get_lang('Edit'), [], ICON_SIZE_SMALL)."</a>";
                     }
                 }
             }
@@ -178,7 +192,7 @@ if (isset($current_thread['thread_id'])) {
             if ($origin != 'learnpath') {
                 if (GroupManager::is_tutor_of_group($userId, $groupInfo) ||
                     api_is_allowed_to_edit(false, true) &&
-                    !(api_is_course_coach() && $current_forum['session_id'] != $sessionId)
+                    !(api_is_session_general_coach() && $current_forum['session_id'] != $sessionId)
                 ) {
                     if ($locked === false) {
                         $deleteUrl = api_get_self().'?'.api_get_cidreq().'&'.http_build_query([
@@ -186,16 +200,16 @@ if (isset($current_thread['thread_id'])) {
                             'thread' => $clean_thread_id,
                             'action' => 'delete',
                             'content' => 'post',
-                            'id' => $row['post_id']
+                            'id' => $row['post_id'],
                         ]);
                         $iconEdit .= Display::url(
-                            Display::return_icon('delete.png', get_lang('Delete'), array(), ICON_SIZE_SMALL),
+                            Display::return_icon('delete.png', get_lang('Delete'), [], ICON_SIZE_SMALL),
                             $deleteUrl,
                             [
                                 'onclick' => "javascript:if(!confirm('"
-                                    . addslashes(api_htmlentities(get_lang('DeletePost'), ENT_QUOTES))
-                                    . "')) return false;",
-                                'id' => "delete-post-{$row['post_id']}"
+                                    .addslashes(api_htmlentities(get_lang('DeletePost'), ENT_QUOTES))
+                                    ."')) return false;",
+                                'id' => "delete-post-{$row['post_id']}",
                             ]
                         );
                     }
@@ -204,41 +218,39 @@ if (isset($current_thread['thread_id'])) {
                 $statusIcon = getPostStatus($current_forum, $row);
 
                 if (GroupManager::is_tutor_of_group($userId, $groupInfo) ||
-                    (api_is_allowed_to_edit(false, true) &&
-                    !(api_is_course_coach() && $current_forum['session_id'] != $sessionId)
+                    (
+                        api_is_allowed_to_edit(false, true) &&
+                    !(api_is_session_general_coach() && $current_forum['session_id'] != $sessionId)
                     )
                 ) {
                     $iconEdit .= return_visible_invisible_icon(
                         'post',
                         $row['post_id'],
                         $row['visible'],
-                        array(
+                        [
                             'forum' => $clean_forum_id,
                             'thread' => $clean_thread_id,
-                            'origin' => $origin
-                        )
+                            'origin' => $origin,
+                        ]
                     );
 
                     if ($increment > 0) {
                         $iconEdit .= "<a href=\"viewthread.php?".api_get_cidreq()."&forum=".$clean_forum_id
-                            . "&thread=".$clean_thread_id."&action=move&post=".$row['post_id']."\">"
-                            . Display::return_icon('move.png', get_lang('MovePost'), array(), ICON_SIZE_SMALL)
-                            . "</a>";
+                            ."&thread=".$clean_thread_id."&action=move&post=".$row['post_id']."\">"
+                            .Display::return_icon('move.png', get_lang('MovePost'), [], ICON_SIZE_SMALL)
+                            ."</a>";
                     }
                 }
             }
 
-            $user_status = api_get_status_of_user_in_course($row['user_id'], api_get_course_int_id());
+            $user_status = api_get_status_of_user_in_course($posterId, api_get_course_int_id());
             $current_qualify_thread = showQualify('1', $row['poster_id'], $_GET['thread']);
             if (($current_thread['thread_peer_qualify'] == 1 || api_is_allowed_to_edit(null, true)) &&
                 $current_thread['thread_qualify_max'] > 0 && $origin != 'learnpath'
             ) {
                 $my_forum_id = $clean_forum_id;
-                if (isset($_GET['gradebook'])) {
-                    $info_thread = get_thread_information($clean_forum_id, $clean_thread_id);
-                    $my_forum_id = $info_thread['forum_id'];
-                }
-
+                $info_thread = get_thread_information($clean_forum_id, $clean_thread_id);
+                $my_forum_id = $info_thread['forum_id'];
                 $userCanEdit = $current_thread['thread_peer_qualify'] == 1 && $row['poster_id'] != $userId;
                 /*if ($row['poster_id'] != $userId && $current_forum['moderated'] == 1 && $row['status']) {
                 }*/
@@ -248,11 +260,11 @@ if (isset($current_thread['thread_id'])) {
 
                 if ($increment > 0 && $locked == false && $userCanEdit) {
                     $iconEdit .= "<a href=\"forumqualify.php?".api_get_cidreq()."&forum=".$my_forum_id
-                        . "&thread=".$clean_thread_id."&action=list&post=".$row['post_id']
-                        . "&user=".$row['poster_id']."&user_id=".$row['poster_id']
-                        . "&idtextqualify=".$current_qualify_thread."\" >"
-                        . Display::return_icon('quiz.png', get_lang('Qualify'))
-                        . "</a> ";
+                        ."&thread=".$clean_thread_id."&action=list&post=".$row['post_id']
+                        ."&user=".$row['poster_id']."&user_id=".$row['poster_id']
+                        ."&idtextqualify=".$current_qualify_thread."\" >"
+                        .Display::return_icon('quiz.png', get_lang('Qualify'))
+                        ."</a> ";
                 }
             }
 
@@ -270,20 +282,20 @@ if (isset($current_thread['thread_id'])) {
             $titlePost = Display::tag(
                 'h3',
                 $row['post_title'],
-                array('class' => 'forum_post_title')
+                ['class' => 'forum_post_title']
             );
 
             $html .= Display::tag(
                 'div',
                 $titlePost,
-                array('class' => 'post-header')
+                ['class' => 'post-header']
             );
 
             // see comments inside forumfunction.inc.php to lower filtering and allow more visual changes
             $html .= Display::tag(
                 'div',
                 $row['post_text'],
-                array('class' => 'post-body')
+                ['class' => 'post-body']
             );
             $html .= '</div>';
             $html .= '</div>';
@@ -303,12 +315,11 @@ if (isset($current_thread['thread_id'])) {
                 $post_image = Display::return_icon('forumpost.gif');
             }
 
-            if ($row['post_notification'] == '1' && $row['poster_id'] == $_user['user_id']) {
+            if ($row['post_notification'] == '1' && $row['poster_id'] == $userId) {
                 $post_image .= Display::return_icon('forumnotification.gif', get_lang('YouWillBeNotified'));
             }
             // The post title
             // The check if there is an attachment
-
             $attachment_list = getAllAttachment($row['post_id']);
             if (!empty($attachment_list) && is_array($attachment_list)) {
                 foreach ($attachment_list as $attachment) {
@@ -317,16 +328,17 @@ if (isset($current_thread['thread_id'])) {
                     $html .= Display::return_icon('attachment.gif', get_lang('Attachment'));
                     $html .= '<a href="download.php?file='.$realname.'"> '.$user_filename.' </a>';
 
-                    if (($current_forum['allow_edit'] == 1 && $row['user_id'] == $_user['user_id']) ||
-                        (api_is_allowed_to_edit(false, true) && !(api_is_course_coach() && $current_forum['session_id'] != $sessionId))
+                    if (($current_forum['allow_edit'] == 1 && $posterId == $userId) ||
+                        (api_is_allowed_to_edit(false, true) &&
+                        !(api_is_session_general_coach() && $current_forum['session_id'] != $sessionId))
                     ) {
                         $html .= '&nbsp;&nbsp;<a href="'.api_get_self().'?'.api_get_cidreq().'&action=delete_attach&id_attach='
-                            . $attachment['iid'].'&forum='.$clean_forum_id.'&thread='.$clean_thread_id
-                            . '" onclick="javascript:if(!confirm(\''
-                            . addslashes(api_htmlentities(get_lang('ConfirmYourChoice'), ENT_QUOTES))
-                            . '\')) return false;">'
-                            . Display::return_icon('delete.png', get_lang('Delete'), array(), ICON_SIZE_SMALL)
-                            . '</a><br />';
+                            .$attachment['iid'].'&forum='.$clean_forum_id.'&thread='.$clean_thread_id
+                            .'" onclick="javascript:if(!confirm(\''
+                            .addslashes(api_htmlentities(get_lang('ConfirmYourChoice'), ENT_QUOTES))
+                            .'\')) return false;">'
+                            .Display::return_icon('delete.png', get_lang('Delete'), [], ICON_SIZE_SMALL)
+                            .'</a><br />';
                     }
                     $html .= '<span class="forum_attach_comment" >'.$attachment['comment'].'</span>';
                 }
@@ -343,9 +355,7 @@ if (isset($current_thread['thread_id'])) {
             unset($whatsnew_post_info[$current_forum['forum_id']][$current_thread['thread_id']]);
             unset($_SESSION['whatsnew_post_info'][$current_forum['forum_id']][$current_thread['thread_id']][$row['post_id']]);
             unset($_SESSION['whatsnew_post_info'][$current_forum['forum_id']][$current_thread['thread_id']]);
-
             $increment++;
-
             $html .= '</div>';
             $html .= '</div>';
             echo $html;

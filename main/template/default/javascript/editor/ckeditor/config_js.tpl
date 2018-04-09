@@ -105,9 +105,17 @@ CKEDITOR.editorConfig = function (config) {
 
     // File manager (elFinder)
     config.filebrowserBrowseUrl = '{{ _p.web_lib ~ 'elfinder/filemanager.php?' }}{{ course_condition }}';
+    config.videobrowserBrowseUrl = '{{ _p.web_lib ~ 'elfinder/filemanager.php?' }}{{ course_condition }}';
 
     // Allows to use "class" attribute inside divs and spans.
     config.allowedContent = true;
     config.contentsCss = '{{ cssEditor }}';
     config.customConfig = '{{ _p.web_main ~ 'inc/lib/javascript/ckeditor/config_js.php'}}';
 };
+
+// Sets default target to "_blank" in link plugin
+CKEDITOR.on('dialogDefinition', function (ev) {
+    if (ev.data.name == 'link'){
+        ev.data.definition.getContents('target').get('linkTargetType')['default']='_blank';
+    }
+});

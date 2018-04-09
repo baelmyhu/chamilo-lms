@@ -6,7 +6,8 @@ use ChamiloSession as Session;
 /**
  * Class MultipleAnswerTrueFalse
  * This class allows to instantiate an object of type MULTIPLE_ANSWER
- * (MULTIPLE CHOICE, MULTIPLE ANSWER), extending the class question
+ * (MULTIPLE CHOICE, MULTIPLE ANSWER), extending the class question.
+ *
  * @author Julio Montoya
  *
  * @package chamilo.exercise
@@ -18,18 +19,18 @@ class MultipleAnswerTrueFalse extends Question
     public $options;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->type = MULTIPLE_ANSWER_TRUE_FALSE;
-        $this->isContent = $this-> getIsContent();
-        $this->options = array(1 => 'True', 2 => 'False', 3 => 'DoubtScore');
+        $this->isContent = $this->getIsContent();
+        $this->options = [1 => 'True', 2 => 'False', 3 => 'DoubtScore'];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createAnswersForm($form)
     {
@@ -39,8 +40,8 @@ class MultipleAnswerTrueFalse extends Question
 
         $course_id = api_get_course_int_id();
         $obj_ex = Session::read('objExercise');
-        $renderer = & $form->defaultRenderer();
-        $defaults = array();
+        $renderer = &$form->defaultRenderer();
+        $defaults = [];
 
         $html = '<table class="table table-striped table-hover">';
         $html .= '<thead>';
@@ -62,7 +63,6 @@ class MultipleAnswerTrueFalse extends Question
         $form->addHeader(get_lang('Answers'));
         $form->addHtml($html);
 
-        $correct = 0;
         $answer = null;
 
         if (!empty($this->id)) {
@@ -141,7 +141,7 @@ class MultipleAnswerTrueFalse extends Question
                 "answer[$i]",
                 get_lang('ThisFieldIsRequired'),
                 true,
-                true,
+                false,
                 ['ToolbarSet' => 'TestProposedAnswer', 'Width' => '100%', 'Height' => '100']
             );
 
@@ -151,12 +151,12 @@ class MultipleAnswerTrueFalse extends Question
                     'html_editor',
                     'comment['.$i.']',
                     null,
-                    array(),
-                    array(
+                    [],
+                    [
                         'ToolbarSet' => 'TestProposedAnswer',
                         'Width' => '100%',
                         'Height' => '100',
-                    )
+                    ]
                 );
             }
 
@@ -195,9 +195,9 @@ class MultipleAnswerTrueFalse extends Question
         $renderer->setElementTemplate($doubtScoreInputTemplate, 'option[3]');
 
         // 3 scores
-        $form->addElement('text', 'option[1]', get_lang('Correct'), array('class' => 'span1', 'value' => '1'));
-        $form->addElement('text', 'option[2]', get_lang('Wrong'), array('class' => 'span1', 'value' => '-0.5'));
-        $form->addElement('text', 'option[3]', get_lang('DoubtScore'), array('class' => 'span1', 'value' => '0'));
+        $form->addElement('text', 'option[1]', get_lang('Correct'), ['class' => 'span1', 'value' => '1']);
+        $form->addElement('text', 'option[2]', get_lang('Wrong'), ['class' => 'span1', 'value' => '-0.5']);
+        $form->addElement('text', 'option[3]', get_lang('DoubtScore'), ['class' => 'span1', 'value' => '0']);
 
         $form->addRule('option[1]', get_lang('ThisFieldIsRequired'), 'required');
         $form->addRule('option[2]', get_lang('ThisFieldIsRequired'), 'required');
@@ -231,11 +231,11 @@ class MultipleAnswerTrueFalse extends Question
         } else {
             $form->setDefaults($defaults);
         }
-        $form->setConstants(array('nb_answers' => $nb_answers));
+        $form->setConstants(['nb_answers' => $nb_answers]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function processAnswersCreation($form, $exercise)
     {
@@ -244,7 +244,7 @@ class MultipleAnswerTrueFalse extends Question
         $nb_answers = $form->getSubmitValue('nb_answers');
         $course_id = api_get_course_int_id();
 
-        $correct = array();
+        $correct = [];
         $options = Question::readQuestionOption($this->id, $course_id);
 
         if (!empty($options)) {
@@ -267,19 +267,18 @@ class MultipleAnswerTrueFalse extends Question
 
         /* Getting quiz_question_options (true, false, doubt) because
         it's possible that there are more options in the future */
-
         $new_options = Question::readQuestionOption($this->id, $course_id);
-        $sorted_by_position = array();
+        $sortedByPosition = [];
         foreach ($new_options as $item) {
-            $sorted_by_position[$item['position']] = $item;
+            $sortedByPosition[$item['position']] = $item;
         }
 
         /* Saving quiz_question.extra values that has the correct scores of
         the true, false, doubt options registered in this format
         XX:YY:ZZZ where XX is a float score value.*/
-        $extra_values = array();
+        $extra_values = [];
         for ($i = 1; $i <= 3; $i++) {
-            $score = trim($form -> getSubmitValue('option['.$i.']'));
+            $score = trim($form->getSubmitValue('option['.$i.']'));
             $extra_values[] = $score;
         }
         $this->setExtra(implode(':', $extra_values));
@@ -291,7 +290,7 @@ class MultipleAnswerTrueFalse extends Question
             if (empty($options)) {
                 //If this is the first time that the question is created when
                 // change the default values from the form 1 and 2 by the correct "option id" registered
-                $goodAnswer = $sorted_by_position[$goodAnswer]['id'];
+                $goodAnswer = isset($sortedByPosition[$goodAnswer]) ? $sortedByPosition[$goodAnswer]['id'] : '';
             }
             $questionWeighting += $extra_values[0]; //By default 0 has the correct answers
             $objAnswer->createAnswer($answer, $goodAnswer, $comment, '', $i);
@@ -305,22 +304,25 @@ class MultipleAnswerTrueFalse extends Question
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function return_header($exercise, $counter = null, $score = null)
     {
         $header = parent::return_header($exercise, $counter, $score);
-        $header .= '<table class="'.$this->question_table_class.'">
-        <tr>
-            <th>'.get_lang("Choice").'</th>
-            <th>'. get_lang("ExpectedChoice").'</th>
-            <th>'. get_lang("Answer").'</th>';
+        $header .= '<table class="'.$this->question_table_class.'"><tr>';
+        $header .= '<th>'.get_lang('Choice').'</th>
+            <th>'.get_lang('ExpectedChoice').'</th>
+            <th>'.get_lang('Answer').'</th>';
+        if ($exercise->showExpectedChoice()) {
+            $header .= '<th>'.get_lang('Status').'</th>';
+        }
         if ($exercise->feedback_type != EXERCISE_FEEDBACK_TYPE_EXAM) {
-            $header .= '<th>'.get_lang("Comment").'</th>';
+            $header .= '<th>'.get_lang('Comment').'</th>';
         } else {
             $header .= '<th>&nbsp;</th>';
         }
         $header .= '</tr>';
+
         return $header;
     }
 }

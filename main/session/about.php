@@ -2,21 +2,21 @@
 /* For licensing terms, see /license.txt */
 
 use Chamilo\CoreBundle\Entity\ExtraField;
-use Chamilo\CourseBundle\Entity\CCourseDescription;
 use Chamilo\CoreBundle\Entity\SequenceResource;
+use Chamilo\CourseBundle\Entity\CCourseDescription;
 use Chamilo\UserBundle\Entity\Repository\UserRepository;
 use Chamilo\UserBundle\Entity\User;
 use ChamiloSession as Session;
 
 /**
  * Session about page
- * Show information about a session and its courses
+ * Show information about a session and its courses.
+ *
  * @author Angel Fernando Quiroz Campos <angel.quiroz@beeznest.com>
  * @author Julio Montoya
  *
  * @package chamilo.session
  */
-
 $cidReset = true;
 
 require_once __DIR__.'/../inc/global.inc.php';
@@ -41,7 +41,7 @@ $sequenceResourceRepo = $em->getRepository('ChamiloCoreBundle:SequenceResource')
 
 $tagField = $fieldsRepo->findOneBy([
     'extraFieldType' => ExtraField::COURSE_FIELD_TYPE,
-    'variable' => 'tags'
+    'variable' => 'tags',
 ]);
 
 $courseValues = new ExtraFieldValue('course');
@@ -79,11 +79,11 @@ foreach ($sessionCourses as $sessionCourse) {
         ->findBy(
             [
                 'cId' => $sessionCourse->getId(),
-                'sessionId' => 0
+                'sessionId' => 0,
             ],
             [
                 'id' => 'DESC',
-                'descriptionType' => 'ASC'
+                'descriptionType' => 'ASC',
             ]
         );
 
@@ -109,7 +109,7 @@ foreach ($sessionCourses as $sessionCourse) {
             case CCourseDescription::TYPE_RESOURCES:
                 $courseResources = $descriptionTool;
                 break;
-            case CCourseDescription::TYPE_ASSESMENT:
+            case CCourseDescription::TYPE_ASSESSMENT:
                 $courseAssessment = $descriptionTool;
                 break;
             case CCourseDescription::TYPE_CUSTOM:
@@ -194,7 +194,6 @@ $template->assign(
         ['id' => $session->getId(), 'duration' => $session->getDuration()],
         api_get_user_id()
     )
-
 );
 
 $plugin = BuyCoursesPlugin::create();
@@ -228,6 +227,7 @@ $template->assign(
 );
 $template->assign('has_requirements', $hasRequirements);
 $template->assign('sequences', $sessionRequirements);
+$template->assign('is_premiun', $sessionIsPremium);
 $layout = $template->get_template('session/about.tpl');
 $content = $template->fetch($layout);
 $template->assign('header', $session->getName());

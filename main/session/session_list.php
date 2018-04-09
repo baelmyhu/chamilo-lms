@@ -2,7 +2,8 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * List sessions in an efficient and usable way
+ * List sessions in an efficient and usable way.
+ *
  * @package chamilo.admin
  */
 $cidReset = true;
@@ -48,7 +49,7 @@ $sessionFilter = new FormValidator(
     'get',
     '',
     '',
-    array(),
+    [],
     FormValidator::LAYOUT_INLINE
 );
 $courseSelect = $sessionFilter->addElement(
@@ -56,7 +57,7 @@ $courseSelect = $sessionFilter->addElement(
     'course_name',
     get_lang('SearchCourse'),
     null,
-    array('url' => api_get_path(WEB_AJAX_PATH).'course.ajax.php?a=search_course')
+    ['url' => api_get_path(WEB_AJAX_PATH).'course.ajax.php?a=search_course']
 );
 
 if (!empty($courseId)) {
@@ -91,14 +92,24 @@ if (!empty($courseId)) {
 
 if (isset($_REQUEST['keyword'])) {
     //Begin with see the searchOper param
-    $url = api_get_path(WEB_AJAX_PATH).'model.ajax.php?a=get_sessions&_force_search=true&rows=20&page=1&sidx=&sord=asc&filters=&searchField=s.name&searchString='.Security::remove_XSS($_REQUEST['keyword']).'&searchOper=bw';
+    $filter = new stdClass();
+    $filter->groupOp = 'OR';
+    $rule = new stdClass();
+    $rule->field = 'category_name';
+    $rule->op = 'in';
+    $rule->data = Security::remove_XSS($_REQUEST['keyword']);
+    $filter->rules[] = $rule;
+    $filter->groupOp = 'OR';
+
+    $filter = json_encode($filter);
+    $url = api_get_path(WEB_AJAX_PATH).'model.ajax.php?a=get_sessions&_force_search=true&rows=20&page=1&sidx=&sord=asc&filters='.$filter.'&searchField=s.name&searchString='.Security::remove_XSS($_REQUEST['keyword']).'&searchOper=in';
 }
 
 if (isset($_REQUEST['id_category'])) {
     $sessionCategory = SessionManager::get_session_category($_REQUEST['id_category']);
     if (!empty($sessionCategory)) {
         //Begin with see the searchOper param
-        $url = api_get_path(WEB_AJAX_PATH).'model.ajax.php?a=get_sessions&_force_search=true&rows=20&page=1&sidx=&sord=asc&filters=&searchField=sc.name&searchString='.Security::remove_XSS($sessionCategory['name']).'&searchOper=bw';
+        $url = api_get_path(WEB_AJAX_PATH).'model.ajax.php?a=get_sessions&_force_search=true&rows=20&page=1&sidx=&sord=asc&filters=&searchField=sc.name&searchString='.Security::remove_XSS($sessionCategory['name']).'&searchOper=in';
     }
 }
 
@@ -115,17 +126,21 @@ $extra_params['autowidth'] = 'true';
 // height auto
 $extra_params['height'] = 'auto';
 
-$extra_params['postData'] = array(
-    'filters' => array(
-        "groupOp" => "AND",
-        "rules" => $result['rules'],
-        /*array(
-            array( "field" => "display_start_date", "op" => "gt", "data" => ""),
-            array( "field" => "display_end_date", "op" => "gt", "data" => "")
-        ),*/
-        //'groups' => $groups
-    )
-);
+if (!isset($_GET['keyword'])) {
+    $extra_params['postData'] = [
+        'filters' => [
+            "groupOp" => "AND",
+            "rules" => $result['rules'],
+            /*array(
+                array( "field" => "display_start_date", "op" => "gt", "data" => ""),
+                array( "field" => "display_end_date", "op" => "gt", "data" => "")
+            ),*/
+            //'groups' => $groups
+        ],
+    ];
+}
+
+$hideSearch = api_get_configuration_value('hide_search_form_in_session_list');
 
 //With this function we can add actions to the jgrid (edit, delete, etc)
 $action_links = 'function action_formatter(cellvalue, options, rowObject) {
@@ -138,6 +153,8 @@ $action_links = 'function action_formatter(cellvalue, options, rowObject) {
 }';
 
 $urlAjaxExtraField = api_get_path(WEB_AJAX_PATH).'extra_field.ajax.php?1=1';
+$allowOrder = api_get_configuration_value('session_list_order');
+$orderUrl = api_get_path(WEB_AJAX_PATH).'session.ajax.php?a=order';
 
 ?>
     <script>
@@ -179,7 +196,6 @@ $urlAjaxExtraField = api_get_path(WEB_AJAX_PATH).'extra_field.ajax.php?1=1';
         var second_filters = [];
 
         $(function() {
-
             date_pick_today = function(elem) {
                 $(elem).datetimepicker({dateFormat: "yy-mm-dd"});
                 $(elem).datetimepicker('setDate', (new Date()));
@@ -220,7 +236,16 @@ $urlAjaxExtraField = api_get_path(WEB_AJAX_PATH).'extra_field.ajax.php?1=1';
             }
 
             <?php
-            echo Display::grid_js('sessions', $url, $columns, $column_model, $extra_params, array(), $action_links, true);
+            echo Display::grid_js(
+                'sessions',
+                $url,
+                $columns,
+                $column_model,
+                $extra_params,
+                [],
+                $action_links,
+                true
+            );
             ?>
 
             setSearchSelect("status");
@@ -263,6 +288,31 @@ $urlAjaxExtraField = api_get_path(WEB_AJAX_PATH).'extra_field.ajax.php?1=1';
 
             original_cols = grid.jqGrid('getGridParam', 'colModel');
 
+            <?php if ($allowOrder) {
+                ?>
+            options = {
+                update: function (e, ui) {
+                    var rowNum = jQuery("#sessions").getGridParam('rowNum');
+                    var page = jQuery("#sessions").getGridParam('page');
+                    page = page - 1;
+                    var start = rowNum * page;
+                    var list = jQuery('#sessions').jqGrid('getRowData');
+                    var orderList = [];
+                    $(list).each(function(index, e) {
+                        index = index + start;
+                        orderList.push({'order':index, 'id': e.id});
+                    });
+                    orderList = JSON.stringify(orderList);
+                    $.get("<?php echo $orderUrl; ?>", "order="+orderList, function (result) {
+                        console.log(result);
+                    });
+                }
+            };
+            // Sortable rows
+            grid.jqGrid('sortableRows', options);
+            <?php
+            } ?>
+
             grid.jqGrid('navGrid','#sessions_pager',
                 {edit:false,add:false,del:false},
                 {height:280,reloadAfterSubmit:false}, // edit options
@@ -271,8 +321,12 @@ $urlAjaxExtraField = api_get_path(WEB_AJAX_PATH).'extra_field.ajax.php?1=1';
                 prmSearch
             );
 
+            <?php
             // Create the searching dialog.
-            grid.searchGrid(prmSearch);
+            if ($hideSearch !== true) {
+                echo 'grid.searchGrid(prmSearch);';
+            }
+            ?>
 
             // Fixes search table.
             var searchDialogAll = $("#fbox_"+grid[0].id);
@@ -311,9 +365,11 @@ if (api_is_platform_admin()) {
 }
 
 if ($list_type == 'complete') {
-    echo '<a href="'.api_get_self().'?list_type=simple">'.Display::return_icon('view_remove.png', get_lang('Simple'), '', ICON_SIZE_MEDIUM).'</a>';
+    echo '<a href="'.api_get_self().'?list_type=simple">'.
+        Display::return_icon('view_remove.png', get_lang('Simple'), '', ICON_SIZE_MEDIUM).'</a>';
 } else {
-    echo '<a href="'.api_get_self().'?list_type=complete">'.Display::return_icon('view_text.png', get_lang('Complete'), '', ICON_SIZE_MEDIUM).'</a>';
+    echo '<a href="'.api_get_self().'?list_type=complete">'.
+        Display::return_icon('view_text.png', get_lang('Complete'), '', ICON_SIZE_MEDIUM).'</a>';
 }
 
 echo $actions;
@@ -328,9 +384,9 @@ if (api_is_platform_admin()) {
         [],
         FormValidator::LAYOUT_INLINE
     );
-    $form->addElement('text', 'keyword', null, array(
-        'aria-label' => get_lang('Search')
-    ));
+    $form->addElement('text', 'keyword', null, [
+        'aria-label' => get_lang('Search'),
+    ]);
     $form->addButtonSearch(get_lang('Search'));
     $form->display();
     echo '</div>';
@@ -345,5 +401,3 @@ echo Display::grid_html('sessions');
 echo '</div>';
 
 Display::display_footer();
-
-

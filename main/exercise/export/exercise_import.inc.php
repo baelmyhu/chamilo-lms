@@ -5,18 +5,20 @@ use Chamilo\CoreBundle\Component\Utils\ChamiloApi;
 
 /**
  * @copyright (c) 2001-2006 Universite catholique de Louvain (UCL)
+ *
  * @package chamilo.exercise
+ *
  * @author claro team <cvs@claroline.net>
  * @author Guillaume Lederer <guillaume@claroline.net>
  * @author Yannick Warnier <yannick.warnier@beeznest.com>
  */
 
 /**
- * Unzip the exercise in the temp folder
- * @param string The path of the temporary directory where the exercise was uploaded and unzipped
- * @param string
- * @param string $baseWorkDir
+ * Unzip the exercise in the temp folder.
+ *
+ * @param string $baseWorkDir The path of the temporary directory where the exercise was uploaded and unzipped
  * @param string $uploadPath
+ *
  * @return bool
  */
 function get_and_unzip_uploaded_exercise($baseWorkDir, $uploadPath)
@@ -47,14 +49,18 @@ function get_and_unzip_uploaded_exercise($baseWorkDir, $uploadPath)
             null,
             false
         );
+
         return $result;
     }
+
     return false;
 }
 
 /**
- * Imports an exercise in QTI format if the XML structure can be found in it
+ * Imports an exercise in QTI format if the XML structure can be found in it.
+ *
  * @param array $file
+ *
  * @return string|array as a backlog of what was really imported, and error or debug messages to display
  */
 function import_exercise($file)
@@ -68,7 +74,6 @@ function import_exercise($file)
     global $resourcesLinks;
 
     $baseWorkDir = api_get_path(SYS_ARCHIVE_PATH).'qti2/';
-
     if (!is_dir($baseWorkDir)) {
         mkdir($baseWorkDir, api_get_permissions_for_new_directories(), true);
     }
@@ -80,12 +85,12 @@ function import_exercise($file)
     }
 
     // set some default values for the new exercise
-    $exercise_info = array();
+    $exercise_info = [];
     $exercise_info['name'] = preg_replace('/.zip$/i', '', $file);
-    $exercise_info['question'] = array();
-    $element_pile = array();
+    $exercise_info['question'] = [];
+    $element_pile = [];
     // create parser and array to retrieve info from manifest
-    $element_pile = array(); //pile to known the depth in which we are
+    $element_pile = []; //pile to known the depth in which we are
 
     // if file is not a .zip, then we cancel all
     if (!preg_match('/.zip$/i', $file)) {
@@ -104,7 +109,7 @@ function import_exercise($file)
     $file_found = false;
     $result = false;
     $filePath = null;
-    $resourcesLinks = array();
+    $resourcesLinks = [];
 
     // parse every subdirectory to search xml question files and other assets to be imported
     // The assets-related code is a bit fragile as it has to deal with files renamed by Chamilo and it only works if
@@ -141,7 +146,6 @@ function import_exercise($file)
                     $resourcesLinks = qtiProcessManifest($baseWorkDir.'/'.$file);
                 }
             }
-
         }
     }
 
@@ -187,12 +191,7 @@ function import_exercise($file)
             }
             $question->setAnswer();
             $description = '';
-            if (strlen($question_array['title']) < 50) {
-                $question->updateTitle(formatText(strip_tags($question_array['title'])).'...');
-            } else {
-                $question->updateTitle(formatText(substr(strip_tags($question_array['title']), 0, 50)));
-                $description .= $question_array['title'];
-            }
+            $question->updateTitle(formatText(strip_tags($question_array['title'])));
 
             if (isset($question_array['category'])) {
                 $category = formatText(strip_tags($question_array['category']));
@@ -219,56 +218,63 @@ function import_exercise($file)
             if (!empty($question_array['description'])) {
                 $description .= $question_array['description'];
             }
+
             $question->updateDescription($description);
             $question->save($exercise);
 
             $last_question_id = $question->selectId();
             //3. Create answer
             $answer = new Answer($last_question_id);
-            $answer->new_nbrAnswers = count($question_array['answer']);
+            $answerList = $question_array['answer'];
+            $answer->new_nbrAnswers = count($answerList);
             $totalCorrectWeight = 0;
             $j = 1;
-            $matchAnswerIds = array();
-            foreach ($question_array['answer'] as $key => $answers) {
-                if (preg_match('/_/', $key)) {
-                    $split = explode('_', $key);
-                    $i = $split[1];
-                } else {
-                    $i = $j;
-                    $j++;
-                    $matchAnswerIds[$key] = $j;
-                }
+            $matchAnswerIds = [];
+            if (!empty($answerList)) {
+                foreach ($answerList as $key => $answers) {
+                    if (preg_match('/_/', $key)) {
+                        $split = explode('_', $key);
+                        $i = $split[1];
+                    } else {
+                        $i = $j;
+                        $j++;
+                        $matchAnswerIds[$key] = $j;
+                    }
 
-                // Answer
-                $answer->new_answer[$i] = formatText($answers['value']);
-                // Comment
-                $answer->new_comment[$i] = isset($answers['feedback']) ? formatText($answers['feedback']) : null;
-                // Position
-                $answer->new_position[$i] = $i;
-                // Correct answers
-                if (in_array($key, $question_array['correct_answers'])) {
-                    $answer->new_correct[$i] = 1;
-                } else {
-                    $answer->new_correct[$i] = 0;
-                }
+                    // Answer
+                    $answer->new_answer[$i] = isset($answers['value']) ? formatText($answers['value']) : '';
+                    // Comment
+                    $answer->new_comment[$i] = isset($answers['feedback']) ? formatText($answers['feedback']) : null;
+                    // Position
+                    $answer->new_position[$i] = $i;
+                    // Correct answers
+                    if (in_array($key, $question_array['correct_answers'])) {
+                        $answer->new_correct[$i] = 1;
+                    } else {
+                        $answer->new_correct[$i] = 0;
+                    }
 
-                $answer->new_weighting[$i] = 0;
-                if (isset($question_array['weighting'][$key])) {
-                    $answer->new_weighting[$i] = $question_array['weighting'][$key];
+                    $answer->new_weighting[$i] = 0;
+                    if (isset($question_array['weighting'][$key])) {
+                        $answer->new_weighting[$i] = $question_array['weighting'][$key];
+                    }
+                    if ($answer->new_correct[$i]) {
+                        $totalCorrectWeight += $answer->new_weighting[$i];
+                    }
                 }
+            }
 
-                if ($answer->new_correct[$i]) {
-                    $totalCorrectWeight += $answer->new_weighting[$i];
-                }
+            if ($question->type == FREE_ANSWER) {
+                $totalCorrectWeight = $question_array['weighting'][0];
             }
 
             $question->updateWeighting($totalCorrectWeight);
             $question->save($exercise);
             $answer->save();
         }
-
         // delete the temp dir where the exercise was unzipped
         my_delete($baseWorkDir.$uploadPath);
+
         return $last_exercise_id;
     }
 
@@ -276,18 +282,20 @@ function import_exercise($file)
 }
 
 /**
- * We assume the file charset is UTF8
- **/
+ * We assume the file charset is UTF8.
+ */
 function formatText($text)
 {
     return api_html_entity_decode($text);
 }
 
 /**
- * Parses a given XML file and fills global arrays with the elements
+ * Parses a given XML file and fills global arrays with the elements.
+ *
  * @param string $exercisePath
  * @param string $file
  * @param string $questionFile
+ *
  * @return bool
  */
 function qti_parse_file($exercisePath, $file, $questionFile)
@@ -309,18 +317,17 @@ function qti_parse_file($exercisePath, $file, $questionFile)
 
     //parse XML question file
     //$data = str_replace(array('<p>', '</p>', '<front>', '</front>'), '', $data);
-    $data = ChamiloApi::stripGivenTags($data, array('p', 'front'));
-    $qtiVersion = array();
+    $data = ChamiloApi::stripGivenTags($data, ['p', 'front']);
+    $qtiVersion = [];
     $match = preg_match('/ims_qtiasiv(\d)p(\d)/', $data, $qtiVersion);
     $qtiMainVersion = 2; //by default, assume QTI version 2
     if ($match) {
         $qtiMainVersion = $qtiVersion[1];
     }
 
-    //used global variable start values declaration :
-
+    //used global variable start values declaration:
     $record_item_body = false;
-    $non_HTML_tag_to_avoid = array(
+    $non_HTML_tag_to_avoid = [
         "SIMPLECHOICE",
         "CHOICEINTERACTION",
         "INLINECHOICEINTERACTION",
@@ -330,28 +337,43 @@ function qti_parse_file($exercisePath, $file, $questionFile)
         "TEXTENTRYINTERACTION",
         "FEEDBACKINLINE",
         "MATCHINTERACTION",
+        'EXTENDEDTEXTINTERACTION',
         "ITEMBODY",
         "BR",
-        "IMG"
-    );
+        "IMG",
+    ];
 
     $question_format_supported = true;
     $xml_parser = xml_parser_create();
     xml_parser_set_option($xml_parser, XML_OPTION_SKIP_WHITE, false);
+
     if ($qtiMainVersion == 1) {
-        xml_set_element_handler($xml_parser, 'startElementQti1', 'endElementQti1');
+        xml_set_element_handler(
+            $xml_parser,
+            'startElementQti1',
+            'endElementQti1'
+        );
         xml_set_character_data_handler($xml_parser, 'elementDataQti1');
     } else {
-        xml_set_element_handler($xml_parser, 'startElementQti2', 'endElementQti2');
+        xml_set_element_handler(
+            $xml_parser,
+            'startElementQti2',
+            'endElementQti2'
+        );
         xml_set_character_data_handler($xml_parser, 'elementDataQti2');
     }
+
     if (!xml_parse($xml_parser, $data, feof($fp))) {
         // if reading of the xml file in not successful :
         // set errorFound, set error msg, break while statement
-        $error = xml_get_error_code();
         Display::addFlash(
             Display::return_message(
-                get_lang('Error reading XML file').sprintf('[%d:%d]', xml_get_current_line_number($xml_parser), xml_get_current_column_number($xml_parser)),
+                get_lang('Error reading XML file').
+                sprintf(
+                    '[%d:%d]',
+                    xml_get_current_line_number($xml_parser),
+                    xml_get_current_column_number($xml_parser)
+                ),
                 'error'
             )
         );
@@ -366,9 +388,9 @@ function qti_parse_file($exercisePath, $file, $questionFile)
             Display::return_message(
                 get_lang(
                     'Unknown question format in file %file',
-                    array(
+                    [
                         '%file' => $questionFile,
-                    )
+                    ]
                 ),
                 'error'
             )
@@ -376,15 +398,16 @@ function qti_parse_file($exercisePath, $file, $questionFile)
 
         return false;
     }
+
     return true;
 }
 
 /**
- * Function used by the SAX xml parser when the parser meets a opening tag
+ * Function used by the SAX xml parser when the parser meets a opening tag.
  *
- * @param object $parser xml parser created with "xml_parser_create()"
- * @param string $name name of the element
- * @param array $attributes
+ * @param object $parser     xml parser created with "xml_parser_create()"
+ * @param string $name       name of the element
+ * @param array  $attributes
  */
 function startElementQti2($parser, $name, $attributes)
 {
@@ -409,6 +432,17 @@ function startElementQti2($parser, $name, $attributes)
         $parent_element = '';
     }
 
+    if (sizeof($element_pile) >= 3) {
+        $grand_parent_element = $element_pile[sizeof($element_pile) - 3];
+    } else {
+        $grand_parent_element = '';
+    }
+    if (sizeof($element_pile) >= 4) {
+        $great_grand_parent_element = $element_pile[sizeof($element_pile) - 4];
+    } else {
+        $great_grand_parent_element = '';
+    }
+
     if ($record_item_body) {
         if ((!in_array($current_element, $non_HTML_tag_to_avoid))) {
             $current_question_item_body .= "<".$name;
@@ -419,14 +453,12 @@ function startElementQti2($parser, $name, $attributes)
         } else {
             //in case of FIB question, we replace the IMS-QTI tag b y the correct answer between "[" "]",
             //we first save with claroline tags ,then when the answer will be parsed, the claroline tags will be replaced
-
             if ($current_element == 'INLINECHOICEINTERACTION') {
                 $current_question_item_body .= "**claroline_start**".$attributes['RESPONSEIDENTIFIER']."**claroline_end**";
             }
             if ($current_element == 'TEXTENTRYINTERACTION') {
                 $correct_answer_value = $exercise_info['question'][$current_question_ident]['correct_answers'][$current_answer_id];
                 $current_question_item_body .= "[".$correct_answer_value."]";
-
             }
             if ($current_element == 'BR') {
                 $current_question_item_body .= "<br />";
@@ -481,13 +513,17 @@ function startElementQti2($parser, $name, $attributes)
         case 'MATCHINTERACTION':
             $exercise_info['question'][$current_question_ident]['type'] = MATCHING;
             break;
+        case 'EXTENDEDTEXTINTERACTION':
+            $exercise_info['question'][$current_question_ident]['type'] = FREE_ANSWER;
+            $exercise_info['question'][$current_question_ident]['description'] = '';
+            break;
         case 'SIMPLEMATCHSET':
             if (!isset($current_match_set)) {
                 $current_match_set = 1;
             } else {
                 $current_match_set++;
             }
-            $exercise_info['question'][$current_question_ident]['answer'][$current_match_set] = array();
+            $exercise_info['question'][$current_question_ident]['answer'][$current_match_set] = [];
             break;
         case 'SIMPLEASSOCIABLECHOICE':
             $currentAssociableChoice = $attributes['IDENTIFIER'];
@@ -496,14 +532,14 @@ function startElementQti2($parser, $name, $attributes)
         case 'SIMPLECHOICE':
             $current_answer_id = $attributes['IDENTIFIER'];
             if (!isset($exercise_info['question'][$current_question_ident]['answer'][$current_answer_id])) {
-                $exercise_info['question'][$current_question_ident]['answer'][$current_answer_id] = array();
+                $exercise_info['question'][$current_question_ident]['answer'][$current_answer_id] = [];
             }
             break;
         case 'MAPENTRY':
             if ($parent_element == 'MAPPING' || $parent_element == 'MAPENTRY') {
                 $answer_id = $attributes['MAPKEY'];
                 if (!isset($exercise_info['question'][$current_question_ident]['weighting'])) {
-                    $exercise_info['question'][$current_question_ident]['weighting'] = array();
+                    $exercise_info['question'][$current_question_ident]['weighting'] = [];
                 }
                 $exercise_info['question'][$current_question_ident]['weighting'][$answer_id] = $attributes['MAPPEDVALUE'];
             }
@@ -529,7 +565,7 @@ function startElementQti2($parser, $name, $attributes)
 }
 
 /**
- * Function used by the SAX xml parser when the parser meets a closing tag
+ * Function used by the SAX xml parser when the parser meets a closing tag.
  *
  * @param $parser xml parser created with "xml_parser_create()"
  * @param $name name of the element
@@ -573,7 +609,14 @@ function endElementQti2($parser, $name)
             if ($exercise_info['question'][$current_question_ident]['type'] == FIB) {
                 $exercise_info['question'][$current_question_ident]['response_text'] = $current_question_item_body;
             } else {
-                $exercise_info['question'][$current_question_ident]['statement'] = $current_question_item_body;
+                if ($exercise_info['question'][$current_question_ident]['type'] == FREE_ANSWER) {
+                    $current_question_item_body = trim($current_question_item_body);
+                    if (!empty($current_question_item_body)) {
+                        $exercise_info['question'][$current_question_ident]['description'] = $current_question_item_body;
+                    }
+                } else {
+                    $exercise_info['question'][$current_question_ident]['statement'] = $current_question_item_body;
+                }
             }
             break;
     }
@@ -617,11 +660,15 @@ function elementDataQti2($parser, $data)
     }
 
     //treat the record of the full content of itembody tag (needed for question statment and/or FIB text:
+
     if ($record_item_body && (!in_array($current_element, $non_HTML_tag_to_avoid))) {
         $current_question_item_body .= $data;
     }
 
     switch ($current_element) {
+        case 'EXTENDEDTEXTINTERACTION':
+            $exercise_info['question'][$current_question_ident]['description'] .= $data;
+            break;
         case 'SIMPLECHOICE':
             if (!isset($exercise_info['question'][$current_question_ident]['answer'][$current_answer_id]['value'])) {
                 $exercise_info['question'][$current_question_ident]['answer'][$current_answer_id]['value'] = trim($data);
@@ -642,12 +689,19 @@ function elementDataQti2($parser, $data)
         case 'VALUE':
             if ($parent_element == 'CORRECTRESPONSE') {
                 if ($cardinality == 'single') {
-                    //$exercise_info['question'][$current_question_ident]['correct_answers'][$current_answer_id] = $data;
                     $exercise_info['question'][$current_question_ident]['correct_answers'][$data] = $data;
                 } else {
                     $exercise_info['question'][$current_question_ident]['correct_answers'][] = $data;
                 }
             }
+
+            // Getting score of free answer
+            if ($grand_parent_element == 'OUTCOMEDECLARATION') {
+                if (!empty(trim($data))) {
+                    $exercise_info['question'][$current_question_ident]['weighting'][0] = trim($data);
+                }
+            }
+
             break;
         case 'ITEMBODY':
             // Replace relative links by links to the documents in the course
@@ -670,7 +724,7 @@ function elementDataQti2($parser, $data)
                 );
             } else {
                 if (!isset($exercise_info['question'][$current_question_ident]['wrong_answers'])) {
-                    $exercise_info['question'][$current_question_ident]['wrong_answers'] = array();
+                    $exercise_info['question'][$current_question_ident]['wrong_answers'] = [];
                 }
                 $exercise_info['question'][$current_question_ident]['wrong_answers'][] = $data;
             }
@@ -688,11 +742,11 @@ function elementDataQti2($parser, $data)
 }
 
 /**
- * Function used by the SAX xml parser when the parser meets a opening tag for QTI1
+ * Function used by the SAX xml parser when the parser meets a opening tag for QTI1.
  *
- * @param object $parser xml parser created with "xml_parser_create()"
- * @param string $name name of the element
- * @param array $attributes
+ * @param object $parser     xml parser created with "xml_parser_create()"
+ * @param string $name       name of the element
+ * @param array  $attributes
  */
 function startElementQti1($parser, $name, $attributes)
 {
@@ -716,7 +770,7 @@ function startElementQti1($parser, $name, $attributes)
     if (sizeof($element_pile) >= 2) {
         $parent_element = $element_pile[sizeof($element_pile) - 2];
     } else {
-        $parent_element = "";
+        $parent_element = '';
     }
     if (sizeof($element_pile) >= 3) {
         $grand_parent_element = $element_pile[sizeof($element_pile) - 3];
@@ -745,7 +799,6 @@ function startElementQti1($parser, $name, $attributes)
             if ($current_element == 'TEXTENTRYINTERACTION') {
                 $correct_answer_value = $exercise_info['question'][$current_question_ident]['correct_answers'][$current_answer_id];
                 $current_question_item_body .= "[".$correct_answer_value."]";
-
             }
             if ($current_element == 'BR') {
                 $current_question_item_body .= "<br />";
@@ -763,9 +816,9 @@ function startElementQti1($parser, $name, $attributes)
         case 'ITEM':
             //retrieve current question
             $current_question_ident = $attributes['IDENT'];
-            $exercise_info['question'][$current_question_ident] = array();
-            $exercise_info['question'][$current_question_ident]['answer'] = array();
-            $exercise_info['question'][$current_question_ident]['correct_answers'] = array();
+            $exercise_info['question'][$current_question_ident] = [];
+            $exercise_info['question'][$current_question_ident]['answer'] = [];
+            $exercise_info['question'][$current_question_ident]['correct_answers'] = [];
             $exercise_info['question'][$current_question_ident]['tempdir'] = $questionTempDir;
             break;
         case 'SECTION':
@@ -825,11 +878,11 @@ function startElementQti1($parser, $name, $attributes)
 }
 
 /**
- * Function used by the SAX xml parser when the parser meets a closing tag for QTI1
+ * Function used by the SAX xml parser when the parser meets a closing tag for QTI1.
  *
- * @param object $parser xml parser created with "xml_parser_create()"
- * @param string $name name of the element
- * @param array $attributes The element attributes
+ * @param object $parser     xml parser created with "xml_parser_create()"
+ * @param string $name       name of the element
+ * @param array  $attributes The element attributes
  */
 function endElementQti1($parser, $name, $attributes)
 {
@@ -906,7 +959,8 @@ function endElementQti1($parser, $name, $attributes)
 }
 
 /**
- * QTI1 element parser
+ * QTI1 element parser.
+ *
  * @param $parser
  * @param $data
  */
@@ -1007,8 +1061,10 @@ function elementDataQti1($parser, $data)
 }
 
 /**
- * Check if a given file is an IMS/QTI question bank file
+ * Check if a given file is an IMS/QTI question bank file.
+ *
  * @param string $filePath The absolute filepath
+ *
  * @return bool Whether it is an IMS/QTI question bank or not
  */
 function isQtiQuestionBank($filePath)
@@ -1028,8 +1084,10 @@ function isQtiQuestionBank($filePath)
 }
 
 /**
- * Check if a given file is an IMS/QTI manifest file (listing of extra files)
+ * Check if a given file is an IMS/QTI manifest file (listing of extra files).
+ *
  * @param string $filePath The absolute filepath
+ *
  * @return bool Whether it is an IMS/QTI manifest file or not
  */
 function isQtiManifest($filePath)
@@ -1047,9 +1105,11 @@ function isQtiManifest($filePath)
 
 /**
  * Processes an IMS/QTI manifest file: store links to new files
- * to be able to transform them into the questions text
+ * to be able to transform them into the questions text.
+ *
  * @param string $filePath The absolute filepath
- * @param array $links List of filepaths changes
+ * @param array  $links    List of filepaths changes
+ *
  * @return bool
  */
 function qtiProcessManifest($filePath)
@@ -1062,11 +1122,11 @@ function qtiProcessManifest($filePath)
     $exercisesSysPath = $sysPath.$courseDir.'/document/';
     $webPath = api_get_path(WEB_CODE_PATH);
     $exercisesWebPath = $webPath.'document/document.php?'.api_get_cidreq().'&action=download&id=';
-    $links = array(
-        'manifest' => array(),
-        'system' => array(),
-        'web' => array(),
-    );
+    $links = [
+        'manifest' => [],
+        'system' => [],
+        'web' => [],
+    ];
     $tableDocuments = Database::get_course_table(TABLE_DOCUMENT);
     $countResources = count($xml->resources->resource->file);
     for ($i = 0; $i < $countResources; $i++) {
@@ -1098,5 +1158,6 @@ function qtiProcessManifest($filePath)
             $links['web'][] = $exercisesWebPath.$documentId;
         }
     }
+
     return $links;
 }

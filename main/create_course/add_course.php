@@ -1,19 +1,22 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+use Chamilo\CoreBundle\Entity\CourseCategory;
+use Chamilo\CoreBundle\Entity\Repository\CourseCategoryRepository;
+
 /**
  * This script allows professors and administrative staff to create course sites.
+ *
  * @author Patrick Cool <patrick.cool@UGent.be>, Ghent University
  * @author Roan Embrechts, refactoring
+ *
  * @package chamilo.create_course
  * "Course validation" feature:
+ *
  * @author Jose Manuel Abuin Mosquera <chema@cesga.es>, Centro de Supercomputacion de Galicia
  * "Course validation" feature, technical adaptation for Chamilo 1.8.8:
  * @author Ivan Tcholakov <ivantcholakov@gmail.com>
  */
-
-use Chamilo\CoreBundle\Entity\Repository\CourseCategoryRepository;
-use Chamilo\CoreBundle\Entity\CourseCategory;
 
 // Flag forcing the "current course" reset.
 $cidReset = true;
@@ -39,7 +42,9 @@ $accessUrlId = api_get_current_access_url_id();
 // true  - the new course is requested only and it is created after approval;
 // false - the new course is created immediately, after filling this form.
 $course_validation_feature = false;
-if (api_get_setting('course_validation') === 'true' && !api_is_platform_admin()) {
+if (api_get_setting('course_validation') === 'true' &&
+    !api_is_platform_admin()
+) {
     $course_validation_feature = true;
 }
 
@@ -47,15 +52,15 @@ $htmlHeadXtra[] = '<script>
     function setFocus(){
         $("#title").focus();
     }
-    $(window).load(function () {
+    $(window).on("load", function () {
         setFocus();
     });
 </script>';
 
-$interbreadcrumb[] = array(
+$interbreadcrumb[] = [
     'url' => api_get_path(WEB_PATH).'user_portal.php',
-    'name' => get_lang('MyCourses')
-);
+    'name' => get_lang('MyCourses'),
+];
 
 // Displaying the header.
 $tool_name = $course_validation_feature ? get_lang('CreateCourseRequest') : get_lang('CreateSite');
@@ -72,13 +77,13 @@ $form->addElement('header', $tool_name);
 $form->addElement(
     'text',
     'title',
-    array(
+    [
         get_lang('CourseName'),
-        get_lang('Ex')
-    ),
-    array(
-        'id' => 'title'
-    )
+        get_lang('Ex'),
+    ],
+    [
+        'id' => 'title',
+    ]
 );
 $form->applyFilter('title', 'html_filter');
 $form->addRule('title', get_lang('ThisFieldIsRequired'), 'required');
@@ -89,12 +94,14 @@ $form->addElement(
     '<div id="advanced_params_options" style="display:none">'
 );
 
-$countCategories = $courseCategoriesRepo->countAllInAccessUrl($accessUrlId);
+$countCategories = $courseCategoriesRepo->countAllInAccessUrl(
+    $accessUrlId,
+    api_get_configuration_value('allow_base_course_category')
+);
 
 if ($countCategories >= 100) {
     // Category code
     $url = api_get_path(WEB_AJAX_PATH).'course.ajax.php?a=search_category';
-
     $form->addElement(
         'select_ajax',
         'category_code',
@@ -103,7 +110,10 @@ if ($countCategories >= 100) {
         ['url' => $url]
     );
 } else {
-    $categories = $courseCategoriesRepo->findAllInAccessUrl($accessUrlId);
+    $categories = $courseCategoriesRepo->findAllInAccessUrl(
+        $accessUrlId,
+        api_get_configuration_value('allow_base_course_category')
+    );
     $categoriesOptions = [null => get_lang('None')];
 
     /** @var CourseCategory $category */
@@ -121,16 +131,16 @@ if ($countCategories >= 100) {
 // Course code
 $form->addText(
     'wanted_code',
-    array(
+    [
         get_lang('Code'),
-        get_lang('OnlyLettersAndNumbers')
-    ),
+        get_lang('OnlyLettersAndNumbers'),
+    ],
     '',
-    array(
+    [
         'maxlength' => CourseManager::MAX_COURSE_LENGTH_CODE,
         'pattern' => '[a-zA-Z0-9]+',
-        'title' => get_lang('OnlyLettersAndNumbers')
-    )
+        'title' => get_lang('OnlyLettersAndNumbers'),
+    ]
 );
 $form->applyFilter('wanted_code', 'html_filter');
 $form->addRule(
@@ -141,14 +151,14 @@ $form->addRule(
 );
 
 // The teacher
-$titular = & $form->addElement('hidden', 'tutor_name', '');
+$titular = &$form->addElement('hidden', 'tutor_name', '');
 if ($course_validation_feature) {
     // Description of the requested course.
     $form->addElement(
         'textarea',
         'description',
         get_lang('Description'),
-        array('rows' => '3')
+        ['rows' => '3']
     );
 
     // Objectives of the requested course.
@@ -156,7 +166,7 @@ if ($course_validation_feature) {
         'textarea',
         'objetives',
         get_lang('Objectives'),
-        array('rows' => '3')
+        ['rows' => '3']
     );
 
     // Target audience of the requested course.
@@ -164,7 +174,7 @@ if ($course_validation_feature) {
         'textarea',
         'target_audience',
         get_lang('TargetAudience'),
-        array('rows' => '3')
+        ['rows' => '3']
     );
 }
 
@@ -177,8 +187,8 @@ if (count($languages['name']) === 1) {
     $form->addSelectLanguage(
         'course_language',
         get_lang('Ln'),
-        array(),
-        array('style' => 'width:150px')
+        [],
+        ['style' => 'width:150px']
     );
 }
 
@@ -191,7 +201,6 @@ $form->addElement(
 );
 
 if ($course_validation_feature) {
-
     // A special URL to terms and conditions that is set
     // in the platform settings page.
     $terms_and_conditions_url = trim(
@@ -291,7 +300,9 @@ if ($form->validate()) {
     }
 
     if ($wanted_code == '') {
-        $wanted_code = CourseManager::generate_course_code(api_substr($title, 0, CourseManager::MAX_COURSE_LENGTH_CODE));
+        $wanted_code = CourseManager::generate_course_code(
+            api_substr($title, 0, CourseManager::MAX_COURSE_LENGTH_CODE)
+        );
     }
 
     // Check whether the requested course code has already been occupied.
@@ -303,14 +314,14 @@ if ($form->validate()) {
 
     if ($course_code_ok) {
         if (!$course_validation_feature) {
-            $params = array();
+            $params = [];
             $params['title'] = $title;
             $params['exemplary_content'] = $exemplary_content;
             $params['wanted_code'] = $wanted_code;
             $params['course_category'] = $category_code;
             $params['course_language'] = $course_language;
             $params['gradebook_model_id'] = isset($course_values['gradebook_model_id']) ? $course_values['gradebook_model_id'] : null;
-            $params['course_template'] = $course_values['course_template'];
+            $params['course_template'] = isset($course_values['course_template']) ? $course_values['course_template'] : '';
 
             include_once api_get_path(SYS_CODE_PATH).'lang/english/trad4all.inc.php';
             $file_to_include = api_get_path(SYS_CODE_PATH).'lang/'.$course_language.'/trad4all.inc.php';

@@ -2,10 +2,10 @@
 /* For license terms, see /license.txt */
 
 /**
- * Configuration script for the Buy Courses plugin
+ * Configuration script for the Buy Courses plugin.
+ *
  * @package chamilo.plugin.buycourses
  */
-
 $cidReset = true;
 
 require_once '../config.php';
@@ -21,7 +21,8 @@ $plugin = BuyCoursesPlugin::create();
 $commissionsEnable = $plugin->get('commissions_enable');
 
 if ($commissionsEnable == 'true') {
-    $htmlHeadXtra[] = '<script type="text/javascript" src="'.api_get_path(WEB_PLUGIN_PATH).'buycourses/resources/js/commissions.js"></script>';
+    $htmlHeadXtra[] = '<script type="text/javascript" src="'.api_get_path(WEB_PLUGIN_PATH)
+        .'buycourses/resources/js/commissions.js"></script>';
     $defaultCommissions = [];
     $commissions = '';
 }
@@ -57,7 +58,7 @@ if ($editingCourse) {
         $teacher = $courseTeacher->getUser();
         $teachersOptions[] = [
             'text' => $teacher->getCompleteName(),
-            'value' => $teacher->getId()
+            'value' => $teacher->getId(),
         ];
 
         $defaultBeneficiaries[] = $teacher->getId();
@@ -88,7 +89,7 @@ if ($editingCourse) {
         'visible' => $courseItem['visible'],
         'price' => $courseItem['price'],
         'beneficiaries' => $defaultBeneficiaries,
-        ($commissionsEnable == "true") ? 'commissions' : '' => ($commissionsEnable == "true") ? $commissions : ''
+        ($commissionsEnable == "true") ? 'commissions' : '' => ($commissionsEnable == "true") ? $commissions : '',
     ];
 } elseif ($editingSession) {
     if (!$includeSession) {
@@ -105,10 +106,10 @@ if ($editingCourse) {
     $generalCoach = $session->getGeneralCoach();
     $generalCoachOption = [
         'text' => $generalCoach->getCompleteName(),
-        'value' => $generalCoach->getId()
+        'value' => $generalCoach->getId(),
     ];
     $defaultBeneficiaries = [
-        $generalCoach->getId()
+        $generalCoach->getId(),
     ];
     $courseCoachesOptions = [];
     $sessionCourses = $session->getCourses();
@@ -123,7 +124,7 @@ if ($editingCourse) {
 
             $courseCoachesOptions[] = [
                 'text' => $courseCoach->getCompleteName(),
-                'value' => $courseCoach->getId()
+                'value' => $courseCoach->getId(),
             ];
             $defaultBeneficiaries[] = $courseCoach->getId();
         }
@@ -154,36 +155,39 @@ if ($editingCourse) {
         'visible' => $sessionItem['visible'],
         'price' => $sessionItem['price'],
         'beneficiaries' => $defaultBeneficiaries,
-        ($commissionsEnable == "true") ? 'commissions' : '' => ($commissionsEnable == "true") ? $commissions : ''
+        ($commissionsEnable == "true") ? 'commissions' : '' => ($commissionsEnable == "true") ? $commissions : '',
     ];
 } else {
     api_not_allowed(true);
 }
 
 if ($commissionsEnable === 'true') {
-    $htmlHeadXtra[] = ''
-    . '<script>'
-        . '$(function(){'
-            . 'if ($("[name=\'commissions\']").val() === "") {'
-                . '$("#panelSliders").html("<button id=\"setCommissionsButton\" class=\"btn btn-warning\">'.get_plugin_lang("SetCommissions", "BuyCoursesPlugin").'</button>");'
-            . '} else {'
-                . 'showSliders(100, "default", "'.$commissions.'");'
-            . '}'
-        . '});'
+    $htmlHeadXtra[] = "
+        <script>
+            $(function() {
+                if ($('[name=\"commissions\"]').val() === '') {
+                    $('#panelSliders').html(
+                        '<button id=\"setCommissionsButton\" class=\"btn btn-warning\">'
+                            + '".get_plugin_lang('SetCommissions', 'BuyCoursesPlugin')."'
+                    );
+                } else {
+                    showSliders(100, 'default', '".$commissions."');
+                }
+            });
 
-        . '$(document).ready(function() {'
-            . 'var maxPercentage = 100;'
-            . '$("#selectBox").on("change", function() {'
-                . ' $("#panelSliders").html("");'
-                . 'showSliders(maxPercentage, "renew");'
-            . '});'
+            $(document).ready(function () {
+                var maxPercentage = 100;
+                $('#selectBox').on('change', function() {
+                    $('#panelSliders').html('');
+                });
 
-            . '$("#setCommissionsButton").on("click", function() {'
-                . ' $("#panelSliders").html("");'
-                . 'showSliders(maxPercentage, "renew");'
-            . '});'
-        . '});'
-    . '</script>';
+                $('#setCommissionsButton').on('click', function() {
+                    $('#panelSliders').html('');
+                    showSliders(maxPercentage, 'renew');
+                });
+            });
+        </script>
+    ";
 }
 
 $form = new FormValidator('beneficiaries');
@@ -218,20 +222,21 @@ if ($editingCourse) {
 
 if ($commissionsEnable === 'true') {
     $platformCommission = $plugin->getPlatformCommission();
-    $form->addHtml(''
-            . '<div class="form-group">'
-                . '<label for="sliders" class="col-sm-2 control-label">'
-                    . get_plugin_lang('Commissions', 'BuyCoursesPlugin')
-                . '</label>'
-                . '<div class="col-sm-8">'
-                    . Display::return_message(
-                        sprintf($plugin->get_lang('TheActualPlatformCommissionIsX'), $platformCommission['commission'].'%'),
-                        'info',
-                        false
-                    )
-                    . '<div class="" id="panelSliders"></div>'
-                . '</div>'
-            . '</div>'
+    $form->addHtml(
+        '
+        <div class="form-group">
+            <label for="sliders" class="col-sm-2 control-label">
+                '.get_plugin_lang('Commissions', 'BuyCoursesPlugin').'
+            </label>
+            <div class="col-sm-8">
+                '.Display::return_message(
+                    sprintf($plugin->get_lang('TheActualPlatformCommissionIsX'), $platformCommission['commission'].'%'),
+                    'info',
+                    false
+                ).'
+                <div class="" id="panelSliders"></div>
+            </div>
+        </div>'
     );
 
     $form->addHidden('commissions', '');
@@ -258,7 +263,7 @@ if ($form->validate()) {
                 'currency_id' => (int) $currency['id'],
                 'product_type' => $formValues['t'],
                 'product_id' => intval($formValues['i']),
-                'price' => floatval($_POST['price'])
+                'price' => floatval($_POST['price']),
             ]);
             $productItem['id'] = $itemId;
         }
@@ -269,7 +274,9 @@ if ($form->validate()) {
             if ($commissionsEnable === 'true') {
                 $usersId = $formValues['beneficiaries'];
                 $commissions = explode(",", $formValues['commissions']);
-                $commissions = (count($usersId) != count($commissions)) ? array_fill(0, count($usersId), 0) : $commissions;
+                $commissions = (count($usersId) != count($commissions))
+                    ? array_fill(0, count($usersId), 0)
+                    : $commissions;
                 $beneficiaries = array_combine($usersId, $commissions);
             } else {
                 $usersId = $formValues['beneficiaries'];
@@ -294,11 +301,11 @@ $templateName = $plugin->get_lang('AvailableCourse');
 
 $interbreadcrumb[] = [
     'url' => 'paymentsetup.php',
-    'name' => get_lang('Configuration')
+    'name' => get_lang('Configuration'),
 ];
 $interbreadcrumb[] = [
     'url' => 'configuration.php',
-    'name' => $plugin->get_lang('AvailableCourses')
+    'name' => $plugin->get_lang('AvailableCourses'),
 ];
 
 $template = new Template($templateName);

@@ -2,7 +2,8 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * Exercise
+ * Exercise.
+ *
  * @package chamilo.exercise
  */
 require_once __DIR__.'/../inc/global.inc.php';
@@ -14,7 +15,7 @@ $this_section = SECTION_COURSES;
 api_protect_course_script(true);
 
 // breadcrumbs
-$interbreadcrumb[] = array("url" => "exercise.php", "name" => get_lang('Exercises'));
+$interbreadcrumb[] = ["url" => "exercise.php", "name" => get_lang('Exercises')];
 
 // Tool name
 $nameTools = get_lang('AddQuestionToExercise');
@@ -25,8 +26,8 @@ $form = new FormValidator('add_question', 'post', api_get_self().'?'.api_get_cid
 $form->addElement('header', '', get_lang('AddQuestionToExercise'));
 
 $question_list = Question::get_question_type_list();
-$question_list_options = array();
-foreach ($question_list as $key=> $value) {
+$question_list_options = [];
+foreach ($question_list as $key => $value) {
     $question_list_options[$key] = addslashes(get_lang($value[1]));
 }
 $form->addElement(
@@ -34,7 +35,7 @@ $form->addElement(
     'question_type_hidden',
     get_lang('QuestionType'),
     $question_list_options,
-    array('id' => 'question_type_hidden')
+    ['id' => 'question_type_hidden']
 );
 
 //session id
@@ -51,17 +52,17 @@ $sql = "SELECT id,title,type,description, results_disabled
 $result = Database::query($sql);
 $exercises['-'] = '-'.get_lang('SelectExercise').'-';
 while ($row = Database :: fetch_array($result)) {
-	$exercises[$row['id']] = cut($row['title'], EXERCISE_MAX_NAME_SIZE);
+    $exercises[$row['id']] = cut($row['title'], EXERCISE_MAX_NAME_SIZE);
 }
 $form->addElement('select', 'exercise', get_lang('Exercise'), $exercises);
 
 // generate default content
 $form->addElement(
-	'checkbox',
-	'is_content',
-	null,
-	get_lang('GenerateDefaultContent'),
-	array('checked' => true)
+    'checkbox',
+    'is_content',
+    null,
+    get_lang('GenerateDefaultContent'),
+    ['checked' => true]
 );
 
 // the submit button
@@ -93,7 +94,7 @@ if ($form->validate()) {
     }
     header('Location: admin.php?exerciseId='.$values['exercise'].'&newQuestion=yes&isContent='.$values['is_content'].'&answerType='.$answer_type);
     exit;
-    } else {
+} else {
     // header
     Display::display_header($nameTools);
 
@@ -108,7 +109,8 @@ if ($form->validate()) {
     Display::display_footer();
 }
 
-function check_question_type($parameter) {
+function check_question_type($parameter)
+{
     $question_list = Question::get_question_type_list();
     foreach ($question_list as $key => $value) {
         $valid_question_types[] = $key;

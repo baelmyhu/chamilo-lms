@@ -6,11 +6,11 @@ use Chamilo\CourseBundle\Entity\CItemProperty;
 use Chamilo\PluginBundle\Entity\StudentFollowUp\CarePost;
 use Fhaculty\Graph\Graph;
 use Graphp\GraphViz\GraphViz;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\BufferHandler;
 use Monolog\Handler\NativeMailerHandler;
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Handler\BufferHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 if (PHP_SAPI != 'cli') {
     die('Run this script through the command line or comment this line in the code');
@@ -25,30 +25,31 @@ require_once __DIR__.'/../inc/global.inc.php';
 ini_set('memory_limit', -1);
 ini_set('max_execution_time', 0);
 ini_set('log_errors', '1');
+ini_set('display_errors', '1');
 
 /**
- * Class ImportCsv
+ * Class ImportCsv.
  */
 class ImportCsv
 {
-    private $logger;
-    private $dumpValues;
     public $test;
     public $defaultLanguage = 'dutch';
-    public $extraFieldIdNameList = array(
+    public $extraFieldIdNameList = [
         'session' => 'external_session_id',
         'session_career' => 'external_career_id',
         'course' => 'external_course_id',
         'user' => 'external_user_id',
         'calendar_event' => 'external_calendar_event_id',
         'career' => 'external_career_id',
+        'career_urls' => 'career_urls',
         'career_diagram' => 'career_diagram',
-    );
+    ];
     public $defaultAdminId = 1;
     public $defaultSessionVisibility = 1;
 
     /**
-     * When creating a user the expiration date is set to registration date + this value
+     * When creating a user the expiration date is set to registration date + this value.
+     *
      * @var int number of years
      */
     public $expirationDateInUserCreation = 1;
@@ -56,13 +57,16 @@ class ImportCsv
     public $batchSize = 20;
 
     /**
-     * When updating a user the expiration date is set to update date + this value
+     * When updating a user the expiration date is set to update date + this value.
+     *
      * @var int number of years
      */
     public $expirationDateInUserUpdate = 1;
     public $daysCoachAccessBeforeBeginning = 14;
     public $daysCoachAccessAfterBeginning = 14;
     public $conditions;
+    private $logger;
+    private $dumpValues;
     private $updateEmailToDummy;
 
     /**
@@ -85,7 +89,7 @@ class ImportCsv
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getDumpValues()
     {
@@ -93,7 +97,7 @@ class ImportCsv
     }
 
     /**
-     * Runs the import process
+     * Runs the import process.
      */
     public function run()
     {
@@ -118,16 +122,17 @@ class ImportCsv
         echo "Reading files: ".PHP_EOL.PHP_EOL;
 
         $files = scandir($path);
-        $fileToProcess = array();
-        $fileToProcessStatic = array();
-        $teacherBackup = array();
-        $groupBackup = array();
+        $fileToProcess = [];
+        $fileToProcessStatic = [];
+        $teacherBackup = [];
+        $groupBackup = [];
 
         if (!empty($files)) {
             foreach ($files as $file) {
                 $fileInfo = pathinfo($file);
                 if (isset($fileInfo['extension']) && $fileInfo['extension'] === 'csv') {
-                    // Checking teachers_yyyymmdd.csv, courses_yyyymmdd.csv, students_yyyymmdd.csv and sessions_yyyymmdd.csv
+                    // Checking teachers_yyyymmdd.csv,
+                    // courses_yyyymmdd.csv, students_yyyymmdd.csv and sessions_yyyymmdd.csv
                     $parts = explode('_', $fileInfo['filename']);
                     $preMethod = ucwords($parts[1]);
                     $preMethod = str_replace('-static', 'Static', $preMethod);
@@ -161,22 +166,22 @@ class ImportCsv
                             ) ||
                             empty($isStatic)
                         ) {
-                            $fileToProcess[$parts[1]][] = array(
+                            $fileToProcess[$parts[1]][] = [
                                 'method' => $method,
-                                'file' => $path.$fileInfo['basename']
-                            );
+                                'file' => $path.$fileInfo['basename'],
+                            ];
                         } else {
-                            $fileToProcessStatic[$parts[1]][] = array(
+                            $fileToProcessStatic[$parts[1]][] = [
                                 'method' => $method,
-                                'file' => $path.$fileInfo['basename']
-                            );
+                                'file' => $path.$fileInfo['basename'],
+                            ];
                         }
                     } else {
                         echo "Error - This file '$file' can't be processed.".PHP_EOL;
                         echo "Trying to call $method".PHP_EOL;
-
                         echo "The file have to has this format:".PHP_EOL;
-                        echo "prefix_students_ddmmyyyy.csv, prefix_teachers_ddmmyyyy.csv, prefix_courses_ddmmyyyy.csv, prefix_sessions_ddmmyyyy.csv ".PHP_EOL;
+                        echo "prefix_students_ddmmyyyy.csv, prefix_teachers_ddmmyyyy.csv, 
+                        prefix_courses_ddmmyyyy.csv, prefix_sessions_ddmmyyyy.csv ".PHP_EOL;
                         exit;
                     }
                 }
@@ -190,7 +195,7 @@ class ImportCsv
 
             $this->prepareImport();
 
-            $sections = array(
+            $sections = [
                 'students',
                 'teachers',
                 'courses',
@@ -200,20 +205,21 @@ class ImportCsv
                 'unsubscribe-static',
                 'care',
                 'careers',
-                'careersdiagram'
-            );
+                'careersdiagram',
+            ];
 
             foreach ($sections as $section) {
-                $this->logger->addInfo("-- Import $section --");
-
                 if (isset($fileToProcess[$section]) && !empty($fileToProcess[$section])) {
+                    $this->logger->addInfo("-- Import $section --");
                     $files = $fileToProcess[$section];
                     foreach ($files as $fileInfo) {
                         $method = $fileInfo['method'];
                         $file = $fileInfo['file'];
-
                         echo 'File: '.$file.PHP_EOL;
+                        echo 'Method : '.$method.PHP_EOL;
+                        echo PHP_EOL;
                         $this->logger->addInfo("Reading file: $file");
+                        $this->logger->addInfo("Loading method $method ");
                         if ($method == 'importSessions') {
                             $this->$method(
                                 $file,
@@ -229,7 +235,7 @@ class ImportCsv
                 }
             }
 
-            $sections = array(
+            $sections = [
                 'students-static',
                 'teachers-static',
                 'courses-static',
@@ -238,22 +244,24 @@ class ImportCsv
                 'sessionsextid-static',
                 'unsubscribe-static',
                 'unsubsessionsextid-static',
-                'subsessionsextid-static'
-            );
+                'subsessionsextid-static',
+            ];
 
             foreach ($sections as $section) {
-                $this->logger->addInfo("-- Import static files $section --");
-
                 if (isset($fileToProcessStatic[$section]) &&
                     !empty($fileToProcessStatic[$section])
                 ) {
+                    $this->logger->addInfo("-- Import static files $section --");
                     $files = $fileToProcessStatic[$section];
                     foreach ($files as $fileInfo) {
                         $method = $fileInfo['method'];
 
                         $file = $fileInfo['file'];
                         echo 'Static file: '.$file.PHP_EOL;
+                        echo 'Method : '.$method.PHP_EOL;
+                        echo PHP_EOL;
                         $this->logger->addInfo("Reading static file: $file");
+                        $this->logger->addInfo("Loading method $method ");
                         $this->$method(
                             $file,
                             true,
@@ -270,7 +278,162 @@ class ImportCsv
     }
 
     /**
-     * Prepares extra fields before the import
+     * @param $file
+     * @param bool $moveFile
+     */
+    public function importCare($file, $moveFile = false)
+    {
+        $data = Import::csv_reader($file);
+        $counter = 1;
+        $batchSize = $this->batchSize;
+        $em = Database::getManager();
+
+        if (!empty($data)) {
+            $this->logger->addInfo(count($data)." records found.");
+            $items = [];
+            foreach ($data as $list) {
+                $post = [];
+                foreach ($list as $key => $value) {
+                    $key = (string) trim($key);
+                    // Remove utf8 bom
+                    $key = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $key);
+                    $post[$key] = $value;
+                }
+
+                if (empty($post)) {
+                    continue;
+                }
+
+                $externalId = $post['External_care_id'];
+                $items[$externalId] = $post;
+            }
+            ksort($items);
+
+            foreach ($items as $row) {
+                // Insert user
+                //$insertUserInfo = api_get_user_info_from_username($row['Added_by']);
+
+                // User about the post
+                $userId = UserManager::get_user_id_from_original_id(
+                    $row['Added_by'],
+                    $this->extraFieldIdNameList['user']
+                );
+
+                $insertUserInfo = api_get_user_info($userId);
+
+                if (empty($insertUserInfo)) {
+                    $this->logger->addInfo("User: '".$row['Added_by']."' doesn't exists. Skip this entry.");
+                    continue;
+                }
+                $insertUserInfo = api_get_user_entity($insertUserInfo['user_id']);
+
+                // User about the post
+                $userId = UserManager::get_user_id_from_original_id(
+                    $row['External_user_id'],
+                    $this->extraFieldIdNameList['user']
+                );
+
+                if (empty($userId)) {
+                    $this->logger->addInfo("User does '".$row['External_user_id']."' not exists skip this entry.");
+                    continue;
+                }
+
+                $userInfo = api_get_user_entity($userId);
+
+                if (empty($userInfo)) {
+                    $this->logger->addInfo("Chamilo user does not found: #".$userId."' ");
+                    continue;
+                }
+
+                // Dates
+                $createdAt = $this->createDateTime($row['Added_On']);
+                $updatedAt = $this->createDateTime($row['Edited_on']);
+
+                // Parent
+                $parent = null;
+                if (!empty($row['Parent_id'])) {
+                    $parentId = $items[$row['Parent_id']];
+                    $criteria = [
+                        'externalCareId' => $parentId,
+                    ];
+                    $parent = $em->getRepository('ChamiloPluginBundle:StudentFollowUp\CarePost')->findOneBy($criteria);
+                }
+
+                // Tags
+                $tags = explode(',', $row['Tags']);
+
+                // Check if post already was added:
+                $criteria = [
+                    'externalCareId' => $row['External_care_id'],
+                ];
+                $post = $em->getRepository('ChamiloPluginBundle:StudentFollowUp\CarePost')->findOneBy($criteria);
+
+                if (empty($post)) {
+                    $post = new CarePost();
+                    $this->logger->addInfo("New post will be created no match for externalCareId = ".$row['External_care_id']);
+                }
+
+                $contentDecoded = base64_decode($row['Article']);
+
+                $post
+                    ->setTitle($row['Title'])
+                    ->setContent($contentDecoded)
+                    ->setExternalCareId($row['External_care_id'])
+                    ->setCreatedAt($createdAt)
+                    ->setUpdatedAt($updatedAt)
+                    ->setPrivate((int) $row['Private'])
+                    ->setInsertUser($insertUserInfo)
+                    ->setExternalSource((int) $row['Source_is_external'])
+                    ->setParent($parent)
+                    ->setTags($tags)
+                    ->setUser($userInfo)
+                    ->setAttachment($row['Attachement'])
+                ;
+                $em->persist($post);
+                $em->flush();
+
+                $this->logger->addInfo("Post id saved #".$post->getId());
+
+                if (($counter % $batchSize) === 0) {
+                    $em->flush();
+                    $em->clear(); // Detaches all objects from Doctrine!
+                }
+                $counter++;
+            }
+
+            $em->clear(); // Detaches all objects from Doctrine!
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdateEmailToDummy()
+    {
+        return $this->updateEmailToDummy;
+    }
+
+    /**
+     * @param mixed $updateEmailToDummy
+     */
+    public function setUpdateEmailToDummy($updateEmailToDummy)
+    {
+        $this->updateEmailToDummy = $updateEmailToDummy;
+    }
+
+    /**
+     * Change emails of all users except admins.
+     */
+    public function updateUsersEmails()
+    {
+        if ($this->getUpdateEmailToDummy() === true) {
+            $sql = "UPDATE user SET email = CONCAT(username,'@example.com') WHERE id NOT IN (SELECT user_id FROM admin)";
+            Database::query($sql);
+        }
+    }
+
+    /**
+     * Prepares extra fields before the import.
      */
     private function prepareImport()
     {
@@ -306,30 +469,39 @@ class ImportCsv
         // Create calendar_event extra field extra_external_session_id
         $extraField = new ExtraField('calendar_event');
         $extraField->save(
-            array(
+            [
                 'field_type' => ExtraField::FIELD_TYPE_TEXT,
                 'variable' => $this->extraFieldIdNameList['calendar_event'],
                 'display_text' => 'External calendar event id',
-            )
+            ]
         );
 
         $extraField = new ExtraField('career');
         $extraField->save(
-            array(
+            [
                 'visible_to_self' => 1,
                 'field_type' => ExtraField::FIELD_TYPE_TEXT,
                 'variable' => $this->extraFieldIdNameList['career'],
                 'display_text' => 'External career id',
-            )
+            ]
         );
 
         $extraField->save(
-            array(
+            [
                 'visible_to_self' => 1,
                 'field_type' => ExtraField::FIELD_TYPE_TEXTAREA,
                 'variable' => $this->extraFieldIdNameList['career_diagram'],
                 'display_text' => 'Career diagram',
-            )
+            ]
+        );
+
+        $extraField->save(
+            [
+                'visible_to_self' => 1,
+                'field_type' => ExtraField::FIELD_TYPE_TEXTAREA,
+                'variable' => $this->extraFieldIdNameList['career_urls'],
+                'display_text' => 'Career urls',
+            ]
         );
     }
 
@@ -396,7 +568,7 @@ class ImportCsv
         $row['language'] = $row['Language'];
         $row['visibility'] = isset($row['Visibility']) ? $row['Visibility'] : COURSE_VISIBILITY_REGISTERED;
 
-        $row['teachers'] = array();
+        $row['teachers'] = [];
         if (isset($row['Teacher']) && !empty($row['Teacher'])) {
             $this->logger->addInfo("Teacher list found: ".$row['Teacher']);
             $teachers = explode(',', $row['Teacher']);
@@ -420,7 +592,8 @@ class ImportCsv
     }
 
     /**
-     * File to import
+     * File to import.
+     *
      * @param string $file
      */
     private function importTeachersStatic($file)
@@ -429,9 +602,10 @@ class ImportCsv
     }
 
     /**
-     * File to import
+     * File to import.
+     *
      * @param string $file
-     * @param bool $moveFile
+     * @param bool   $moveFile
      */
     private function importTeachers($file, $moveFile = true)
     {
@@ -463,7 +637,7 @@ class ImportCsv
                     $row['extra_'.$this->extraFieldIdNameList['user']],
                     $this->extraFieldIdNameList['user']
                 );
-                $userInfo = array();
+                $userInfo = [];
                 $userInfoByOfficialCode = null;
 
                 if (!empty($user_id)) {
@@ -584,7 +758,7 @@ class ImportCsv
 
     /**
      * @param string $file
-     * @param bool $moveFile
+     * @param bool   $moveFile
      */
     private function importStudents($file, $moveFile = true)
     {
@@ -612,8 +786,12 @@ class ImportCsv
             $language = $this->defaultLanguage;
             $this->logger->addInfo(count($data)." records found.");
 
-            $expirationDateOnCreate = api_get_utc_datetime(strtotime("+".intval($this->expirationDateInUserCreation)."years"));
-            $expirationDateOnUpdate = api_get_utc_datetime(strtotime("+".intval($this->expirationDateInUserUpdate)."years"));
+            $expirationDateOnCreate = api_get_utc_datetime(
+                strtotime("+".intval($this->expirationDateInUserCreation)."years")
+            );
+            $expirationDateOnUpdate = api_get_utc_datetime(
+                strtotime("+".intval($this->expirationDateInUserUpdate)."years")
+            );
 
             $counter = 1;
             $secondsInYear = 365 * 24 * 60 * 60;
@@ -625,7 +803,7 @@ class ImportCsv
                     $this->extraFieldIdNameList['user']
                 );
 
-                $userInfo = array();
+                $userInfo = [];
                 $userInfoByOfficialCode = null;
                 if (!empty($user_id)) {
                     $userInfo = api_get_user_info($user_id, false, true);
@@ -806,14 +984,14 @@ class ImportCsv
     /**
      * @param string $file
      */
-    private function importCoursesStatic($file, $moveFile, &$teacherBackup = array(), &$groupBackup = array())
+    private function importCoursesStatic($file, $moveFile, &$teacherBackup = [], &$groupBackup = [])
     {
         $this->importCourses($file, true, $teacherBackup, $groupBackup);
     }
 
     /**
      * @param string $file
-     * @param bool $moveFile
+     * @param bool   $moveFile
      *
      * @return int
      */
@@ -826,7 +1004,7 @@ class ImportCsv
 
         if (!empty($data)) {
             $this->logger->addInfo(count($data)." records found.");
-            $eventsToCreate = array();
+            $eventsToCreate = [];
             $errorFound = false;
 
             foreach ($data as $row) {
@@ -854,7 +1032,6 @@ class ImportCsv
                     $this->logger->addInfo("external_sessionID: ".$externalSessionId." does not exists.");
                 }
                 $teacherId = null;
-
                 if (!empty($sessionId) && !empty($courseInfo)) {
                     $courseIncluded = SessionManager::relation_session_course_exist(
                         $sessionId,
@@ -914,7 +1091,7 @@ class ImportCsv
                 }
 
                 if ($errorFound == false) {
-                    $eventsToCreate[] = array(
+                    $eventsToCreate[] = [
                         'start' => $startDate,
                         'end' => $endDate,
                         'title' => $title,
@@ -924,15 +1101,13 @@ class ImportCsv
                         'comment' => $comment,
                         'color' => $color,
                         $this->extraFieldIdNameList['calendar_event'] => $row['external_calendar_itemID'],
-                    );
+                    ];
                 }
                 $errorFound = false;
             }
 
             if (empty($eventsToCreate)) {
-                $this->logger->addInfo(
-                    "No events to add"
-                );
+                $this->logger->addInfo("No events to add");
 
                 return 0;
             }
@@ -963,7 +1138,7 @@ class ImportCsv
             $report = [
                 'mail_sent' => 0,
                 'mail_not_sent_announcement_exists' => 0,
-                'mail_not_sent_because_date' => 0
+                'mail_not_sent_because_date' => 0,
             ];
 
             $eventsToCreateFinal = [];
@@ -1020,7 +1195,7 @@ class ImportCsv
 
                         $criteria = [
                             'tool' => 'calendar_event',
-                            'ref' => $item['item_id']
+                            'ref' => $item['item_id'],
                         ];
                         /** @var CItemProperty $itemProperty */
                         $itemProperty = $em->getRepository('ChamiloCourseBundle:CItemProperty')->findOneBy($criteria);
@@ -1029,6 +1204,34 @@ class ImportCsv
                             $itemProperty->setCourse($courseEntity);
                             $em->persist($itemProperty);
                             $em->flush();
+                        }
+                    }
+                    $this->logger->addInfo('Move from course #'.$calendarEvent->getCId().' to #'.$courseInfo['real_id']);
+
+                    // Checking if session still exists
+                    $calendarSessionId = (int) $calendarEvent->getSessionId();
+                    if (!empty($calendarSessionId)) {
+                        $calendarSessionInfo = api_get_session_info($calendarSessionId);
+                        if (empty($calendarSessionInfo)) {
+                            $calendarId = (int) $calendarEvent->getIid();
+
+                            // Delete calendar events because the session was deleted!
+                            $this->logger->addInfo(
+                                "Delete event # $calendarId because session # $calendarSessionId doesn't exist"
+                            );
+
+                            $sql = "DELETE FROM c_calendar_event 
+                                    WHERE iid = $calendarId AND session_id = $calendarSessionId";
+                            Database::query($sql);
+                            $this->logger->addInfo($sql);
+
+                            $sql = "DELETE FROM c_item_property 
+                                    WHERE 
+                                        tool = 'calendar_event' AND 
+                                        ref = $calendarSessionId AND 
+                                        session_id = $calendarSessionId";
+                            Database::query($sql);
+                            $this->logger->addInfo($sql);
                         }
                     }
                 } else {
@@ -1059,7 +1262,7 @@ class ImportCsv
                 $item = $event['item'];
                 $update = $event['update'];
                 $externalEventId = $event['external_event_id'];
-                $info = 'Course: '.$courseInfo['real_id'].' ('.$courseInfo['code'].') - Session: '.$event['session_id'];
+                $info = 'Course: '.$courseInfo['real_id'].' ('.$courseInfo['code'].') - Session: '.$event['session_id'].' external event id: '.$externalEventId;
 
                 $agenda = new Agenda(
                     'course',
@@ -1108,15 +1311,19 @@ class ImportCsv
                 $days = 5;
                 $startDatePlusDays = api_strtotime("$days weekdays");
 
+                /*
+                $timePart = date('H:i:s', api_strtotime('now'));
+                $datePart = date('Y-m-d', api_strtotime("$days weekdays"));
+                $startDatePlusDays = "$timePart $datePart";
+                */
                 $this->logger->addInfo(
                     "startDatePlusDays: ".api_get_utc_datetime($startDatePlusDays).' - First date: '.$firstDate
                 );
 
                 // Send
+                $sendMail = false;
                 if ($startDatePlusDays > api_strtotime($firstDate)) {
                     $sendMail = true;
-                } else {
-                    $sendMail = false;
                 }
 
                 // Send announcement to users
@@ -1141,14 +1348,14 @@ class ImportCsv
                     }
 
                     $courseTitle = $courseInfo['title'].$sessionName;
-
                     $emailBody = get_lang('Dear').' ((user_firstname)) <br />'.
                         sprintf(
-                        get_lang('YouHaveBeenSubscribedToCourseXTheStartDateXAndCommentX'),
-                        $courseTitle,
-                        $date,
-                        $event['comment']
-                    );
+                            get_lang('YouHaveBeenSubscribedToCourseXTheStartDateXAndCommentX'),
+                            $courseTitle,
+                            $date,
+                            $event['comment']
+                        )
+                    ;
 
                     $subject = sprintf(
                         get_lang('AgendaAvailableInCourseX'),
@@ -1156,8 +1363,8 @@ class ImportCsv
                     );
 
                     $coaches = SessionManager::getCoachesByCourseSession(
-                        $courseInfo['real_id'],
-                        $event['session_id']
+                        $event['session_id'],
+                        $courseInfo['real_id']
                     );
 
                     // Search if an announcement exists:
@@ -1179,7 +1386,7 @@ class ImportCsv
                             $emailBody,
                             [
                                 'everyone',
-                                'users' => $coaches
+                                'users' => $coaches,
                             ],
                             [],
                             null,
@@ -1189,19 +1396,21 @@ class ImportCsv
                         );
 
                         if ($announcementId) {
-                            $this->logger->addInfo(
-                                "Announcement added: ".(int) ($announcementId)." in $info"
-                            );
-                            $this->logger->addInfo(
-                                "<<--SENDING MAIL-->>"
-                            );
-
+                            $this->logger->addInfo("Announcement added: ".(int) ($announcementId)." in $info");
+                            $this->logger->addInfo("<<--SENDING MAIL-->>");
                             $report['mail_sent']++;
                             AnnouncementManager::sendEmail(
                                 $courseInfo,
                                 $event['session_id'],
                                 $announcementId,
-                                false
+                                false,
+                                false,
+                                $this->logger,
+                                $this->defaultAdminId
+                            );
+                        } else {
+                            $this->logger->addError(
+                                "Error when trying to add announcement with title ".$subject." here: $info"
                             );
                         }
                     } else {
@@ -1211,38 +1420,86 @@ class ImportCsv
                         );
                     }
                 } else {
+                    $this->logger->addInfo(
+                        "Send Mail: ".intval($sendMail).' - Already added: '.intval($alreadyAdded)
+                    );
                     if ($sendMail == false) {
                         $report['mail_not_sent_because_date']++;
                     }
                 }
+
                 $content = '';
                 if ($update && isset($item['item_id'])) {
-                    //the event already exists, just update
-                    $eventResult = $agenda->editEvent(
-                        $item['item_id'],
-                        $event['start'],
-                        $event['end'],
-                        false,
-                        $event['title'],
-                        $content,
-                        array('everyone'), // $usersToSend
-                        array(), //$attachmentArray = array(),
-                        [], //$attachmentCommentList
-                        $eventComment,
-                        $color,
-                        false,
-                        false,
-                        $this->defaultAdminId
-                    );
+                    $eventInfo = $agenda->get_event($item['item_id']);
+                    if (empty($eventInfo)) {
+                        // Means that agenda external id exists but the event doesn't exist
+                        $this->logger->addInfo("external event id exists: $externalEventId");
+                        $this->logger->addInfo("but Chamilo event doesn't exists: ".$item['item_id']);
 
-                    if ($eventResult !== false) {
-                        $this->logger->addInfo(
-                            "Event updated #".$item['item_id']." External cal Id: (".$externalEventId.") $info"
+                        $eventId = $agenda->addEvent(
+                            $event['start'],
+                            $event['end'],
+                            false,
+                            $event['title'],
+                            $content,
+                            ['everyone'], // $usersToSend
+                            false, //$addAsAnnouncement = false
+                            null, //  $parentEventId
+                            [], //$attachmentArray = array(),
+                            [], //$attachmentCommentList
+                            $eventComment,
+                            $color
                         );
+
+                        if (!empty($eventId)) {
+                            $this->logger->addInfo("Chamilo event created: ".$eventId);
+                            $extraFieldValueItem = $extraFieldValue->get_values_by_handler_and_field_id(
+                                $item['item_id'],
+                                $extraFieldInfo['id']
+                            );
+
+                            if (!empty($extraFieldValueItem) && isset($extraFieldValueItem['id'])) {
+                                $params = [
+                                    'id' => $extraFieldValueItem['id'],
+                                    'item_id' => $eventId,
+                                ];
+                                $extraFieldValue->update($params);
+                                $this->logger->addInfo(
+                                    'Updating calendar extra field #'.$extraFieldValueItem['id'].' 
+                                    new item_id: '.$eventId.' old item_id: '.$item['item_id']
+                                );
+                            }
+                        } else {
+                            $this->logger->addInfo("Error while creating event external id: $externalEventId");
+                        }
                     } else {
-                        $this->logger->addInfo(
-                            "Error while updating event with external id: $externalEventId"
+                        // The event already exists, just update
+                        $eventResult = $agenda->editEvent(
+                            $item['item_id'],
+                            $event['start'],
+                            $event['end'],
+                            false,
+                            $event['title'],
+                            $content,
+                            ['everyone'], // $usersToSend
+                            [], //$attachmentArray = array(),
+                            [], //$attachmentCommentList
+                            $eventComment,
+                            $color,
+                            false,
+                            false,
+                            $this->defaultAdminId
                         );
+
+                        if ($eventResult !== false) {
+                            $this->logger->addInfo(
+                                "Event updated #".$item['item_id']." External cal Id: (".$externalEventId.") $info"
+                            );
+                        } else {
+                            $this->logger->addInfo(
+                                "Error while updating event with external id: $externalEventId"
+                            );
+                        }
                     }
                 } else {
                     // New event. Create it.
@@ -1252,10 +1509,10 @@ class ImportCsv
                         false,
                         $event['title'],
                         $content,
-                        array('everyone'), // $usersToSend
+                        ['everyone'], // $usersToSend
                         false, //$addAsAnnouncement = false
                         null, //  $parentEventId
-                        array(), //$attachmentArray = array(),
+                        [], //$attachmentArray = array(),
                         [], //$attachmentCommentList
                         $eventComment,
                         $color
@@ -1263,11 +1520,11 @@ class ImportCsv
 
                     if (!empty($eventId)) {
                         $extraFieldValue->save(
-                            array(
+                            [
                                 'value' => $externalEventId,
                                 'field_id' => $extraFieldInfo['id'],
-                                'item_id' => $eventId
-                            )
+                                'item_id' => $eventId,
+                            ]
                         );
                         $this->logger->addInfo(
                             "Event added: #$eventId External cal id: (".$externalEventId.") $info"
@@ -1301,15 +1558,15 @@ class ImportCsv
 
     /**
      * @param string $file
-     * @param bool $moveFile
-     * @param array $teacherBackup
-     * @param array $groupBackup
+     * @param bool   $moveFile
+     * @param array  $teacherBackup
+     * @param array  $groupBackup
      */
     private function importCourses(
         $file,
         $moveFile = true,
-        &$teacherBackup = array(),
-        &$groupBackup = array()
+        &$teacherBackup = [],
+        &$groupBackup = []
     ) {
         $this->fixCSVFile($file);
         $data = Import::csvToArray($file);
@@ -1329,7 +1586,7 @@ class ImportCsv
 
                 if (empty($courseInfo)) {
                     // Create
-                    $params = array();
+                    $params = [];
                     $params['title'] = $row['title'];
                     $params['exemplary_content'] = false;
                     $params['wanted_code'] = $row['course_code'];
@@ -1356,10 +1613,11 @@ class ImportCsv
                     }
                 } else {
                     // Update
-                    $params = array(
+                    $params = [
                         'title' => $row['title'],
-                        'category_code' => $row['course_category']
-                    );
+                        'category_code' => $row['course_category'],
+                        'visibility' => $row['visibility'],
+                    ];
 
                     $result = CourseManager::update_attributes(
                         $courseInfo['real_id'],
@@ -1370,7 +1628,7 @@ class ImportCsv
 
                     $teachers = $row['teachers'];
                     if (!is_array($teachers)) {
-                        $teachers = array($teachers);
+                        $teachers = [$teachers];
                     }
 
                     if ($addTeacherToSession) {
@@ -1403,7 +1661,7 @@ class ImportCsv
                             foreach ($groupBackup['tutor'][$teacherId][$courseInfo['code']] as $data) {
                                 $groupInfo = GroupManager::get_group_properties($data['group_id']);
                                 GroupManager::subscribe_tutors(
-                                    array($teacherId),
+                                    [$teacherId],
                                     $groupInfo,
                                     $data['c_id']
                                 );
@@ -1417,7 +1675,7 @@ class ImportCsv
                             foreach ($groupBackup['user'][$teacherId][$courseInfo['code']] as $data) {
                                 $groupInfo = GroupManager::get_group_properties($data['group_id']);
                                 GroupManager::subscribe_users(
-                                    array($teacherId),
+                                    [$teacherId],
                                     $groupInfo,
                                     $data['c_id']
                                 );
@@ -1440,7 +1698,8 @@ class ImportCsv
     }
 
     /**
-     * Parse filename: encora_subsessionsextid-static_31082016.csv
+     * Parse filename: encora_subsessionsextid-static_31082016.csv.
+     *
      * @param string $file
      */
     private function importSubscribeUserToCourseSessionExtStatic($file, $moveFile = true)
@@ -1486,7 +1745,7 @@ class ImportCsv
                 switch ($status) {
                     case 'student':
                         SessionManager::subscribe_users_to_session_course(
-                            array($userId),
+                            [$userId],
                             $chamiloSessionId,
                             $courseInfo['code']
                         );
@@ -1519,7 +1778,6 @@ class ImportCsv
                 $this->logger->addError(
                     "User '$chamiloUserName' was added as '$status' to Session: #$chamiloSessionId - Course: ".$courseInfo['code']
                 );
-
             }
         }
 
@@ -1573,7 +1831,7 @@ class ImportCsv
                 }
 
                 SessionManager::removeUsersFromCourseSession(
-                    array($userId),
+                    [$userId],
                     $chamiloSessionId,
                     $courseInfo
                 );
@@ -1581,7 +1839,6 @@ class ImportCsv
                 $this->logger->addError(
                     "User '$chamiloUserName' was remove from Session: #$chamiloSessionId - Course: ".$courseInfo['code']
                 );
-
             }
         }
 
@@ -1591,7 +1848,6 @@ class ImportCsv
     }
 
     /**
-     *
      * @param string $file
      */
     private function importSessionsExtIdStatic($file, $moveFile = true)
@@ -1636,7 +1892,7 @@ class ImportCsv
                 switch ($type) {
                     case 'student':
                         SessionManager::subscribe_users_to_session_course(
-                            array($userId),
+                            [$userId],
                             $chamiloSessionId,
                             $courseInfo['code'],
                             null,
@@ -1665,14 +1921,15 @@ class ImportCsv
 
     /**
      * Updates the session synchronize with the csv file.
-     * @param bool $moveFile
+     *
+     * @param bool   $moveFile
      * @param string $file
      */
     private function importSessionsStatic($file, $moveFile = true)
     {
         $content = file($file);
-        $sessions = array();
-        $tag_names = array();
+        $sessions = [];
+        $tag_names = [];
 
         foreach ($content as $key => $enreg) {
             $enreg = explode(';', trim($enreg));
@@ -1698,7 +1955,6 @@ class ImportCsv
                 }
             }
         }
-
 
         if (!empty($sessions)) {
             // Looping the sessions.
@@ -1807,13 +2063,13 @@ class ImportCsv
                         if (is_numeric($result)) {
                             $this->logger->addInfo("Session #$sessionId updated: ".$session['SessionName']);
                             $tbl_session = Database::get_main_table(TABLE_MAIN_SESSION);
-                            $params = array(
-                                'description' => $session['SessionDescription']
-                            );
+                            $params = [
+                                'description' => $session['SessionDescription'],
+                            ];
                             Database::update(
                                 $tbl_session,
                                 $params,
-                                array('id = ?' => $sessionId)
+                                ['id = ?' => $sessionId]
                             );
                         }
                     }
@@ -1840,7 +2096,7 @@ class ImportCsv
                                 $courseListWithCoach[] = [
                                     'course_info' => $courseInfo,
                                     'coaches' => $courseCoaches,
-                                    'course_users' => $courseUsers
+                                    'course_users' => $courseUsers,
                                 ];
                             }
                         }
@@ -1867,7 +2123,7 @@ class ImportCsv
 
                             // Coaches
                             if (!empty($courseCoaches)) {
-                                $coachList = array();
+                                $coachList = [];
                                 foreach ($courseCoaches as $courseCoach) {
                                     $courseCoachId = UserManager::get_user_id_from_username(
                                         $courseCoach
@@ -1892,7 +2148,7 @@ class ImportCsv
 
                             // Students
                             if (!empty($courseUsers)) {
-                                $userList = array();
+                                $userList = [];
                                 foreach ($courseUsers as $username) {
                                     $userInfo = api_get_user_info_from_username(trim($username));
                                     if (!empty($userInfo)) {
@@ -1932,15 +2188,15 @@ class ImportCsv
 
     /**
      * @param string $file
-     * @param bool $moveFile
-     * @param array $teacherBackup
-     * @param array $groupBackup
+     * @param bool   $moveFile
+     * @param array  $teacherBackup
+     * @param array  $groupBackup
      */
     private function importSessions(
         $file,
         $moveFile = true,
-        &$teacherBackup = array(),
-        &$groupBackup = array()
+        &$teacherBackup = [],
+        &$groupBackup = []
     ) {
         $avoid = null;
         if (isset($this->conditions['importSessions']) &&
@@ -1953,10 +2209,10 @@ class ImportCsv
             true,
             $this->defaultAdminId,
             $this->logger,
-            array(
+            [
                 'SessionID' => 'extra_'.$this->extraFieldIdNameList['session'],
-                'CareerId' => 'extra_'.$this->extraFieldIdNameList['session_career']
-            ),
+                'CareerId' => 'extra_'.$this->extraFieldIdNameList['session_career'],
+            ],
             $this->extraFieldIdNameList['session'],
             $this->daysCoachAccessBeforeBeginning,
             $this->daysCoachAccessAfterBeginning,
@@ -1984,7 +2240,7 @@ class ImportCsv
 
     /**
      * @param string $file
-     * @param bool $moveFile
+     * @param bool   $moveFile
      */
     private function importSubscribeStatic($file, $moveFile = true)
     {
@@ -2021,7 +2277,7 @@ class ImportCsv
                 switch ($type) {
                     case 'student':
                         SessionManager::subscribe_users_to_session_course(
-                            array($userId),
+                            [$userId],
                             $chamiloSessionId,
                             $courseInfo['code'],
                             null,
@@ -2111,117 +2367,10 @@ class ImportCsv
     }
 
     /**
-     * @param $file
-     * @param bool $moveFile
-     */
-    public function importCare($file, $moveFile = false)
-    {
-        $data = Import::csv_reader($file);
-        $counter = 1;
-        $batchSize = $this->batchSize;
-        $em = Database::getManager();
-
-        if (!empty($data)) {
-            $this->logger->addInfo(count($data)." records found.");
-            $items = [];
-            foreach ($data as $list) {
-                $post = [];
-                foreach ($list as $key => $value) {
-                    $key = (string) trim($key);
-                    // Remove utf8 bom
-                    $key = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $key);
-                    $post[$key] = $value;
-                }
-
-                if (empty($post)) {
-                    continue;
-                }
-
-                $externalId = $post['External_care_id'];
-                $items[$externalId] = $post;
-            }
-            ksort($items);
-
-            foreach ($items as $row) {
-                // Insert user
-                $insertUserInfo = api_get_user_info_from_username($row['Added_by']);
-                if (empty($insertUserInfo)) {
-                    $this->logger->addInfo("User does '".$row['Added_by']."' not exists skip this entry.");
-                    continue;
-                }
-                $insertUserInfo = api_get_user_entity($insertUserInfo['user_id']);
-
-                // User about the post
-                $userId = UserManager::get_user_id_from_original_id(
-                    $row['External_user_id'],
-                    $this->extraFieldIdNameList['user']
-                );
-
-                if (empty($userId)) {
-                    if (empty($userInfo)) {
-                        $this->logger->addInfo("User does '".$row['External_user_id']."' not exists skip this entry.");
-                        continue;
-                    }
-                }
-                $userInfo = api_get_user_entity($userId);
-
-                // Dates
-                $createdAt = $this->createDateTime($row['Added_On']);
-                $updatedAt = $this->createDateTime($row['Edited_on']);
-
-                // Parent
-                $parent = null;
-                if (!empty($row['Parent_id'])) {
-                    $parentId = $items[$row['Parent_id']];
-                    $criteria = [
-                        'externalCareId' => $parentId
-                    ];
-                    $parent = $em->getRepository('ChamiloPluginBundle:StudentFollowUp\CarePost')->findOneBy($criteria);
-                }
-
-                // Tags
-                $tags = explode(',', $row['Tags']);
-
-                // Check if post already was added:
-                $criteria = [
-                    'externalCareId' => $row['External_care_id']
-                ];
-                $post = $em->getRepository('ChamiloPluginBundle:StudentFollowUp\CarePost')->findOneBy($criteria);
-
-                if (empty($post)) {
-                    $post = new CarePost();
-                }
-
-                $post
-                    ->setTitle($row['Title'])
-                    ->setContent($row['Article'])
-                    ->setExternalCareId($row['External_care_id'])
-                    ->setCreatedAt($createdAt)
-                    ->setUpdatedAt($updatedAt)
-                    ->setPrivate((int) $row['Private'])
-                    ->setInsertUser($insertUserInfo)
-                    ->setExternalSource((int) $row['Source_is_external'])
-                    ->setParent($parent)
-                    ->setTags($tags)
-                    ->setUser($userInfo)
-                ;
-                $em->persist($post);
-                $em->flush();
-
-                if (($counter % $batchSize) === 0) {
-                    $em->flush();
-                    $em->clear(); // Detaches all objects from Doctrine!
-                }
-                $counter++;
-            }
-
-            $em->clear(); // Detaches all objects from Doctrine!
-        }
-    }
-
-    /**
-     * 23/4/2017 to datetime
+     * 23/4/2017 to datetime.
+     *
      * @param $string
+     *
      * @return mixed
      */
     private function createDateTime($string)
@@ -2231,22 +2380,26 @@ class ImportCsv
         }
 
         $date = DateTime::createFromFormat('j/m/Y', $string);
+        if ($date) {
+            return $date;
+        }
 
-        return $date;
+        return null;
     }
 
     /**
      * @param $file
-     * @param bool $moveFile
+     * @param bool  $moveFile
      * @param array $teacherBackup
      * @param array $groupBackup
+     *
      * @return bool
      */
     private function importCareers(
         $file,
         $moveFile = false,
-        &$teacherBackup = array(),
-        &$groupBackup = array()
+        &$teacherBackup = [],
+        &$groupBackup = []
     ) {
         $data = Import::csv_reader($file);
 
@@ -2267,7 +2420,7 @@ class ImportCsv
 
             foreach ($data as $row) {
                 foreach ($row as $key => $value) {
-                    $key = (string)trim($key);
+                    $key = (string) trim($key);
                     // Remove utf8 bom
                     $key = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $key);
                     $row[$key] = $value;
@@ -2286,7 +2439,7 @@ class ImportCsv
                 if (empty($item)) {
                     $params = [
                         'status' => 1,
-                        'name' => $row['CareerName']
+                        'name' => $row['CareerName'],
                     ];
                     $careerId = $career->save($params);
                     if ($careerId) {
@@ -2294,15 +2447,41 @@ class ImportCsv
                             'item_id' => $careerId,
                             'extra_'.$extraFieldName => $itemId,
                         ];
+                        $links = isset($row['HLinks']) ? $row['HLinks'] : [];
+                        if (!empty($links)) {
+                            $extraFieldUrlName = $this->extraFieldIdNameList['career_urls'];
+                            $extraFieldInfo = $extraField->get_handler_field_info_by_field_variable(
+                                $extraFieldUrlName
+                            );
+                            if (!empty($extraFieldInfo)) {
+                                $params['extra_'.$extraFieldUrlName] = $links;
+                            }
+                        }
                         $extraFieldValue->saveFieldValues($params);
                     }
                 } else {
                     if (isset($item['item_id'])) {
                         $params = [
                             'id' => $item['item_id'],
-                            'name' => $row['CareerName']
+                            'name' => $row['CareerName'],
                         ];
                         $career->update($params);
+                        $links = isset($row['HLinks']) ? $row['HLinks'] : [];
+
+                        if (!empty($links)) {
+                            $extraFieldUrlName = $this->extraFieldIdNameList['career_urls'];
+                            $extraFieldInfo = $extraField->get_handler_field_info_by_field_variable(
+                                $extraFieldUrlName
+                            );
+                            if (!empty($extraFieldInfo)) {
+                                $params = [
+                                    'item_id' => $item['item_id'],
+                                    'extra_'.$extraFieldName => $itemId,
+                                    'extra_'.$extraFieldUrlName => $links,
+                                ];
+                                $extraFieldValue->saveFieldValues($params);
+                            }
+                        }
                     }
                 }
             }
@@ -2311,15 +2490,15 @@ class ImportCsv
 
     /**
      * @param $file
-     * @param bool $moveFile
+     * @param bool  $moveFile
      * @param array $teacherBackup
      * @param array $groupBackup
      */
     private function importCareersDiagram(
         $file,
         $moveFile = false,
-        &$teacherBackup = array(),
-        &$groupBackup = array()
+        &$teacherBackup = [],
+        &$groupBackup = []
     ) {
         $data = Import::csv_reader($file);
 
@@ -2345,6 +2524,9 @@ class ImportCsv
             $this->logger->addInfo(count($data)." records found.");
             $values = [];
             foreach ($data as $row) {
+                if (empty($row)) {
+                    continue;
+                }
                 foreach ($row as $key => $value) {
                     $key = (string) trim($key);
                     // Remove utf8 bom
@@ -2362,7 +2544,6 @@ class ImportCsv
             foreach ($values as $column => $rowList) {
                 foreach ($rowList as $row) {
                     $careerId = $row['CareerId'];
-
                     $item = $extraFieldValue->get_item_id_from_field_variable_and_field_value(
                         $extraFieldName,
                         $careerId,
@@ -2401,10 +2582,17 @@ class ImportCsv
                         $careerList[$careerId] = $graph;
                     }
 
-                    $currentCourseId = (int)$row['CourseId'];
+                    $currentCourseId = (int) $row['CourseId'];
                     $name = $row['CourseName'];
-                    $hasColor = $row['HasColor'];
                     $notes = $row['Notes'];
+                    $groupValue = $row['Group'];
+                    $boxColumn = $row['Column'];
+                    $rowValue = $row['Row'];
+                    $color = isset($row['DefinedColor']) ? $row['DefinedColor'] : '';
+                    $arrow = isset($row['DrawArrowFrom']) ? $row['DrawArrowFrom'] : '';
+                    $subGroup = isset($row['SubGroup']) ? $row['SubGroup'] : '';
+                    $connections = isset($row['Connections']) ? $row['Connections'] : '';
+                    $linkedElement = isset($row['LinkedElement']) ? $row['LinkedElement'] : '';
 
                     if ($graph->hasVertex($currentCourseId)) {
                         // Avoid double insertion
@@ -2412,9 +2600,15 @@ class ImportCsv
                     } else {
                         $current = $graph->createVertex($currentCourseId);
                         $current->setAttribute('graphviz.label', $name);
-                        $current->setAttribute('HasColor', $hasColor);
+                        $current->setAttribute('DefinedColor', $color);
                         $current->setAttribute('Notes', $notes);
-                        //$current->setAttribute('graphviz.color', 'blue');
+                        $current->setAttribute('Row', $rowValue);
+                        $current->setAttribute('Group', $groupValue);
+                        $current->setAttribute('Column', $boxColumn);
+                        $current->setAttribute('DrawArrowFrom', $arrow);
+                        $current->setAttribute('SubGroup', $subGroup);
+                        $current->setAttribute('Connections', $connections);
+                        $current->setAttribute('LinkedElement', $linkedElement);
                         $current->setAttribute('graphviz.shape', 'box');
                         $current->setGroup($column);
                     }
@@ -2443,8 +2637,8 @@ class ImportCsv
                         $parentList = explode(',', $row['DependedOn']);
                         foreach ($parentList as $parentId) {
                             $parentId = (int) $parentId;
-                            echo $parentId.PHP_EOL;
                             if ($graph->hasVertex($parentId)) {
+                                /** @var Vertex $parent */
                                 $parent = $graph->getVertex($parentId);
                                 /*$parent->setAttribute('graphviz.color', 'red');
                                 $parent->setAttribute('graphviz.label', $name);
@@ -2456,45 +2650,31 @@ class ImportCsv
                 }
             }
 
-            // 2. Transform the graph into a jsplumb graph
-            $html = '<style> 
-                .window .panel-title {
-                    font-size: 12px;
-                }
-                .window  {
-                    font-size: 12px;
-                }
-            </style>';
             /** @var Graph $graph */
             foreach ($careerList as $id => $graph) {
-                if ($id != 631) {
-                    //continue;
-                }
-
                 if (isset($careerChamiloIdList[$id])) {
                     $params = [
                         'item_id' => $careerChamiloIdList[$id],
                         'extra_'.$careerDiagramExtraFieldName => serialize($graph),
                         'extra_'.$extraFieldName => $id,
                     ];
-                    $extraFieldValue->saveFieldValues($params);
+                    $extraFieldValue->saveFieldValues($params, true);
                 }
             }
         }
     }
 
-
     /**
      * @param string $file
-     * @param bool $moveFile
-     * @param array $teacherBackup
-     * @param array $groupBackup
+     * @param bool   $moveFile
+     * @param array  $teacherBackup
+     * @param array  $groupBackup
      */
     private function importUnsubscribeStatic(
         $file,
         $moveFile = false,
-        &$teacherBackup = array(),
-        &$groupBackup = array()
+        &$teacherBackup = [],
+        &$groupBackup = []
     ) {
         $data = Import::csv_reader($file);
 
@@ -2579,7 +2759,7 @@ class ImportCsv
     }
 
     /**
-     *  Dump database tables
+     *  Dump database tables.
      */
     private function dumpDatabaseTables()
     {
@@ -2594,7 +2774,7 @@ class ImportCsv
         echo $sql.PHP_EOL;
 
         // Truncate tables
-        $truncateTables = array(
+        $truncateTables = [
             Database::get_main_table(TABLE_MAIN_COURSE),
             Database::get_main_table(TABLE_MAIN_COURSE_USER),
             Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_COURSE),
@@ -2679,8 +2859,8 @@ class ImportCsv
             Database::get_course_table(TABLE_DROPBOX_FEEDBACK),
             Database::get_course_table(TABLE_DROPBOX_POST),
             Database::get_course_table(TABLE_DROPBOX_FILE),
-            Database::get_course_table(TABLE_DROPBOX_PERSON)
-        );
+            Database::get_course_table(TABLE_DROPBOX_PERSON),
+        ];
 
         foreach ($truncateTables as $table) {
             $sql = "TRUNCATE $table";
@@ -2695,7 +2875,8 @@ class ImportCsv
     }
 
     /**
-     * If csv file ends with '"' character then a '";' is added
+     * If csv file ends with '"' character then a '";' is added.
+     *
      * @param string $file
      */
     private function fixCSVFile($file)
@@ -2715,34 +2896,6 @@ class ImportCsv
             fwrite($f, '";');
         }*/
     }
-
-    /**
-     * @return mixed
-     */
-    public function getUpdateEmailToDummy()
-    {
-        return $this->updateEmailToDummy;
-    }
-
-    /**
-     * @param mixed $updateEmailToDummy
-     */
-    public function setUpdateEmailToDummy($updateEmailToDummy)
-    {
-        $this->updateEmailToDummy = $updateEmailToDummy;
-    }
-
-    /**
-     * Change emails of all users except admins
-     *
-     */
-    public function updateUsersEmails()
-    {
-        if ($this->getUpdateEmailToDummy() === true) {
-            $sql = "UPDATE user SET email = CONCAT(username,'@example.com') WHERE id NOT IN (SELECT user_id FROM admin)";
-            Database::query($sql);
-        }
-    }
 }
 
 $logger = new Logger('cron');
@@ -2751,7 +2904,7 @@ $emails = isset($_configuration['cron_notification_mails']) ? $_configuration['c
 $minLevel = Logger::DEBUG;
 
 if (!is_array($emails)) {
-    $emails = array($emails);
+    $emails = [$emails];
 }
 $subject = "Cron main/cron/import_csv.php ".date('Y-m-d h:i:s');
 $from = api_get_setting('emailAdministrator');

@@ -4,7 +4,8 @@
 use ChamiloSession as Session;
 
 /**
- * Process payments for the Buy Courses plugin
+ * Process payments for the Buy Courses plugin.
+ *
  * @package chamilo.plugin.buycourses
  */
 require_once '../config.php';
@@ -82,15 +83,37 @@ if (!$culqiEnabled) {
     unset($paymentTypesOptions[BuyCoursesPlugin::PAYMENT_TYPE_CULQI]);
 }
 
-$form->addHtml(Display::return_message($plugin->get_lang('PleaseSelectThePaymentMethodBeforeConfirmYourOrder'), 'info'));
-$form->addRadio('payment_type', null, $paymentTypesOptions);
+$count = count($paymentTypesOptions);
+if ($count === 0) {
+    $form->addHtml($plugin->get_lang('NoPaymentOptionAvailable'));
+    $form->addHtml('<br />');
+    $form->addHtml('<br />');
+} elseif ($count === 1) {
+    $text = '';
+    // get the only array item
+    foreach ($paymentTypesOptions as $type => $value) {
+        $form->addHtml(sprintf($plugin->get_lang('XIsOnlyPaymentMethodAvailable'), $value));
+        $form->addHtml('<br />');
+        $form->addHtml('<br />');
+        $form->addHidden('payment_type', $type);
+    }
+} else {
+    $form->addHtml(
+        Display::return_message(
+            $plugin->get_lang('PleaseSelectThePaymentMethodBeforeConfirmYourOrder'),
+            'info'
+        )
+    );
+    $form->addRadio('payment_type', null, $paymentTypesOptions);
+}
+
 $form->addHidden('t', intval($_GET['t']));
 $form->addHidden('i', intval($_GET['i']));
 $form->addButton('submit', $plugin->get_lang('ConfirmOrder'), 'check', 'success');
 
 // View
 $templateName = $plugin->get_lang('PaymentMethods');
-$interbreadcrumb[] = array("url" => "course_catalog.php", "name" => $plugin->get_lang('CourseListOnSale'));
+$interbreadcrumb[] = ["url" => "course_catalog.php", "name" => $plugin->get_lang('CourseListOnSale')];
 
 $tpl = new Template($templateName);
 $tpl->assign('buying_course', $buyingCourse);

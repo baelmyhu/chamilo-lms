@@ -1,16 +1,14 @@
 <?php
 /* For licensing terms, see /license.txt */
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
-
 /**
- * Chamilo LMS
+ * Chamilo LMS.
  *
  * Updates the Chamilo files from version 1.10.0 to version 1.11.0
  * This script operates only in the case of an update, and only to change the
  * active version number (and other things that might need a change) in the
  * current configuration file.
+ *
  * @package chamilo.install
  */
 error_log("Starting ".basename(__FILE__));
@@ -44,6 +42,23 @@ if (defined('SYSTEM_INSTALLATION')) {
         @rrmdir($skypePluginPath);
     }
 
+    // Some entities have been removed in 1.11. Delete the corresponding files
+    $entitiesToRemove = [
+        api_get_path(SYS_PATH).'src/Chamilo/CoreBundle/Entity/Groups.php',
+        api_get_path(SYS_PATH).'src/Chamilo/CoreBundle/Entity/GroupRelGroup.php',
+        api_get_path(SYS_PATH).'src/Chamilo/CoreBundle/Entity/GroupRelTag.php',
+        api_get_path(SYS_PATH).'src/Chamilo/CoreBundle/Entity/GroupRelUser.php',
+    ];
+    foreach ($entitiesToRemove as $entity) {
+        if (file_exists($entity)) {
+            $success = unlink($entity);
+            if (!$success) {
+                error_log('Could not delete '.$entity.', probably due to permissions. Please delete manually to avoid entities inconsistencies');
+            }
+        } else {
+            error_log('Could not delete. It seems the file '.$entity.' does not exists.');
+        }
+    }
     if ($debug) {
         error_log('Folders cleaned up');
     }

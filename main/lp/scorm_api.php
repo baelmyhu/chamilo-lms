@@ -1,17 +1,21 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+use ChamiloSession as Session;
+
 /**
  * API event handler functions for Scorm 1.1 and 1.2 and 1.3 (latter not fully supported)
  * This script is divided into three sections.
  * The first section (below) is the initialisation part.
  * The second section is the SCORM object part
  * The third section defines the event handlers for Chamilo's internal messaging
- * and frames refresh
+ * and frames refresh.
+ *
  * @author   Denes Nagy <darkden@freemail.hu> (original author - 2003-2004)
  * @author   Yannick Warnier <ywarnier@beeznest.org> (extended and maintained - 2005-2014)
+ *
  * @version  v 1.2
- * @access   public
+ *
  * @package  chamilo.learnpath.scorm
  */
 
@@ -25,9 +29,9 @@ $use_anonymous = true;
 
 require_once __DIR__.'/../inc/global.inc.php';
 
-$file = (empty($_SESSION['file']) ? '' : $_SESSION['file']);
+$file = Session::read('file');
 /** @var learnpath $oLP */
-$oLP = unserialize($_SESSION['lpobject']);
+$oLP = unserialize(Session::read('lpobject'));
 /** @var learnpathItem $oItem */
 $oItem = isset($oLP->items[$oLP->current]) ? $oLP->items[$oLP->current] : null;
 
@@ -41,7 +45,7 @@ $userId = api_get_user_id();
 
 header('Content-type: text/javascript');
 
-?>var scorm_logs=<?php echo ((empty($oLP->scorm_debug) or (!api_is_course_admin() && !api_is_platform_admin())) ? '0' : '3'); ?>; //debug log level for SCORM. 0 = none, 1=light, 2=a lot, 3=all - displays logs in log frame
+?>var scorm_logs=<?php echo (empty($oLP->scorm_debug) or (!api_is_course_admin() && !api_is_platform_admin())) ? '0' : '3'; ?>; //debug log level for SCORM. 0 = none, 1=light, 2=a lot, 3=all - displays logs in log frame
 var lms_logs = 0; //debug log level for LMS actions. 0=none, 1=light, 2=a lot, 3=all
 
 // API Object initialization (eases access later on)
@@ -72,8 +76,8 @@ function APIobject() {
 // SCORM
 var API = new APIobject(); //for scorm 1.2
 var api = API;
-var API_1484_11 = new APIobject();  //for scorm 1.3
-var api_1484_11 = API_1484_11;
+//var API_1484_11 = new APIobject();  //for scorm 1.3
+//var api_1484_11 = API_1484_11;
 
 // SCORM-specific Error codes
 var G_NoError = 0;
@@ -205,8 +209,9 @@ if (olms.score == 0 && olms.lms_item_type == 'sco' && olms.lesson_status == 'not
 olms.asset_timer = 0;
 olms.userfname = '<?php echo str_replace("'", "\\'", $user['firstname']); ?>';
 olms.userlname = '<?php echo str_replace("'", "\\'", $user['lastname']); ?>';
-
 olms.execute_stats = false;
+
+var courseUrl = '?cidReq='+olms.lms_course_code+'&id_session='+olms.lms_session_id;
 
 /**
  * Add the "addListeners" function to the "onload" event of the window and
@@ -293,7 +298,7 @@ function LMSInitialize() {
 
         $.ajax({
             type: "POST",
-            url: "lp_ajax_initialize.php",
+            url: "lp_ajax_initialize.php" + courseUrl,
             data: params,
             dataType: 'script',
             async: false,
@@ -339,7 +344,7 @@ function LMSInitialize() {
         <?php
         $glossaryExtraTools = api_get_setting('show_glossary_in_extra_tools');
         $fixLinkSetting = api_get_configuration_value('lp_fix_embed_content');
-        $showGlossary = in_array($glossaryExtraTools, array('true', 'lp', 'exercise_and_lp'));
+        $showGlossary = in_array($glossaryExtraTools, ['true', 'lp', 'exercise_and_lp']);
         if ($showGlossary) {
             if (api_get_setting('show_glossary_in_documents') == 'ismanual') {
                 ?>
@@ -348,14 +353,20 @@ function LMSInitialize() {
                 } else {
                     attach_glossary_into_scorm('manual');
                 }
-                <?php } elseif (api_get_setting('show_glossary_in_documents') == 'isautomatic') { ?>
+                <?php
+            } elseif (api_get_setting('show_glossary_in_documents') == 'isautomatic') {
+                ?>
                 attach_glossary_into_scorm('automatic');
-            <?php } ?>
-        <?php } ?>
+            <?php
+            } ?>
+        <?php
+        } ?>
 
-        <?php if ($fixLinkSetting) { ?>
+        <?php if ($fixLinkSetting) {
+            ?>
             attach_glossary_into_scorm('fix_links');
-        <?php } ?>
+        <?php
+        } ?>
         return('true');
     }
 }
@@ -458,7 +469,7 @@ function LMSGetValue(param) {
     } else if(param == 'cmi.core.student_name'){
         // ---- cmi.core.student_name
         <?php
-          $who = addslashes($user['complete_name']);
+          $who = addslashes($user['lastname']).', '.addslashes($user['firstname']);
           echo "result='$who';";
         ?>
     } else if(param == 'cmi.core.lesson_location'){
@@ -1363,8 +1374,11 @@ function update_progress_bar(nbr_complete, nbr_total, mode) {
 /**
  * Update the gamification values (number of stars and score)
  */
-function updateGamificationValues() {
-    var fetchValues = $.ajax('<?php echo api_get_path(WEB_AJAX_PATH) ?>lp.ajax.php', {
+function updateGamificationValues()
+{
+    var fetchValues = $.ajax(
+        '<?php echo api_get_path(WEB_AJAX_PATH); ?>lp.ajax.php' + courseUrl,
+        {
         dataType: 'json',
         data: {
             a: 'update_gamification'
@@ -1608,7 +1622,7 @@ function switch_item(current_item, next_item){
     }
 
     //(3) open the new item in the content_id frame
-    switch (next_item){
+    switch (next_item) {
         case 'next':
             next_item = olms.lms_next_item;
             olms.info_lms_item[0] = olms.info_lms_item[1];
@@ -1627,7 +1641,8 @@ function switch_item(current_item, next_item){
                 '&item_id=' + next_item + '&cidReq=' + olms.lms_course_code + '&id_session=' + olms.lms_session_id;
     var cont_f = $("#content_id");
 
-    <?php if ($oLP->mode == 'fullscreen') { ?>
+    <?php if ($oLP->mode == 'fullscreen') {
+        ?>
         cont_f = window.open('' + mysrc, 'content_id', 'toolbar=0,location=0,status=0,scrollbars=1,resizable=1');
         cont_f.onload=function(){
             olms.info_lms_item[0]=olms.info_lms_item[1];
@@ -1636,26 +1651,30 @@ function switch_item(current_item, next_item){
             olms.info_lms_item[0]=olms.info_lms_item[1];
         }
 
-    <?php } else { ?>
+    <?php
+    } else {
+        ?>
             log_in_log('loading '+mysrc+' in frame');
             cont_f.attr("src",mysrc);
-    <?php } ?>
+    <?php
+    } ?>
 
     if (olms.lms_lp_type==1 || olms.lms_item_type == 'asset' || olms.lms_item_type == 'document') {
         xajax_start_timer();
     }
 
-    //(4) refresh the audio player if needed
+    // (4) refresh the audio player if needed
     $.ajax({
         type: "POST",
-        url: "lp_nav.php",
+        url: "lp_nav.php"+courseUrl+ "&lp_id=" + olms.lms_lp_id,
         data: {
             lp_item: next_item
         },
         beforeSend: function() {
             $.each($('audio'), function () {
-                var player = new MediaElementPlayer($(this));
-                player.pause();
+                if (this.player && this.player !== undefined) {
+                    this.player.pause();
+                }
             });
         },
         success: function(tmp_data) {
@@ -1676,10 +1695,12 @@ function switch_item(current_item, next_item){
  * Hide or show the navigation buttons if the current item is the First or Last
  */
 var checkCurrentItemPosition = function(lpItemId) {
-    var currentItem = $.getJSON('<?php echo api_get_path(WEB_AJAX_PATH) ?>lp.ajax.php', {
-            a: 'check_item_position',
-            lp_item: lpItemId
-        }
+    var currentItem = $.getJSON(
+        '<?php echo api_get_path(WEB_AJAX_PATH); ?>lp.ajax.php' + courseUrl,
+    {
+        a: 'check_item_position',
+        lp_item: lpItemId
+    }
     ).done(function(parsedResponse,statusText,jqXhr) {
         var position = jqXhr.responseJSON;
         if (position == 'first') {
@@ -1703,7 +1724,8 @@ var checkCurrentItemPosition = function(lpItemId) {
  * Get a forum info when the learning path item has a associated forum
  */
 var loadForumThread = function(lpId, lpItemId) {
-    var loadForum = $.getJSON('<?php echo api_get_path(WEB_AJAX_PATH) ?>lp.ajax.php', {
+    var loadForum = $.getJSON(
+        '<?php echo api_get_path(WEB_AJAX_PATH); ?>lp.ajax.php' + courseUrl, {
             a: 'get_forum_thread',
             lp: lpId,
             lp_item: lpItemId
@@ -1733,7 +1755,7 @@ var loadForumThread = function(lpId, lpItemId) {
             scrolling:'yes',
             tabindex:'0',
             id:'chamilo-disqus',
-            src: '<?php echo api_get_path(WEB_CODE_PATH) ?>forum/viewthread.php?<?php echo api_get_cidreq() ?>&' + $.param({
+            src: '<?php echo api_get_path(WEB_CODE_PATH); ?>forum/viewthread.php?<?php echo api_get_cidreq(); ?>&' + $.param({
                 gradebook: 0,
                 origin: 'learnpath',
                 forum: forumThreadData.forumId,
@@ -1815,13 +1837,12 @@ function xajax_save_item(
     params += '&userNavigatesAway='+userNavigatesAway;
     params += '&statusSignalReceived='+statusSignalReceived;
 
-    // console.info(session_time);
     if (olms.lms_lp_type == 1 || item_type == 'document' || item_type == 'asset') {
         logit_lms('xajax_save_item with params:' + params, 3);
         $.ajax({
             type:"POST",
             data: params,
-            url: "lp_ajax_save_item.php",
+            url: "lp_ajax_save_item.php" + courseUrl,
             dataType: "script",
             async: false
         });
@@ -1935,7 +1956,7 @@ function xajax_save_item_scorm(
     $.ajax({
         type:"POST",
         data: params,
-        url: "lp_ajax_save_item.php",
+        url: "lp_ajax_save_item.php" + courseUrl,
         dataType: "script",
         async: false
     });
@@ -1953,7 +1974,7 @@ function xajax_start_timer() {
     logit_lms('xajax_start_timer() called',3);
     $.ajax({
         type: "GET",
-        url: "lp_ajax_start_timer.php",
+        url: "lp_ajax_start_timer.php" + courseUrl,
         dataType: "script",
         async: false,
         success: function(time) {
@@ -1997,7 +2018,7 @@ function xajax_save_objectives(lms_lp_id,lms_user_id,lms_view_id,lms_item_id,ite
     $.ajax({
         type: "POST",
         data: params,
-        url: "lp_ajax_save_objectives.php",
+        url: "lp_ajax_save_objectives.php" + courseUrl,
         dataType: "script",
         async: false
     });
@@ -2013,7 +2034,6 @@ function xajax_save_objectives(lms_lp_id,lms_user_id,lms_view_id,lms_item_id,ite
  * @uses    lp_ajax_switch_item.php
  */
 function xajax_switch_item_details(lms_lp_id,lms_user_id,lms_view_id,lms_item_id,next_item) {
-
     var params = {
         'lid': lms_lp_id,
         'uid': lms_user_id,
@@ -2027,7 +2047,7 @@ function xajax_switch_item_details(lms_lp_id,lms_user_id,lms_view_id,lms_item_id
     $.ajax({
         type: "POST",
         data: params,
-        url: "lp_ajax_switch_item.php",
+        url: "lp_ajax_switch_item.php" + courseUrl,
         dataType: "script",
         async: false
     });
@@ -2056,7 +2076,7 @@ function xajax_switch_item_toc(lms_lp_id, lms_user_id, lms_view_id, lms_item_id,
     $.ajax({
         type: "POST",
         data: params,
-        url: "lp_ajax_switch_item_toc.php",
+        url: "lp_ajax_switch_item_toc.php" + courseUrl,
         dataType: "script",
         async: false
     });
@@ -2085,8 +2105,8 @@ function attach_glossary_into_scorm(type) {
 
     my_protocol = location.protocol;
     my_pathname=location.pathname;
-    work_path = my_pathname.substr(0,my_pathname.indexOf('<?php echo api_get_path(REL_COURSE_PATH) ?>'));
-    var ajaxRequestUrl = '<?php echo api_get_path(WEB_CODE_PATH).'glossary/glossary_ajax_request.php'; ?>';
+    work_path = my_pathname.substr(0,my_pathname.indexOf('<?php echo api_get_path(REL_COURSE_PATH); ?>'));
+    var ajaxRequestUrl = '<?php echo api_get_path(WEB_CODE_PATH).'glossary/glossary_ajax_request.php'; ?>' + courseUrl;
 
     if (type == 'automatic') {
         $.ajax({
@@ -2136,7 +2156,6 @@ function attach_glossary_into_scorm(type) {
 
                 var complex_array = new Array();
                 $("iframe").contents().find("body").on("click", ".glossary-ajax", function() {
-
                 div_show_id="div_show_id";
                 div_content_id="div_content_id";
 
@@ -2239,7 +2258,6 @@ function attach_glossary_into_scorm(type) {
                 objects.each(function (value, obj) {
                     var dialogId = this.id +'_dialog';
                     var openerId = this.id +'_opener';
-
                     var link = '<a id="'+openerId+'" href="#" class="generated btn">'+
                         '<div style="text-align: center"><img src="<?php echo Display::returnIconPath('play-circle-8x.png'); ?>"/><br />If video does not work, try clicking here.</div></a>';
                     var embed = $("iframe").contents().find("#"+this.id).find('embed').first();
@@ -2352,6 +2370,5 @@ function attach_glossary_into_scorm(type) {
                 });
             });
         }
-
     }
 }

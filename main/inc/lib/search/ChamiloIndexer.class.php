@@ -5,27 +5,28 @@
  * @package chamilo.include.search
  */
 require_once __DIR__.'/../../global.inc.php';
-include_once 'xapian/XapianIndexer.class.php';
 
 /**
- * Class wrapper
+ * Class wrapper.
+ *
  * @package chamilo.include.search
  */
 class ChamiloIndexer extends XapianIndexer
 {
     /**
-     * Set terms on search_did given
+     * Set terms on search_did given.
      *
-     * @param string $terms_string Comma-separated list of terms from input form
-     * @param string $prefix Search engine prefix
-     * @param string $course_code Course code
-     * @param string $tool_id Tool id from mainapi.lib.php
-     * @param int $ref_id_high_level Main id of the entity to index (Ex. lp_id)
-     * @param int $ref_id_second_level Secondary id of the entity to index (Ex. lp_item)
-     * @param int $search_did Search engine document id from search_engine_ref table
-     * @return  boolean False on error or nothing to do, true otherwise
+     * @param string $terms_string        Comma-separated list of terms from input form
+     * @param string $prefix              Search engine prefix
+     * @param string $course_code         Course code
+     * @param string $tool_id             Tool id from mainapi.lib.php
+     * @param int    $ref_id_high_level   Main id of the entity to index (Ex. lp_id)
+     * @param int    $ref_id_second_level Secondary id of the entity to index (Ex. lp_item)
+     * @param int    $search_did          Search engine document id from search_engine_ref table
+     *
+     * @return bool False on error or nothing to do, true otherwise
      */
-    function set_terms(
+    public function set_terms(
         $terms_string,
         $prefix,
         $course_code,
@@ -52,7 +53,7 @@ class ChamiloIndexer extends XapianIndexer
         // compare terms
         $doc = $this->get_document($search_did);
         $xapian_terms = xapian_get_doc_terms($doc, $prefix);
-        $xterms = array();
+        $xterms = [];
         foreach ($xapian_terms as $xapian_term) {
             $xterms[] = substr($xapian_term['name'], 1);
         }
@@ -79,25 +80,24 @@ class ChamiloIndexer extends XapianIndexer
     }
 
     /**
-     * Get the terms stored at database
-     * @return  array Array of terms
+     * Get the terms stored at database.
+     *
+     * @return array Array of terms
      */
-    function get_terms_on_db($prefix, $course_code, $tool_id, $ref_id)
+    public function get_terms_on_db($prefix, $course_code, $tool_id, $ref_id)
     {
         require_once api_get_path(LIBRARY_PATH).'specific_fields_manager.lib.php';
-        $terms = get_specific_field_values_list_by_prefix($prefix, $course_code, $tool_id, $ref_id);
-        $prefix_terms = array();
+        $terms = get_specific_field_values_list_by_prefix(
+            $prefix,
+            $course_code,
+            $tool_id,
+            $ref_id
+        );
+        $prefix_terms = [];
         foreach ($terms as $term) {
             $prefix_terms[] = $term['value'];
         }
+
         return $prefix_terms;
-    }
-
-}
-
-if (!function_exists('trim_value')) {
-    function trim_value(&$value)
-    {
-        $value = trim($value);
     }
 }

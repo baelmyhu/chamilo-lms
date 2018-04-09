@@ -1,9 +1,11 @@
 <?php
+/* For license terms, see /license.txt */
+
 /**
- * This script initiates a video conference session, calling the BigBlueButton API
+ * This script initiates a video conference session, calling the BigBlueButton API.
+ *
  * @package chamilo.plugin.bigbluebutton
  */
-
 $course_plugin = 'bbb'; //needed in order to load the plugin lang variables
 require_once __DIR__.'/config.php';
 
@@ -19,9 +21,9 @@ $tpl = new Template($tool_name);
 
 $isGlobal = isset($_GET['global']) ? true : false;
 $isGlobalPerUser = isset($_GET['user_id']) ? (int) $_GET['user_id'] : false;
+$action = isset($_GET['action']) ? $_GET['action'] : null;
 
 $bbb = new bbb('', '', $isGlobal, $isGlobalPerUser);
-$action = isset($_GET['action']) ? $_GET['action'] : null;
 
 $conferenceManager = $bbb->isConferenceManager();
 if ($bbb->isGlobalConference()) {
@@ -30,8 +32,7 @@ if ($bbb->isGlobalConference()) {
     api_protect_course_script(true);
 }
 
-$message = null;
-
+$message = '';
 if ($conferenceManager) {
     switch ($action) {
         case 'add_to_calendar':
@@ -50,7 +51,7 @@ if ($conferenceManager) {
                 'true',
                 $title,
                 $content,
-                array('everyone')
+                ['everyone']
             );
             if (!empty($eventId)) {
                 $message = Display::return_message($plugin->get_lang('VideoConferenceAddedToTheCalendar'), 'success');
@@ -76,6 +77,7 @@ if ($conferenceManager) {
 
             Display::addFlash($message);
             header('Location: '.$bbb->getListingUrl());
+            exit;
             break;
         case 'end':
             $bbb->endMeeting($_GET['id']);
@@ -129,7 +131,14 @@ $maxUsers = $bbb->getMaxUsersLimit();
 $status = $bbb->isServerRunning();
 $meetingExists = $bbb->meetingExists($bbb->getCurrentVideoConferenceName());
 $showJoinButton = false;
-if (($meetingExists || $conferenceManager) && ($maxUsers == 0 || $maxUsers > $usersOnline)) {
+
+// Only conference manager can see the join button
+$userCanSeeJoinButton = $conferenceManager;
+if ($bbb->isGlobalConference() && $bbb->isGlobalConferencePerUserEnabled()) {
+    // Any user can see the "join button" BT#12620
+    $userCanSeeJoinButton = true;
+}
+if (($meetingExists || $userCanSeeJoinButton) && ($maxUsers == 0 || $maxUsers > $usersOnline)) {
     $showJoinButton = true;
 }
 $conferenceUrl = $bbb->getConferenceUrl();

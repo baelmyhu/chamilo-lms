@@ -2,7 +2,7 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * Responses to AJAX calls for the document upload
+ * Responses to AJAX calls for the document upload.
  */
 require_once __DIR__.'/../global.inc.php';
 
@@ -12,12 +12,12 @@ switch ($action) {
         api_protect_course_script(true);
         $path = isset($_GET['path']) ? $_GET['path'] : '';
         $isAllowedToEdit = api_is_allowed_to_edit();
-        $size = get_total_folder_size($path, $isAllowedToEdit);
+        $size = DocumentManager::getTotalFolderSize($path, $isAllowedToEdit);
         echo format_file_size($size);
         break;
     case 'get_document_quota':
         // Getting the course quota
-        $course_quota = DocumentManager::get_course_quota();
+        $courseQuota = DocumentManager::get_course_quota();
 
         // Calculating the total space
         $already_consumed_space_course = DocumentManager::documents_total_space(
@@ -25,8 +25,8 @@ switch ($action) {
         );
 
         // Displaying the quota
-        echo DocumentManager::display_simple_quota(
-            $course_quota,
+        echo DocumentManager::displaySimpleQuota(
+            $courseQuota,
             $already_consumed_space_course
         );
 
@@ -43,7 +43,9 @@ switch ($action) {
             } else {
                 exit;
             }
-        } elseif ($is_allowed_to_edit || DocumentManager::is_my_shared_folder(api_get_user_id(), $_POST['curdirpath'], api_get_session_id())) {
+        } elseif ($is_allowed_to_edit ||
+            DocumentManager::is_my_shared_folder(api_get_user_id(), $_POST['curdirpath'], api_get_session_id())
+        ) {
             // ??
         } else {
             // No course admin and no group member...
@@ -92,7 +94,7 @@ switch ($action) {
                 $result = DocumentManager::upload_document(
                     $globalFile,
                     $currentDirectory,
-                    $file['name'],
+                    '',
                     '', // comment
                     $unzip,
                     $defaultFileExistsOption,
@@ -101,23 +103,22 @@ switch ($action) {
                     'files'
                 );
 
-                $json = array();
+                $json = [];
                 if (!empty($result) && is_array($result)) {
                     $json['name'] = Display::url(
                         api_htmlentities($result['title']),
                         api_htmlentities($result['url']),
-                        array('target'=>'_blank')
+                        ['target' => '_blank']
                     );
-
                     $json['url'] = $result['url'];
                     $json['size'] = format_file_size($file['size']);
                     $json['type'] = api_htmlentities($file['type']);
-
                     $json['result'] = Display::return_icon(
                         'accept.png',
                         get_lang('Uploaded')
                     );
                 } else {
+                    $json['name'] = isset($file['name']) ? $file['name'] : get_lang('Unknown');
                     $json['url'] = '';
                     $json['error'] = get_lang('Error');
                 }

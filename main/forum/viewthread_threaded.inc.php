@@ -13,14 +13,13 @@
  *                      multiple forums per group
  * - sticky messages
  * - new view option: nested view
- * - quoting a message
+ * - quoting a message.
  *
  * @author Patrick Cool <patrick.cool@UGent.be>, Ghent University
  * @author Julio Montoya <gugli100@gmail.com> UI Improvements + lots of bugfixes
  *
  * @package chamilo.forum
  */
-
 $forumUrl = api_get_path(WEB_CODE_PATH).'forum/';
 $_user = api_get_user_info();
 $sortDirection = isset($_GET['posts_order']) && $_GET['posts_order'] === 'desc' ? 'DESC' : 'ASC';
@@ -42,8 +41,7 @@ if (isset($_GET['post']) && $_GET['post']) {
 // Are we in a lp ?
 $origin = api_get_origin();
 // Delete attachment file.
-if (
-    isset($_GET['action']) &&
+if (isset($_GET['action']) &&
     $_GET['action'] == 'delete_attach' &&
     isset($_GET['id_attach'])
 ) {
@@ -58,9 +56,9 @@ if (
 $thread_structure = "<div class=\"structure\">".get_lang('Structure')."</div>";
 $counter = 0;
 $count = 0;
-$prev_next_array = array();
+$prev_next_array = [];
 
-$forumId  = intval($_GET['forum']);
+$forumId = intval($_GET['forum']);
 $threadId = intval($_GET['thread']);
 $groupId = api_get_group_id();
 
@@ -69,8 +67,7 @@ foreach ($rows as $post) {
     $indent = $post['indent_cnt'] * '20';
     $thread_structure .= "<div style=\"margin-left: ".$indent."px;\">";
 
-    if (
-        !empty($whatsnew_post_info[$forumId][$post['thread_id']]) &&
+    if (!empty($whatsnew_post_info[$forumId][$post['thread_id']]) &&
         isset($whatsnew_post_info[$forumId][$threadId][$post['post_id']]) &&
         !empty($whatsnew_post_info[$forumId][$threadId][$post['post_id']])
     ) {
@@ -79,11 +76,8 @@ foreach ($rows as $post) {
         $post_image = Display::return_icon('forumpost.gif');
     }
     $thread_structure .= $post_image;
-    if (
-        isset($_GET['post']) &&
-        $_GET['post'] == $post['post_id'] || (
-            $counter == 1 AND !isset($_GET['post'])
-        )
+    if (isset($_GET['post']) && $_GET['post'] == $post['post_id'] ||
+        ($counter == 1 && !isset($_GET['post']))
     ) {
         $thread_structure .= '<strong>'.prepare4display($post['post_title']).'</strong>';
         $prev_next_array[] = $post['post_id'];
@@ -94,14 +88,12 @@ foreach ($rows as $post) {
             'viewthread.php?'.api_get_cidreq()."$count_loop&".http_build_query([
                 'forum' => $forumId,
                 'thread' => $threadId,
-                'post' => $post['post_id']
+                'post' => $post['post_id'],
             ]),
             ['class' => empty($post['visible']) ? 'text-muted' : null]
         );
-
         $prev_next_array[] = $post['post_id'];
     }
-
     $thread_structure .= '</div>';
     $count++;
 }
@@ -125,40 +117,33 @@ $prev_message = get_lang('PrevMessage');
 $first_img = Display::return_icon(
     'action_first.png',
     get_lang('FirstMessage'),
-    array('style' => 'vertical-align: middle;')
+    ['style' => 'vertical-align: middle;']
 );
 $last_img = Display::return_icon(
     'action_last.png',
     get_lang('LastMessage'),
-    array('style' => 'vertical-align: middle;')
+    ['style' => 'vertical-align: middle;']
 );
 $prev_img = Display::return_icon(
     'action_prev.png',
     get_lang('PrevMessage'),
-    array('style' => 'vertical-align: middle;')
+    ['style' => 'vertical-align: middle;']
 );
 $next_img = Display::return_icon(
     'action_next.png',
     get_lang('NextMessage'),
-    array('style' => 'vertical-align: middle;')
+    ['style' => 'vertical-align: middle;']
 );
 
 $class_prev = '';
 $class_next = '';
 
+$threadLink = $forumUrl.'viewthread.php?'.api_get_cidreq().'&forum='.$forumId.'&thread='.$threadId;
 // Links
-$first_href = $forumUrl.'viewthread.php?'.api_get_cidreq().
-    '&forum='.$forumId.'&thread='.$threadId.
-    '&gradebook='.$gradebook.'&id=1&post='.$prev_next_array[0];
-$last_href 	= $forumUrl.'viewthread.php?'.api_get_cidreq().
-    '&forum='.$forumId.'&thread='.$threadId.
-    '&gradebook='.$gradebook.'&post='.$prev_next_array[$max - 1];
-$prev_href	= $forumUrl.'viewthread.php?'.api_get_cidreq().
-    '&forum='.$forumId.'&thread='.$threadId.
-    '&gradebook='.$gradebook.'&post='.$prev_next_array[$prev_id];
-$next_href	= $forumUrl.'viewthread.php?'.api_get_cidreq().
-    '&forum='.$forumId.'&thread='.$threadId.
-    '&post='.$prev_next_array[$next_id];
+$first_href = $threadLink.'&id=1&post='.$prev_next_array[0];
+$last_href = $threadLink.'&post='.$prev_next_array[$max - 1];
+$prev_href = $threadLink.'&post='.$prev_next_array[$prev_id];
+$next_href = $threadLink.'&post='.$prev_next_array[$next_id];
 
 echo '<center style="margin-top: 10px; margin-bottom: 10px;">';
 // Go to: first and previous
@@ -236,13 +221,15 @@ $groupInfo = GroupManager::get_group_properties($groupId);
 
 // The user who posted it can edit his thread only if the course admin allowed this in the properties of the forum
 // The course admin him/herself can do this off course always
-if (
-(isset($groupInfo['iid']) && GroupManager::is_tutor_of_group(api_get_user_id(), $groupInfo)) || (
+if ((
+    isset($groupInfo['iid']) &&
+        GroupManager::is_tutor_of_group(api_get_user_id(), $groupInfo)
+    ) || (
         $current_forum['allow_edit'] == 1 &&
         $row['user_id'] == $_user['user_id']
     ) || (
         api_is_allowed_to_edit(false, true) && !(
-            api_is_course_coach() &&
+            api_is_session_general_coach() &&
             $current_forum['session_id'] != $sessionId
         )
     )
@@ -255,16 +242,15 @@ if (
             Display::return_icon(
                 'edit.png',
                 get_lang('Edit'),
-                array(),
+                [],
                 ICON_SIZE_SMALL
             ).'</a>';
     }
 }
 
-
 // Verified the post minor
 $my_post = getPosts($current_forum, $_GET['thread']);
-$id_posts = array();
+$id_posts = [];
 
 if (!empty($my_post) && is_array($my_post)) {
     foreach ($my_post as $post_value) {
@@ -276,10 +262,12 @@ if (!empty($my_post) && is_array($my_post)) {
     $post_minor = (int) $id_posts[0];
 }
 
-if (
-    (isset($groupInfo['iid']) && GroupManager::is_tutor_of_group(api_get_user_id(), $groupInfo)) ||
+if ((
+    isset($groupInfo['iid']) &&
+        GroupManager::is_tutor_of_group(api_get_user_id(), $groupInfo)
+    ) ||
     api_is_allowed_to_edit(false, true) &&
-    !(api_is_course_coach() && $current_forum['session_id'] != $sessionId)
+    !(api_is_session_general_coach() && $current_forum['session_id'] != $sessionId)
 ) {
     if ($locked == false) {
         echo "<a href=\"".api_get_self()."?".api_get_cidreq().
@@ -291,7 +279,7 @@ if (
             "')) return false;\">".Display::return_icon(
                 'delete.png',
                 get_lang('Delete'),
-                array(),
+                [],
                 ICON_SIZE_SMALL
             )."</a>";
     }
@@ -299,11 +287,11 @@ if (
         'post',
         $rows[$display_post_id]['post_id'],
         $rows[$display_post_id]['visible'],
-        array(
+        [
             'forum' => $forumId,
             'thread' => $threadId,
-            'post' => Security::remove_XSS($_GET['post'])
-        )
+            'post' => Security::remove_XSS($_GET['post']),
+        ]
     );
 
     if (!isset($_GET['id']) && $post_id > $post_minor) {
@@ -314,10 +302,9 @@ if (
             Display::return_icon(
                 'move.png',
                 get_lang('MovePost'),
-                array(),
+                [],
                 ICON_SIZE_SMALL
             )."</a>";
-
     }
 }
 
@@ -392,17 +379,16 @@ if (($current_forum_category && $current_forum_category['locked'] == 0) &&
 
 echo "</td>";
 // Note: this can be removed here because it will be displayed in the tree
-if (
-    isset($whatsnew_post_info[$forumId][$threadId][$rows[$display_post_id]['post_id']]) AND
-    !empty($whatsnew_post_info[$forumId][$threadId][$rows[$display_post_id]['post_id']]) AND
+if (isset($whatsnew_post_info[$forumId][$threadId][$rows[$display_post_id]['post_id']]) &&
+    !empty($whatsnew_post_info[$forumId][$threadId][$rows[$display_post_id]['post_id']]) &&
     !empty($whatsnew_post_info[$_GET['forum']][$rows[$display_post_id]['thread_id']])
 ) {
     $post_image = Display::return_icon('forumpostnew.gif');
 } else {
     $post_image = Display::return_icon('forumpost.gif');
 }
-if (
-    $rows[$display_post_id]['post_notification'] == '1' AND
+
+if ($rows[$display_post_id]['post_notification'] == '1' &&
     $rows[$display_post_id]['poster_id'] == $_user['user_id']
 ) {
     $post_image .= Display::return_icon('forumnotification.gif', get_lang('YouWillBeNotified'));
@@ -432,16 +418,19 @@ if (!empty($attachment_list) && is_array($attachment_list)) {
         echo '<span class="forum_attach_comment">'.
             Security::remove_XSS($attachment['comment'], STUDENT).'</span>';
 
-        if (
-            ($current_forum['allow_edit'] == 1 && $rows[$display_post_id]['user_id'] == $_user['user_id']) ||
-            (api_is_allowed_to_edit(false, true) && !(api_is_course_coach() && $current_forum['session_id'] != $sessionId))
+        if (($current_forum['allow_edit'] == 1 && $rows[$display_post_id]['user_id'] == $_user['user_id']) ||
+            (api_is_allowed_to_edit(false, true) &&
+            !(api_is_session_general_coach() && $current_forum['session_id'] != $sessionId))
         ) {
             echo '&nbsp;&nbsp;<a href="'.api_get_self().'?'.
                 api_get_cidreq().'&action=delete_attach&id_attach='.$attachment['id'].'&forum='.$forumId.
                 '&thread='.$threadId.
                 '" onclick="javascript:if(!confirm(\''.
-                addslashes(api_htmlentities(
-                    get_lang('ConfirmYourChoice'), ENT_QUOTES)
+                addslashes(
+                    api_htmlentities(
+                    get_lang('ConfirmYourChoice'),
+                    ENT_QUOTES
+                )
                 ).'\')) return false;">'.Display::return_icon(
                     'delete.gif',
                     get_lang('Delete')

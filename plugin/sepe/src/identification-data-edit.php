@@ -4,12 +4,10 @@
 /**
  * This script displays a data center edit form.
  */
-use \ChamiloSession as Session;
-
 require_once '../config.php';
 $plugin = SepePlugin::create();
 
-if ( !empty($_POST)) {
+if (!empty($_POST)) {
     $check = Security::check_token('post');
     if ($check) {
         $centerOrigin = Database::escape_string(trim($_POST['center_origin']));
@@ -20,7 +18,7 @@ if ( !empty($_POST)) {
         $phone = Database::escape_string(trim($_POST['phone']));
         $mail = Database::escape_string(trim($_POST['mail']));
         $id = intval($_POST['id']);
-        
+
         if (checkIdentificationData()) {
             $sql = "UPDATE $tableSepeCenter SET 
                         center_origin = '".$centerOrigin."', 
@@ -30,7 +28,7 @@ if ( !empty($_POST)) {
                         tracking_url = '".$trackingUrl."', 
                         phone = '".$phone."', 
                         mail = '".$mail."' 
-                    WHERE id = $id";    
+                    WHERE id = $id";
         } else {
             $sql = "INSERT INTO $tableSepeCenter (
                         id, 
@@ -69,8 +67,8 @@ if ( !empty($_POST)) {
 }
 
 if (api_is_platform_admin()) {
-    $interbreadcrumb[] = array("url" => "/plugin/sepe/src/sepe-administration-menu.php", "name" => $plugin->get_lang('MenuSepe'));
-    $interbreadcrumb[] = array("url" => "identification-data.php", "name" => $plugin->get_lang('DataCenter'));
+    $interbreadcrumb[] = ["url" => "/plugin/sepe/src/sepe-administration-menu.php", "name" => $plugin->get_lang('MenuSepe')];
+    $interbreadcrumb[] = ["url" => "identification-data.php", "name" => $plugin->get_lang('DataCenter')];
     $templateName = $plugin->get_lang('DataCenterEdit');
     $tpl = new Template($templateName);
     $info = getInfoIdentificationData();
@@ -89,5 +87,6 @@ if (api_is_platform_admin()) {
     $tpl->assign('content', $content);
     $tpl->display_one_col_template();
 } else {
-    header('Location:' . api_get_path(WEB_PATH));
+    header('Location:'.api_get_path(WEB_PATH));
+    exit;
 }

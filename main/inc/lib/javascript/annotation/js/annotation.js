@@ -183,8 +183,8 @@
         this.el = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         this.el.setAttribute('version', '1.1');
         this.el.setAttribute('viewBox', '0 0 ' + this.image.width + ' ' + this.image.height);
-        this.el.style.width = this.image.width + 'px';
-        this.el.style.height = this.image.height + 'px';
+        this.el.setAttribute('width', this.image.width);
+        this.el.setAttribute('height', this.image.height);
 
         var svgImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
         svgImage.setAttributeNS('http://www.w3.org/1999/xlink', 'href', this.image.src);
@@ -227,28 +227,21 @@
                 }
 
                 var point = getPointOnImage(self.el, e.clientX, e.clientY);
-
                 elementModel = new TextModel({x: point.x, y: point.y, text: ''});
-
                 self.elementsCollection.add(elementModel);
-
                 elementModel = null;
-
                 isMoving = false;
             })
             .on('mousedown', function (e) {
                 e.preventDefault();
 
                 var point = getPointOnImage(self.el, e.clientX, e.clientY);
-
                 if (isMoving || "0" !== self.$rdbOptions.filter(':checked').val() || elementModel) {
                     return;
                 }
 
                 elementModel = new SvgPathModel({points: [[point.x, point.y]]});
-
                 self.elementsCollection.add(elementModel);
-
                 isMoving = true;
             })
             .on('mousemove', function (e) {
@@ -259,7 +252,6 @@
                 }
 
                 var point = getPointOnImage(self.el, e.clientX, e.clientY);
-
                 elementModel.addPoint(point.x, point.y);
             })
             .on('mouseup', function (e) {
@@ -270,7 +262,6 @@
                 }
 
                 elementModel = null;
-
                 isMoving = false;
             });
     };
@@ -334,49 +325,43 @@
 
     window.AnnotationQuestion = function (userSettings) {
         $(document).on('ready', function () {
-            var
-                settings = $.extend(
-                    {
-                        questionId: 0,
-                        exerciseId: 0,
-                        relPath: '/'
-                    },
-                    userSettings
-                ),
-                xhrUrl = 'exercise/annotation_user.php',
-                $container = $('#annotation-canvas-' + settings.questionId);
+            var settings = $.extend(
+                {
+                    questionId: 0,
+                    exerciseId: 0,
+                    relPath: '/'
+                },
+                userSettings
+            ),
+            xhrUrl = 'exercise/annotation_user.php?' + _p.web_cid_query,
+            $container = $('#annotation-canvas-' + settings.questionId);
+            $.getJSON(settings.relPath + xhrUrl, {
+                question_id: parseInt(settings.questionId),
+                exe_id: parseInt(settings.exerciseId),
+                course_id: parseInt(settings.courseId)
+            })
+            .done(function (questionInfo) {
+                var image = new Image();
+                image.onload = function () {
+                    var elementsCollection = new ElementsCollection(),
+                        canvas = new AnnotationCanvasView(elementsCollection, this, settings.questionId);
 
-            $
-                .getJSON(settings.relPath + xhrUrl, {
-                    question_id: parseInt(settings.questionId),
-                    exe_id: parseInt(settings.exerciseId)
-                })
-                .done(function (questionInfo) {
-                    var image = new Image();
-                    image.onload = function () {
-                        var elementsCollection = new ElementsCollection(),
-                            canvas = new AnnotationCanvasView(elementsCollection, this, settings.questionId);
+                    $container.html(canvas.render().el);
 
-                        $container
-                            .html(canvas.render().el);
+                    /** @namespace questionInfo.answers.paths */
+                    $.each(questionInfo.answers.paths, function (i, pathInfo) {
+                        var pathModel = SvgPathModel.decode(pathInfo);
+                        elementsCollection.add(pathModel);
+                    });
 
-                        /** @namespace questionInfo.answers.paths */
-                        $.each(questionInfo.answers.paths, function (i, pathInfo) {
-                            var pathModel = SvgPathModel.decode(pathInfo);
-
-                            elementsCollection.add(pathModel);
-                        });
-
-                        /** @namespace questionInfo.answers.texts */
-                        $(questionInfo.answers.texts).each(function (i, textInfo) {
-                            var textModel = TextModel.decode(textInfo);
-
-                            elementsCollection.add(textModel);
-                        });
-                    };
-                    image.src = questionInfo.image.path;
-                });
-
+                    /** @namespace questionInfo.answers.texts */
+                    $(questionInfo.answers.texts).each(function (i, textInfo) {
+                        var textModel = TextModel.decode(textInfo);
+                        elementsCollection.add(textModel);
+                    });
+                };
+                image.src = questionInfo.image.path;
+            });
         });
     };
 })(window, window.jQuery);

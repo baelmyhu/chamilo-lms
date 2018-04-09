@@ -4,7 +4,7 @@
 use ChamiloSession as Session;
 
 /**
- * Class GlobalMultipleAnswer
+ * Class GlobalMultipleAnswer.
  */
 class GlobalMultipleAnswer extends Question
 {
@@ -22,7 +22,7 @@ class GlobalMultipleAnswer extends Question
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createAnswersForm($form)
     {
@@ -35,13 +35,13 @@ class GlobalMultipleAnswer extends Question
         $html = '<table class="data_table">
                 <tr>
                     <th width="10px">
-                        ' . get_lang('Number').'
+                        '.get_lang('Number').'
                     </th>
                     <th width="10px">
-                        ' . get_lang('True').'
+                        '.get_lang('True').'
                     </th>
                     <th width="50%">
-                        ' . get_lang('Answer').'
+                        '.get_lang('Answer').'
                     </th>';
 
         $html .= '<th>'.get_lang('Comment').'</th>';
@@ -52,7 +52,7 @@ class GlobalMultipleAnswer extends Question
             '<br /> '.Display::return_icon('fill_field.png'),
             $html
         );
-        $defaults = array();
+        $defaults = [];
         $correct = 0;
         $answer = false;
         if (!empty($this->id)) {
@@ -66,7 +66,7 @@ class GlobalMultipleAnswer extends Question
         //  le nombre de r�ponses est bien enregistr� sous la forme int(nb)
         /* Ajout mise en forme nb reponse */
         $form->addElement('hidden', 'nb_answers');
-        $boxes_names = array();
+        $boxes_names = [];
 
         if ($nb_answers < 1) {
             $nb_answers = 1;
@@ -97,7 +97,7 @@ class GlobalMultipleAnswer extends Question
                 $defaults['pts'] = 1;
             }
 
-            $renderer = & $form->defaultRenderer();
+            $renderer = &$form->defaultRenderer();
 
             $renderer->setElementTemplate(
                 '<td><!-- BEGIN error --><span class="form_error">{error}</span><!-- END error --><br/>{element}</td>',
@@ -131,24 +131,24 @@ class GlobalMultipleAnswer extends Question
                 'html_editor',
                 'answer['.$i.']',
                 null,
-                array(),
-                array(
+                [],
+                [
                     'ToolbarSet' => 'TestProposedAnswer',
                     'Width' => '100%',
                     'Height' => '100',
-                )
+                ]
             );
             $form->addRule('answer['.$i.']', get_lang('ThisFieldIsRequired'), 'required');
             $form->addElement(
                 'html_editor',
                 'comment['.$i.']',
                 null,
-                array(),
-                array(
+                [],
+                [
                     'ToolbarSet' => 'TestProposedAnswer',
                     'Width' => '100%',
                     'Height' => '100',
-                )
+                ]
             );
 
             $form->addElement('html', '</tr>');
@@ -196,11 +196,11 @@ class GlobalMultipleAnswer extends Question
                 $form->setDefaults($defaults);
             }
         }
-        $form->setConstants(array('nb_answers' => $nb_answers));
+        $form->setConstants(['nb_answers' => $nb_answers]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function processAnswersCreation($form, $exercise)
     {
@@ -257,7 +257,7 @@ class GlobalMultipleAnswer extends Question
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function return_header(
         $exercise,
@@ -265,12 +265,15 @@ class GlobalMultipleAnswer extends Question
         $score = null
     ) {
         $header = parent::return_header($exercise, $counter, $score);
-        $header .= '<table class="'.$this->question_table_class.'">
-        <tr>
-            <th>' . get_lang("Choice").'</th>
-            <th>' . get_lang("ExpectedChoice").'</th>
-            <th>' . get_lang("Answer").'</th>';
-        $header .= '<th>'.get_lang("Comment").'</th>';
+        $header .= '<table class="'.$this->question_table_class.'"><tr>';
+
+        $header .= '<th>'.get_lang('Choice').'</th>';
+        $header .= '<th>'.get_lang('ExpectedChoice').'</th>';
+        $header .= '<th>'.get_lang('Answer').'</th>';
+        if ($exercise->showExpectedChoice()) {
+            $header .= '<th>'.get_lang('Status').'</th>';
+        }
+        $header .= '<th>'.get_lang('Comment').'</th>';
         $header .= '</tr>';
 
         return $header;

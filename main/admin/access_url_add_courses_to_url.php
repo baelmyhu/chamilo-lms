@@ -1,12 +1,14 @@
 <?php
 /* For licensing terms, see /license.txt */
 /**
-*	This script allows platform admins to add users to urls.
-*	It displays a list of users and a list of courses;
-*	you can select multiple users and courses and then click on
-*	@package chamilo.admin
-*	@author Julio Montoya <gugli100@gmail.com>
-*/
+ * This script allows platform admins to add users to urls.
+ * It displays a list of users and a list of courses;
+ * you can select multiple users and courses and then click on.
+ *
+ * @package chamilo.admin
+ *
+ * @author Julio Montoya <gugli100@gmail.com>
+ */
 $cidReset = true;
 require_once __DIR__.'/../inc/global.inc.php';
 
@@ -21,9 +23,9 @@ if (!api_get_multiple_access_url()) {
 
 $form_sent = 0;
 $first_letter_course = '';
-$courses = array();
-$url_list = array();
-$users = array();
+$courses = [];
+$url_list = [];
+$users = [];
 
 $tbl_access_url_rel_course = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_COURSE);
 $tbl_access_url = Database::get_main_table(TABLE_MAIN_ACCESS_URL);
@@ -32,8 +34,8 @@ $tbl_course = Database::get_main_table(TABLE_MAIN_COURSE);
 
 /*	Header   */
 $tool_name = get_lang('AddCoursesToURL');
-$interbreadcrumb[] = array('url' => 'index.php', 'name' => get_lang('PlatformAdmin'));
-$interbreadcrumb[] = array('url' => 'access_urls.php', 'name' => get_lang('MultipleAccessURLs'));
+$interbreadcrumb[] = ['url' => 'index.php', 'name' => get_lang('PlatformAdmin')];
+$interbreadcrumb[] = ['url' => 'access_urls.php', 'name' => get_lang('MultipleAccessURLs')];
 
 Display :: display_header($tool_name);
 
@@ -48,8 +50,8 @@ api_display_tool_title($tool_name);
 
 if (isset($_POST['form_sent']) && $_POST['form_sent']) {
     $form_sent = $_POST['form_sent'];
-    $courses = is_array($_POST['course_list']) ? $_POST['course_list'] : array();
-    $url_list = is_array($_POST['url_list']) ? $_POST['url_list'] : array();
+    $courses = is_array($_POST['course_list']) ? $_POST['course_list'] : [];
+    $url_list = is_array($_POST['url_list']) ? $_POST['url_list'] : [];
     $first_letter_course = $_POST['first_letter_course'];
 
     foreach ($users as $key => $value) {
@@ -104,10 +106,10 @@ unset($result);
      <?php echo get_lang('FirstLetterCourse'); ?> :
      <select name="first_letter_course" onchange="javascript:document.formulaire.form_sent.value='2'; document.formulaire.submit();">
       <option value="">--</option>
-      <?php
-        echo Display :: get_alphabet_options($first_letter_course);
-        echo Display :: get_numeric_options(0, 9, $first_letter_course);
-      ?>
+    <?php
+    echo Display:: get_alphabet_options($first_letter_course);
+    echo Display:: get_numeric_options(0, 9, $first_letter_course);
+    ?>
      </select>
     </td>
         <td width="20%">&nbsp;</td>
@@ -118,10 +120,15 @@ unset($result);
    <tr>
     <td width="40%" align="center">
      <select name="course_list[]" multiple="multiple" size="20" style="width:400px;">
-		<?php foreach ($db_courses as $course) { ?>
-			<option value="<?php echo $course['code']; ?>" <?php if (in_array($course['code'], $courses)) echo 'selected="selected"'; ?>><?php echo $course['title'].' ('.$course['code'].')'; ?>
+		<?php foreach ($db_courses as $course) {
+        ?>
+			<option value="<?php echo $course['code']; ?>" <?php if (in_array($course['code'], $courses)) {
+            echo 'selected="selected"';
+        } ?>>
+                <?php echo $course['title'].' ('.$course['code'].')'; ?>
             </option>
-        <?php } ?>
+        <?php
+    } ?>
     </select>
    </td>
    <td width="20%" valign="middle" align="center">
@@ -129,10 +136,15 @@ unset($result);
    </td>
    <td width="40%" align="center">
     <select name="url_list[]" multiple="multiple" size="20" style="width:300px;">
-		<?php foreach ($db_urls as $url_obj) { ?>
-        <option value="<?php echo $url_obj['id']; ?>" <?php if (in_array($url_obj['id'], $url_list)) echo 'selected="selected"'; ?>><?php echo $url_obj['url']; ?>
-        </option>
-		<?php } ?>
+    <?php foreach ($db_urls as $url_obj) {
+        ?>
+    <option value="<?php echo $url_obj['id']; ?>" <?php if (in_array($url_obj['id'], $url_list)) {
+            echo 'selected="selected"';
+        } ?>>
+        <?php echo $url_obj['url']; ?>
+    </option>
+    <?php
+    } ?>
     </select>
    </td>
   </tr>

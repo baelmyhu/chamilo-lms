@@ -3,26 +3,28 @@
 
 namespace Chamilo\CourseBundle\Component\CourseCopy;
 
+use Chamilo\CourseBundle\Component\CourseCopy\Resources\Document;
 use Chamilo\CourseBundle\Component\CourseCopy\Resources\Resource;
 use Database;
-use \CourseManager;
 use Display;
-use Chamilo\CourseBundle\Component\CourseCopy\Resources\Document;
 
 /**
- * Class to show a form to select resources
+ * Class to show a form to select resources.
+ *
  * @author Bart Mollet <bart.mollet@hogent.be>
  * @author Julio Montoya <gugli100@gmail.com>
+ *
  * @package chamilo.backup
  */
 class CourseSelectForm
 {
     /**
-     * Display the form
+     * Display the form.
+     *
      * @param array $course
-     * @param array $hidden_fields Hidden fields to add to the form.
-     * @param boolean $avoid_serialize the document array will be serialize.
-     * This is used in the course_copy.php file
+     * @param array $hidden_fields   hidden fields to add to the form
+     * @param bool  $avoid_serialize the document array will be serialize.
+     *                               This is used in the course_copy.php file
      */
     public static function display_form(
         $course,
@@ -49,8 +51,7 @@ class CourseSelectForm
         $resource_titles[RESOURCE_WIKI] = get_lang('Wiki');
         $resource_titles[RESOURCE_THEMATIC] = get_lang('Thematic');
         $resource_titles[RESOURCE_ATTENDANCE] = get_lang('Attendance');
-        $resource_titles[RESOURCE_WORK] = get_lang('ToolStudentPublication');
-?>
+        $resource_titles[RESOURCE_WORK] = get_lang('ToolStudentPublication'); ?>
         <script>
             function exp(item) {
                 el = document.getElementById('div_'+item);
@@ -163,16 +164,16 @@ class CourseSelectForm
             !empty($hidden_fields['destination_session']) &&
             !empty($hidden_fields['origin_session'])
         ) {
-            echo '<input type="hidden" name="destination_course" 	value="'.$hidden_fields['destination_course'].'"/>';
-            echo '<input type="hidden" name="origin_course" 		value="'.$hidden_fields['origin_course'].'"/>';
-            echo '<input type="hidden" name="destination_session" 	value="'.$hidden_fields['destination_session'].'"/>';
-            echo '<input type="hidden" name="origin_session" 		value="'.$hidden_fields['origin_session'].'"/>';
+            echo '<input type="hidden" name="destination_course" value="'.$hidden_fields['destination_course'].'"/>';
+            echo '<input type="hidden" name="origin_course" value="'.$hidden_fields['origin_course'].'"/>';
+            echo '<input type="hidden" name="destination_session" value="'.$hidden_fields['destination_session'].'"/>';
+            echo '<input type="hidden" name="origin_session" value="'.$hidden_fields['origin_session'].'"/>';
         }
 
         $element_count = 0;
-        $forum_categories = array();
-        $forums = array();
-        $forum_topics = array();
+        $forum_categories = [];
+        $forums = [];
+        $forum_topics = [];
 
         echo '<p>';
         echo get_lang('SelectResources');
@@ -369,7 +370,10 @@ class CourseSelectForm
                     switch ($type) {
                         case RESOURCE_QUIZQUESTION:
                             foreach ($resources as $id => $resource) {
-                                echo '<input type="hidden" name="resource['.RESOURCE_QUIZQUESTION.']['.$id.']" id="resource['.RESOURCE_QUIZQUESTION.']['.$id.']" value="On" />';
+                                echo '<input 
+                                    type="hidden" 
+                                    name="resource['.RESOURCE_QUIZQUESTION.']['.$id.']" 
+                                    id="resource['.RESOURCE_QUIZQUESTION.']['.$id.']" value="On" />';
                             }
                             break;
                     }
@@ -389,7 +393,10 @@ class CourseSelectForm
                     switch ($type) {
                         case RESOURCE_SCORM:
                             foreach ($resources as $id => $resource) {
-                                echo '<input type="hidden" name="resource['.RESOURCE_SCORM.']['.$id.']" id="resource['.RESOURCE_SCORM.']['.$id.']" value="On" />';
+                                echo '<input 
+                                    type="hidden" 
+                                    name="resource['.RESOURCE_SCORM.']['.$id.']" 
+                                    id="resource['.RESOURCE_SCORM.']['.$id.']" value="On" />';
                             }
                             break;
                     }
@@ -399,13 +406,15 @@ class CourseSelectForm
     }
 
     /**
-     * Get the posted course
-     * @param string $from who calls the function?
-     * It can be copy_course, create_backup, import_backup or recycle_course
-     * @param int $session_id
+     * Get the posted course.
+     *
+     * @param string $from        who calls the function?
+     *                            It can be copy_course, create_backup, import_backup or recycle_course
+     * @param int    $session_id
      * @param string $course_code
+     *
      * @return course The course-object with all resources selected by the user
-     * in the form given by display_form(...)
+     *                in the form given by display_form(...)
      */
     public static function get_posted_course($from = '', $session_id = 0, $course_code = '')
     {
@@ -467,7 +476,7 @@ class CourseSelectForm
                                         tool = '".RESOURCE_DOCUMENT."' AND
                                         ref = $resource_item ";
                             $res = Database::query($sql);
-                            $all_properties = array();
+                            $all_properties = [];
                             while ($item_property = Database::fetch_array($res, 'ASSOC')) {
                                 $all_properties[] = $item_property;
                             }
@@ -495,7 +504,7 @@ class CourseSelectForm
                     case RESOURCE_FORUMPOST:
                        //Add post from topic
                         if ($type == RESOURCE_FORUMTOPIC) {
-                            $posts_to_save = array();
+                            $posts_to_save = [];
                             $posts = $course->resources[RESOURCE_FORUMPOST];
                             foreach ($resources as $thread_id => $obj) {
                                 if (!isset($_POST['resource'][RESOURCE_FORUMTOPIC][$thread_id])) {
@@ -544,16 +553,13 @@ class CourseSelectForm
                         }
                         // no break
                     case RESOURCE_LINKCATEGORY:
-                        // no break
                     case RESOURCE_FORUMCATEGORY:
-                        // no break
                     case RESOURCE_QUIZQUESTION:
-                        // no break
                     case RESOURCE_DOCUMENT:
                         // Mark folders to import which are not selected by the user to import,
                         // but in which a document was selected.
                         $documents = isset($_POST['resource'][RESOURCE_DOCUMENT]) ? $_POST['resource'][RESOURCE_DOCUMENT] : null;
-                        if (!empty($resources) && is_array($resources))
+                        if (!empty($resources) && is_array($resources)) {
                             foreach ($resources as $id => $obj) {
                                 if (isset($obj->file_type) && $obj->file_type == 'folder' &&
                                     !isset($_POST['resource'][RESOURCE_DOCUMENT][$id]) &&
@@ -575,6 +581,7 @@ class CourseSelectForm
                                     }
                                 }
                             }
+                        }
                         // no break
                     default:
                         if (!empty($resources) && is_array($resources)) {
@@ -602,10 +609,11 @@ class CourseSelectForm
     }
 
     /**
-     * Display the form session export
+     * Display the form session export.
+     *
      * @param array $list_course
-     * @param array $hidden_fields Hidden fields to add to the form.
-     * @param boolean $avoid_serialize the document array will be serialize. This is used in the course_copy.php file
+     * @param array $hidden_fields   hidden fields to add to the form
+     * @param bool  $avoid_serialize the document array will be serialize. This is used in the course_copy.php file
      */
     public static function display_form_session_export(
         $list_course,
@@ -658,14 +666,11 @@ class CourseSelectForm
 
         //get destination course title
         if (!empty($hidden_fields['destination_course'])) {
+            $sessionTitle = null;
             if (!empty($hidden_fields['destination_session'])) {
                 $sessionTitle = ' ('.api_get_session_name($hidden_fields['destination_session']).')';
-            } else {
-                $sessionTitle = null;
             }
-            $courseInfo = api_get_course_info(
-                $hidden_fields['destination_course']
-            );
+            $courseInfo = api_get_course_info($hidden_fields['destination_course']);
             echo '<h3>';
             echo get_lang('DestinationCourse').' : '.$courseInfo['title'].$sessionTitle;
             echo '</h3>';
@@ -703,7 +708,8 @@ class CourseSelectForm
             }
         }
         if ($avoid_serialize) {
-            //Documents are avoided due the huge amount of memory that the serialize php function "eats" (when there are directories with hundred/thousand of files)
+            // Documents are avoided due the huge amount of memory that the serialize php
+            // function "eats" (when there are directories with hundred/thousand of files)
             // this is a known issue of serialize
             $course->resources['document'] = null;
         }
@@ -714,7 +720,9 @@ class CourseSelectForm
                 echo '<input type="hidden" name="'.$key.'" value="'.$value.'"/>';
             }
         }
-        echo '<br /><button class="save" type="submit" onclick="checkLearnPath(\''.addslashes(get_lang('DocumentsWillBeAddedToo')).'\')">'.get_lang('Ok').'</button>';
+        echo '<br /><button class="save" type="submit" 
+            onclick="checkLearnPath(\''.addslashes(get_lang('DocumentsWillBeAddedToo')).'\')">'.
+            get_lang('Ok').'</button>';
         self::display_hidden_quiz_questions($course);
         self::display_hidden_scorm_directories($course);
         echo '</form>';

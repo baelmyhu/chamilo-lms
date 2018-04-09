@@ -4,25 +4,25 @@
 /**
  * Defines the OpenofficeDocument class, which is meant as a conversion
  * tool from Office presentations (.ppt, .sxi, .odp, .pptx) to
- * learning paths
+ * learning paths.
+ *
  * @package chamilo.learnpath
+ *
  * @author  Eric Marguin <eric.marguin@dokeos.com>
  * @license GNU/GPL
  */
 
 /**
- * Defines the "OpenofficePresentation" child of class "OpenofficeDocument"
+ * Defines the "OpenofficePresentation" child of class "OpenofficeDocument".
  */
 require_once 'openoffice_document.class.php';
+
 if (api_get_setting('search_enabled') == 'true') {
-    require_once api_get_path(LIBRARY_PATH).'search/ChamiloIndexer.class.php';
-    require_once api_get_path(LIBRARY_PATH).'search/IndexableChunk.class.php';
     require_once api_get_path(LIBRARY_PATH).'specific_fields_manager.lib.php';
 }
 
 class OpenofficePresentation extends OpenofficeDocument
 {
-
     public $take_slide_name;
 
     public function __construct($take_slide_name = false, $course_code = null, $resource_id = null, $user_id = null)
@@ -31,7 +31,7 @@ class OpenofficePresentation extends OpenofficeDocument
         parent::__construct($course_code, $resource_id, $user_id);
     }
 
-    public function make_lp($files = array())
+    public function make_lp($files = [])
     {
         $_course = api_get_course_info();
         $previous = 0;
@@ -106,7 +106,7 @@ class OpenofficePresentation extends OpenofficeDocument
 
             // Calculate thumbnail size.
             $image_size = api_getimagesize($image);
-            $width  = $image_size['width'];
+            $width = $image_size['width'];
             $height = $image_size['height'];
 
             $thumb_width = 300;
@@ -125,7 +125,15 @@ class OpenofficePresentation extends OpenofficeDocument
                 $slide_name
             );
 
-            api_item_property_update($_course, TOOL_THUMBNAIL, $document_id_thumb, 'DocumentAdded', api_get_user_id(), 0, 0);
+            api_item_property_update(
+                $_course,
+                TOOL_THUMBNAIL,
+                $document_id_thumb,
+                'DocumentAdded',
+                api_get_user_id(),
+                0,
+                0
+            );
 
             // Create an html file.
             $html_file = $file_name.'.html';
@@ -133,14 +141,16 @@ class OpenofficePresentation extends OpenofficeDocument
 
             $slide_src = api_get_path(REL_COURSE_PATH).$_course['path'].'/document/'.$dir.utf8_encode($file_name);
             $slide_src = str_replace('\/\/', '/', $slide_src);
-            fwrite($fp,
+            fwrite(
+                $fp,
 '<html>
     <head>
     </head>
     <body>
         <img src="'.$slide_src.'" />
     </body>
-</html>'); // This indentation is to make the generated html files to look well.
+</html>'
+            ); // This indentation is to make the generated html files to look well.
 
             fclose($fp);
             $document_id = add_document(
@@ -183,7 +193,7 @@ class OpenofficePresentation extends OpenofficeDocument
                 if (isset($_POST['index_document']) && $_POST['index_document']) {
                     $di = new ChamiloIndexer();
                     isset($_POST['language']) ? $lang = Database::escape_string($_POST['language']) : $lang = 'english';
-                    $di->connectDb(NULL, NULL, $lang);
+                    $di->connectDb(null, null, $lang);
                     $ic_slide = new IndexableChunk();
                     $ic_slide->addValue('title', $slide_name);
                     $specific_fields = get_specific_field_list();
@@ -208,12 +218,12 @@ class OpenofficePresentation extends OpenofficeDocument
                     $ic_slide->addCourseId($courseid);
                     $ic_slide->addToolId(TOOL_LEARNPATH);
                     $lp_id = $this->lp_id;
-                    $xapian_data = array(
+                    $xapian_data = [
                         SE_COURSE_ID => $courseid,
                         SE_TOOL_ID => TOOL_LEARNPATH,
-                        SE_DATA => array('lp_id' => $lp_id, 'lp_item' => $previous, 'document_id' => $document_id),
+                        SE_DATA => ['lp_id' => $lp_id, 'lp_item' => $previous, 'document_id' => $document_id],
                         SE_USER => (int) api_get_user_id(),
-                    );
+                    ];
                     $ic_slide->xapian_data = serialize($xapian_data);
                     $di->addChunk($ic_slide);
                     // Index and return search engine document id.
@@ -231,21 +241,22 @@ class OpenofficePresentation extends OpenofficeDocument
         }
     }
 
-    function add_command_parameters()
+    public function add_command_parameters()
     {
         if (empty($this->slide_width) || empty($this->slide_height)) {
             list($this->slide_width, $this->slide_height) = explode('x', api_get_setting('service_ppt2lp', 'size'));
         }
+
         return ' -w '.$this->slide_width.' -h '.$this->slide_height.' -d oogie "'.$this->base_work_dir.'/'.$this->file_path.'"  "'.$this->base_work_dir.$this->created_dir.'.html"';
     }
 
-    function set_slide_size($width, $height)
+    public function set_slide_size($width, $height)
     {
         $this->slide_width = $width;
         $this->slide_height = $height;
     }
 
-    function add_docs_to_visio($files = array())
+    public function add_docs_to_visio($files = [])
     {
         $_course = api_get_course_info();
         foreach ($files as $file) {

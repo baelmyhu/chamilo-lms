@@ -8,7 +8,7 @@
  * First, the HTML part (which is the presentation), and second the JavaScript
  * part (the process).
  * The two bits are separate to allow for a one-big-javascript and a one-big-html
- * files to be built. Each export function thus returns an array of HTML+JS
+ * files to be built. Each export function thus returns an array of HTML+JS.
  *
  *
  * @author Claro Team <cvs@claroline.net>
@@ -20,19 +20,23 @@ class ScormQuestion extends Question
 {
     public $js_id;
     public $answer;
+
     /**
-     * Returns the HTML + JS flow corresponding to one question
+     * Returns the HTML + JS flow corresponding to one question.
      *
-     * @param int $questionId The question ID
+     * @param int  $questionId The question ID
      * @param bool $standalone (ie including XML tag, DTD declaration, etc)
-     * @param int  $js_id The JavaScript ID for this question.
-     * Due to the nature of interactions, we must have a natural sequence for
-     * questions in the generated JavaScript.
-     * @param integer $js_id
+     * @param int  $js_id      The JavaScript ID for this question.
+     *                         Due to the nature of interactions, we must have a natural sequence for
+     *                         questions in the generated JavaScript.
+     *
      * @return string|array
      */
-    public static function export_question($questionId, $standalone = true, $js_id)
-    {
+    public static function export_question(
+        $questionId,
+        $standalone = true,
+        $js_id
+    ) {
         $question = new ScormQuestion();
         $qst = $question->read($questionId);
         if (!$qst) {
@@ -52,7 +56,7 @@ class ScormQuestion extends Question
     }
 
     /**
-     * Include the correct answer class and create answer
+     * Include the correct answer class and create answer.
      */
     public function setAnswer()
     {
@@ -119,7 +123,12 @@ class ScormQuestion extends Question
         return true;
     }
 
-    function export()
+    /**
+     * @throws Exception
+     *
+     * @return array
+     */
+    public function export()
     {
         $html = $this->getQuestionHTML();
         $js = $this->getQuestionJS();
@@ -132,11 +141,11 @@ class ScormQuestion extends Question
             throw new \Exception('Question not supported. Exercise: '.$this->selectTitle());
         }
 
-        return array($js, $html);
+        return [$js, $html];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createAnswersForm($form)
     {
@@ -144,7 +153,7 @@ class ScormQuestion extends Question
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function processAnswersCreation($form, $exercise)
     {
@@ -152,9 +161,9 @@ class ScormQuestion extends Question
     }
 
     /**
-     * Returns an HTML-formatted question
+     * Returns an HTML-formatted question.
      */
-    function getQuestionHTML()
+    public function getQuestionHTML()
     {
         $title = $this->selectTitle();
         $description = $this->selectDescription();
@@ -169,11 +178,12 @@ class ScormQuestion extends Question
             <i>'.$description.'</i>
             </td>
             </tr>';
+
         return $s;
     }
 
     /**
-     * Return the JavaScript code bound to the question
+     * Return the JavaScript code bound to the question.
      */
     public function getQuestionJS()
     {
@@ -201,22 +211,22 @@ class ScormQuestion extends Question
 
 /**
  * This class handles the export to SCORM of a multiple choice question
- * (be it single answer or multiple answers)
+ * (be it single answer or multiple answers).
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormAnswerMultipleChoice extends Answer
 {
     /**
-     * Return HTML code for possible answers
+     * Return HTML code for possible answers.
      */
-    function export()
+    public function export()
     {
         $js = '';
         $html = '<tr><td colspan="2"><table width="100%">';
         $type = $this->getQuestionType();
         $jstmpw = 'questions_answers_ponderation['.$this->questionJSId.'] = new Array();';
         $jstmpw .= 'questions_answers_ponderation['.$this->questionJSId.'][0] = 0;';
-
         $jstmpw .= 'questions_answers_correct['.$this->questionJSId.'] = new Array();';
 
         //not sure if we are going to export also the MULTIPLE_ANSWER_COMBINATION to SCORM
@@ -306,28 +316,29 @@ class ScormAnswerMultipleChoice extends Answer
         }
         $html .= '</table></td></tr>';
 
-        return array($js, $html);
+        return [$js, $html];
     }
 }
 
 /**
- * This class handles the SCORM export of true/false questions
+ * This class handles the SCORM export of true/false questions.
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormAnswerTrueFalse extends Answer
 {
     /**
      * Return the XML flow for the possible answers.
-     * That's one <response_lid>, containing several <flow_label>
+     * That's one <response_lid>, containing several <flow_label>.
      *
      * @author Amand Tihon <amand@alrj.org>
      */
-    function export()
+    public function export()
     {
         $js = '';
         $html = '<tr><td colspan="2"><table width="100%">';
         $identifier = 'question_'.$this->questionJSId.'_tf';
-        $identifier_true  = $identifier.'_true';
+        $identifier_true = $identifier.'_true';
         $identifier_false = $identifier.'_false';
         $html .=
             '<tr>
@@ -359,12 +370,13 @@ class ScormAnswerTrueFalse extends Answer
         $jstmpw .= 'questions_answers_ponderation['.$this->questionJSId.'][1] = '.$this->weighting[1].";\n";
         $js .= $jstmpw;
 
-        return array($js, $html);
+        return [$js, $html];
     }
 }
 
 /**
- * This class handles the SCORM export of fill-in-the-blanks questions
+ * This class handles the SCORM export of fill-in-the-blanks questions.
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormAnswerFillInBlanks extends Answer
@@ -375,15 +387,13 @@ class ScormAnswerFillInBlanks extends Answer
      * As a side effect, it stores two lists in the class :
      * the missing words and their respective weightings.
      */
-    function export()
+    public function export()
     {
         global $charset;
         $js = '';
         $html = '<tr><td colspan="2"><table width="100%">';
         // get all enclosed answers
-        $blankList = array();
-        // build replacement
-        $replacementList = array();
+        $blankList = [];
         foreach ($this->answer as $i => $answer) {
             $blankList[] = '['.$answer.']';
         }
@@ -437,21 +447,23 @@ class ScormAnswerFillInBlanks extends Answer
         $js .= 'questions_types['.$this->questionJSId.'] = \'fib\';'."\n";
         $js .= $jstmpw;
 
-        return array($js, $html);
+        return [$js, $html];
     }
 }
 
 /**
- * This class handles the SCORM export of matching questions
+ * This class handles the SCORM export of matching questions.
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormAnswerMatching extends Answer
 {
     /**
      * Export the question part as a matrix-choice, with only one possible answer per line.
+     *
      * @author Amand Tihon <amand@alrj.org>
      */
-    function export()
+    public function export()
     {
         $js = '';
         $html = '<tr><td colspan="2"><table width="100%">';
@@ -459,13 +471,12 @@ class ScormAnswerMatching extends Answer
         // - easiest display
         // - easiest randomisation if needed one day
         // (here I use array_values to change array keys from $code1 $code2 ... to 0 1 ...)
-
         // get max length of displayed array
 
         $nbrAnswers = $this->selectNbrAnswers();
         $cpt1 = 'A';
         $cpt2 = 1;
-        $Select = array();
+        $Select = [];
         $qId = $this->questionJSId;
         $s = '';
         $jstmp = '';
@@ -538,12 +549,13 @@ class ScormAnswerMatching extends Answer
         $html .= $s;
         $html .= '</table></td></tr>'."\n";
 
-        return array($js, $html);
+        return [$js, $html];
     }
 }
 
 /**
- * This class handles the SCORM export of free-answer questions
+ * This class handles the SCORM export of free-answer questions.
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormAnswerFree extends Answer
@@ -553,9 +565,8 @@ class ScormAnswerFree extends Answer
      *
      * As a side effect, it stores two lists in the class :
      * the missing words and their respective weightings.
-     *
      */
-    function export()
+    public function export()
     {
         $js = '';
         $identifier = 'question_'.$this->questionJSId.'_free';
@@ -574,7 +585,7 @@ class ScormAnswerFree extends Answer
 
             $html = '<tr><td colspan="2">'.get_lang('ThisItemIsNotExportable').'</td></tr>';
 
-            return array($js, $html);
+            return [$js, $html];
         }
 
         $html .= '<textarea minlength="20" name="'.$identifier.'" id="'.$identifier.'" ></textarea>';
@@ -585,20 +596,23 @@ class ScormAnswerFree extends Answer
         $jstmpw = 'questions_answers_ponderation['.$this->questionJSId.'] = "0";';
         $js .= $jstmpw;
 
-        return array($js, $html);
+        return [$js, $html];
     }
 }
+
 /**
- * This class handles the SCORM export of hotpot questions
+ * This class handles the SCORM export of hotpot questions.
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormAnswerHotspot extends Answer
 {
     /**
-     * Returns the javascript code that goes with HotSpot exercises
-     * @return string	The JavaScript code
+     * Returns the javascript code that goes with HotSpot exercises.
+     *
+     * @return string The JavaScript code
      */
-    function get_js_header()
+    public function get_js_header()
     {
         if ($this->standalone) {
             $header = '<script>';
@@ -626,14 +640,14 @@ class ScormAnswerHotspot extends Answer
 
         return $header;
     }
+
     /**
      * Export the text with missing words.
      *
      * As a side effect, it stores two lists in the class :
      * the missing words and their respective weightings.
-     *
      */
-    function export()
+    public function export()
     {
         $js = $this->get_js_header();
         $html = '<tr><td colspan="2"><table width="100%">';
@@ -675,7 +689,7 @@ HTML;
         // currently the free answers cannot be displayed, so ignore the textarea
         $html = '<tr><td colspan="2">'.get_lang('ThisItemIsNotExportable').'</td></tr>';
 
-        return array($js, $html);
+        return [$js, $html];
     }
 }
 
@@ -687,6 +701,7 @@ HTML;
  * Every start_*() and corresponding end_*(), as well as export_*() methods return a string.
  *
  * Attached files are NOT exported.
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormAssessmentItem
@@ -699,7 +714,7 @@ class ScormAssessmentItem
     /**
      * Constructor.
      *
-     * @param ScormQuestion $question The Question object we want to export.
+     * @param ScormQuestion $question the Question object we want to export
      */
     public function __construct($question, $standalone = false)
     {
@@ -713,9 +728,8 @@ class ScormAssessmentItem
      * Start the XML flow.
      *
      * This opens the <item> block, with correct attributes.
-     *
      */
-    function start_page()
+    public function start_page()
     {
         $head = '';
         if ($this->standalone) {
@@ -729,9 +743,8 @@ class ScormAssessmentItem
 
     /**
      * End the XML flow, closing the </item> tag.
-     *
      */
-    function end_page()
+    public function end_page()
     {
         if ($this->standalone) {
             return '</html>';
@@ -741,9 +754,9 @@ class ScormAssessmentItem
     }
 
     /**
-     * Start document header
+     * Start document header.
      */
-    function start_header()
+    public function start_header()
     {
         if ($this->standalone) {
             return '<head>';
@@ -753,9 +766,9 @@ class ScormAssessmentItem
     }
 
     /**
-     * Print CSS inclusion
+     * Print CSS inclusion.
      */
-    function css()
+    public function css()
     {
         $css = '';
         if ($this->standalone) {
@@ -773,9 +786,9 @@ class ScormAssessmentItem
     }
 
     /**
-     * End document header
+     * End document header.
      */
-    function end_header()
+    public function end_header()
     {
         if ($this->standalone) {
             return '</head>';
@@ -783,23 +796,24 @@ class ScormAssessmentItem
 
         return '';
     }
+
     /**
-     * Start the itemBody
-     *
+     * Start the itemBody.
      */
-    function start_js()
+    public function start_js()
     {
         $js = '<script type="text/javascript" src="assets/api_wrapper.js"></script>';
         if ($this->standalone) {
             return '<script>';
         }
+
         return $js;
     }
 
     /**
-     * Common JS functions
+     * Common JS functions.
      */
-    function common_js()
+    public function common_js()
     {
         $js = 'var questions = new Array();';
         $js .= 'var questions_answers = new Array();';
@@ -846,14 +860,14 @@ class ScormAssessmentItem
         if ($this->standalone) {
             return $js."\n";
         }
+
         return '';
     }
 
     /**
      * End the itemBody part.
-     *
      */
-    function end_js()
+    public function end_js()
     {
         if ($this->standalone) {
             return '</script>';
@@ -863,10 +877,9 @@ class ScormAssessmentItem
     }
 
     /**
-     * Start the itemBody
-     *
+     * Start the itemBody.
      */
-    function start_body()
+    public function start_body()
     {
         if ($this->standalone) {
             return '<body><form id="dokeos_scorm_form" method="post" action="">';
@@ -877,9 +890,8 @@ class ScormAssessmentItem
 
     /**
      * End the itemBody part.
-     *
      */
-    function end_body()
+    public function end_body()
     {
         if ($this->standalone) {
             return '<br /><input class="btn" type="button" id="dokeos_scorm_submit" name="dokeos_scorm_submit" value="OK" /></form></body>';
@@ -891,27 +903,29 @@ class ScormAssessmentItem
     /**
      * Export the question as a SCORM Item.
      * This is a default behaviour, some classes may want to override this.
-     * @return string|array A string, the XML flow for an Item.
+     *
+     * @return string|array a string, the XML flow for an Item
      */
-    function export()
+    public function export()
     {
         list($js, $html) = $this->question->export();
         if ($this->standalone) {
             $res = $this->start_page()
-                . $this->start_header()
-                . $this->css()
-                . $this->start_js()
-                . $this->common_js()
-                . $js
-                . $this->end_js()
-                . $this->end_header()
-                . $this->start_body()
-                . $html
-                . $this->end_body()
-                . $this->end_page();
+                .$this->start_header()
+                .$this->css()
+                .$this->start_js()
+                .$this->common_js()
+                .$js
+                .$this->end_js()
+                .$this->end_header()
+                .$this->start_body()
+                .$html
+                .$this->end_body()
+                .$this->end_page();
+
             return $res;
         } else {
-            return array($js, $html);
+            return [$js, $html];
         }
     }
 }
@@ -926,6 +940,7 @@ class ScormAssessmentItem
  *   - max_attempts
  *   - show_answer
  *   - anonymous_attempts
+ *
  * @package chamilo.exercise.scorm
  */
 class ScormSection
@@ -934,23 +949,10 @@ class ScormSection
     public $standalone;
 
     /**
-     * Send a complete exercise in SCORM format, from its ID
-     *
-     * @param Exercise $exercise The exercise to export
-     * @param boolean $standalone Wether it should include XML tag and DTD line.
-     * @return string XML as a string, or an empty string if there's no exercise with given ID.
-     */
-    public static function export_exercise_to_scorm(Exercise $exercise, $standalone = true)
-    {
-        $ims = new ScormSection($exercise);
-        $xml = $ims->export($standalone);
-
-        return $xml;
-    }
-
-    /**
      * Constructor.
+     *
      * @param Exercise $exe The Exercise instance to export
+     *
      * @author Amand Tihon <amand@alrj.org>
      */
     public function __construct($exe)
@@ -959,12 +961,29 @@ class ScormSection
     }
 
     /**
+     * Send a complete exercise in SCORM format, from its ID.
+     *
+     * @param Exercise $exercise   The exercise to export
+     * @param bool     $standalone wether it should include XML tag and DTD line
+     *
+     * @return string XML as a string, or an empty string if there's no exercise with given ID
+     */
+    public static function export_exercise_to_scorm(
+        Exercise $exercise,
+        $standalone = true
+    ) {
+        $ims = new ScormSection($exercise);
+        $xml = $ims->export($standalone);
+
+        return $xml;
+    }
+
+    /**
      * Start the XML flow.
      *
      * This opens the <item> block, with correct attributes.
-     *
      */
-    function start_page()
+    public function start_page()
     {
         $charset = 'UTF-8';
         $head = '<?xml version="1.0" encoding="'.$charset.'" standalone="no"?><html>';
@@ -974,48 +993,22 @@ class ScormSection
 
     /**
      * End the XML flow, closing the </item> tag.
-     *
      */
-    function end_page()
+    public function end_page()
     {
         return '</html>';
     }
 
     /**
-     * Start document header
+     * Start document header.
      */
-    function start_header()
+    public function start_header()
     {
         return '<head>';
     }
 
     /**
-     * Print CSS inclusion
-     */
-    private function css()
-    {
-        return '';
-    }
-
-    /**
-     * End document header
-     */
-    private function end_header()
-    {
-        return '</head>';
-    }
-
-    /**
-     * Start the itemBody
-     *
-     */
-    private function start_js()
-    {
-        return '<script>';
-    }
-
-    /**
-     * Common JS functions
+     * Common JS functions.
      */
     public function common_js()
     {
@@ -1070,23 +1063,22 @@ class ScormSection
 
         $js .= '';
         $js .= 'addEvent(window,\'load\',addListeners,false);'."\n";
+
         return $js."\n";
     }
 
     /**
      * End the itemBody part.
-     *
      */
-    function end_js()
+    public function end_js()
     {
         return '</script>';
     }
 
     /**
-     * Start the itemBody
-     *
+     * Start the itemBody.
      */
-    function start_body()
+    public function start_body()
     {
         return '<body>'.
         '<h1>'.$this->exercise->selectTitle().'</h1><p>'.$this->exercise->selectDescription()."</p>".
@@ -1096,9 +1088,8 @@ class ScormSection
 
     /**
      * End the itemBody part.
-     *
      */
-    function end_body()
+    public function end_body()
     {
         return '</table><br /><input class="btn btn-primary" type="button" id="dokeos_scorm_submit" name="dokeos_scorm_submit" value="OK" /></form></body>';
     }
@@ -1109,34 +1100,78 @@ class ScormSection
      * This is a default behaviour, some classes may want to override this.
      *
      * @param $standalone: Boolean stating if it should be exported as a stand-alone question
-     * @return string string, the XML flow for an Item.
+     *
+     * @return string string, the XML flow for an Item
      */
-    function export()
+    public function export()
     {
         global $charset;
 
         $head = '';
         if ($this->standalone) {
             $head = '<?xml version = "1.0" encoding = "'.$charset.'" standalone = "no"?>'."\n"
-                . '<!DOCTYPE questestinterop SYSTEM "ims_qtiasiv2p1.dtd">'."\n";
+                .'<!DOCTYPE questestinterop SYSTEM "ims_qtiasiv2p1.dtd">'."\n";
         }
 
         list($js, $html) = $this->export_questions();
         $res = $this->start_page()
-            . $this->start_header()
-            . $this->css()
-            . $this->globalAssets()
-            . $this->start_js()
-            . $this->common_js()
-            . $js
-            . $this->end_js()
-            . $this->end_header()
-            . $this->start_body()
-            . $html
-            . $this->end_body()
-            . $this->end_page();
+            .$this->start_header()
+            .$this->css()
+            .$this->globalAssets()
+            .$this->start_js()
+            .$this->common_js()
+            .$js
+            .$this->end_js()
+            .$this->end_header()
+            .$this->start_body()
+            .$html
+            .$this->end_body()
+            .$this->end_page();
 
         return $res;
+    }
+
+    /**
+     * Export the questions, as a succession of <items>.
+     *
+     * @author Amand Tihon <amand@alrj.org>
+     */
+    public function export_questions()
+    {
+        $js = $html = "";
+        $js_id = 0;
+        foreach ($this->exercise->selectQuestionList() as $q) {
+            list($jstmp, $htmltmp) = ScormQuestion::export_question($q, false, $js_id);
+            $js .= $jstmp."\n";
+            $html .= $htmltmp."\n";
+            ++$js_id;
+        }
+
+        return [$js, $html];
+    }
+
+    /**
+     * Print CSS inclusion.
+     */
+    private function css()
+    {
+        return '';
+    }
+
+    /**
+     * End document header.
+     */
+    private function end_header()
+    {
+        return '</head>';
+    }
+
+    /**
+     * Start the itemBody.
+     */
+    private function start_js()
+    {
+        return '<script>';
     }
 
     /**
@@ -1149,23 +1184,5 @@ class ScormSection
         $assets .= '<link href="assets/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen" type="text/css" />';
 
         return $assets;
-    }
-
-    /**
-     * Export the questions, as a succession of <items>
-     * @author Amand Tihon <amand@alrj.org>
-     */
-    function export_questions()
-    {
-        $js = $html = "";
-        $js_id = 0;
-        foreach ($this->exercise->selectQuestionList() as $q) {
-            list($jstmp, $htmltmp) = ScormQuestion::export_question($q, false, $js_id);
-            $js .= $jstmp."\n";
-            $html .= $htmltmp."\n";
-            ++$js_id;
-        }
-
-        return array($js, $html);
     }
 }

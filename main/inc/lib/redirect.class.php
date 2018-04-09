@@ -1,14 +1,18 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+use ChamiloSession as Session;
+
 /**
- * Send a redirect to the user agent and exist
+ * Send a redirect to the user agent and exist.
+ *
  * @author Laurent Opprecht <laurent@opprecht.info> for the Univesity of Geneva
  */
 class Redirect
 {
     /**
-     * Returns the result of api_get_path() (a web path to the root of Chamilo)
+     * Returns the result of api_get_path() (a web path to the root of Chamilo).
+     *
      * @return string
      */
     public static function www()
@@ -18,7 +22,8 @@ class Redirect
 
     /**
      * Checks whether the given URL contains "http". If not, prepend the web
-     * root of Chamilo and send the browser there (HTTP redirect)
+     * root of Chamilo and send the browser there (HTTP redirect).
+     *
      * @param string $url
      */
     public static function go($url = '')
@@ -41,7 +46,8 @@ class Redirect
     /**
      * Redirect to the current session's "request uri" if it is defined, or
      * check sso_referer, user's role and page_after_login settings to send
-     * the user to some predefined URL
+     * the user to some predefined URL.
+     *
      * @param bool Whether the user just logged in (in this case, use page_after_login rules)
      * @param int  The user_id, if defined. Otherwise just send to where the page_after_login setting says
      */
@@ -51,16 +57,33 @@ class Redirect
 
         if ($no_redirection) {
             unset($_SESSION['noredirection']);
+
             return;
         }
 
         $url = isset($_SESSION['request_uri']) ? Security::remove_XSS($_SESSION['request_uri']) : '';
         unset($_SESSION['request_uri']);
 
+        $afterLogin = Session::read('redirect_after_not_allow_page');
+
+        if (!empty($afterLogin) && isset($_GET['redirect_after_not_allow_page'])) {
+            Session::erase('redirect_after_not_allow_page');
+            self::navigate($afterLogin);
+        }
         if (!empty($url)) {
             self::navigate($url);
-        } elseif ($logging_in || (isset($_REQUEST['sso_referer']) && !empty($_REQUEST['sso_referer']))) {
+        } elseif ($logging_in ||
+            (isset($_REQUEST['sso_referer']) && !empty($_REQUEST['sso_referer']))
+        ) {
             if (isset($user_id)) {
+                $allow = api_get_configuration_value('plugin_redirection_enabled');
+                if ($allow) {
+                    $allow = api_get_configuration_value('plugin_redirection_enabled');
+                    if ($allow) {
+                        RedirectionPlugin::redirectUser($user_id);
+                    }
+                }
+
                 // Make sure we use the appropriate role redirection in case one has been defined
                 $user_status = api_get_user_status($user_id);
                 switch ($user_status) {
@@ -117,7 +140,7 @@ class Redirect
     }
 
     /**
-     * Sends the user to the web root of Chamilo (e.g. http://my.chamiloportal.com/ )
+     * Sends the user to the web root of Chamilo (e.g. http://my.chamiloportal.com/ ).
      */
     public static function home()
     {
@@ -126,7 +149,7 @@ class Redirect
     }
 
     /**
-     * Sends the user to the user_portal.php page
+     * Sends the user to the user_portal.php page.
      */
     public static function user_home()
     {
@@ -135,7 +158,8 @@ class Redirect
     }
 
     /**
-     * Redirects the user to a given URL through the header('location: ...') function
+     * Redirects the user to a given URL through the header('location: ...') function.
+     *
      * @param string $url
      */
     protected static function navigate($url)

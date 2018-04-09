@@ -3,12 +3,13 @@
 
 use Chamilo\CoreBundle\Entity\Sequence;
 use Chamilo\CoreBundle\Entity\SequenceResource;
+use ChamiloSession as Session;
 use Fhaculty\Graph\Graph;
 use Fhaculty\Graph\Vertex;
 use Graphp\GraphViz\GraphViz;
 
 /**
- * Responses to AJAX calls
+ * Responses to AJAX calls.
  */
 require_once __DIR__.'/../global.inc.php';
 
@@ -72,7 +73,7 @@ switch ($action) {
                             'default',
                             [
                                 'class' => 'delete_vertex btn btn-block btn-xs',
-                                'data-id' => $id
+                                'data-id' => $id,
                             ]
                         );
 
@@ -84,7 +85,7 @@ switch ($action) {
                             [
                                 'class' => 'undo_delete btn btn-block btn-xs',
                                 'style' => 'display: none;',
-                                'data-id' => $id
+                                'data-id' => $id,
                             ]
                         );
                     }
@@ -146,7 +147,7 @@ switch ($action) {
                         }
 
                         if ($vertexFromTo && !$vertexToFrom) {
-                            $_SESSION['sr_vertex'] = true;
+                            Session::write('sr_vertex', true);
                             $vertex = $graph->getVertex($id);
                             $vertex->destroy();
                             $em->remove($sequenceResource);
@@ -164,14 +165,14 @@ switch ($action) {
                                 [
                                     'resourceId' => $vertexId,
                                     'type' => $type,
-                                    'sequence' => $sequence
+                                    'sequence' => $sequence,
                                 ]
                             );
                             $em->remove($sequenceResourceToDelete);
                         }
 
                         if (!$vertexToFrom && !$vertexFromTo) {
-                            $_SESSION['sr_vertex'] = true;
+                            Session::write('sr_vertex', true);
                             $vertexTo = $graph->getVertex($id);
                             $vertexFrom = $graph->getVertex($vertexId);
                             if ($vertexTo->getVerticesEdgeFrom()->count() > 1) {
@@ -180,7 +181,7 @@ switch ($action) {
                                     [
                                         'resourceId' => $vertexId,
                                         'type' => $type,
-                                        'sequence' => $sequence
+                                        'sequence' => $sequence,
                                     ]
                                 );
                                 $em->remove($sequenceResourceToDelete);
@@ -191,7 +192,7 @@ switch ($action) {
                                     [
                                         'resourceId' => $vertexId,
                                         'type' => $type,
-                                        'sequence' => $sequence
+                                        'sequence' => $sequence,
                                     ]
                                 );
                                 $em->remove($sequenceResource);
@@ -283,9 +284,9 @@ switch ($action) {
         if (empty($sequence)) {
             exit;
         }
-
-        if (isset($_SESSION['sr_vertex']) && $_SESSION['sr_vertex']) {
-            unset($_SESSION['sr_vertex']);
+        $vertexFromSession = Session::read('sr_vertex');
+        if ($vertexFromSession) {
+            Session::erase('sr_vertex');
             echo Display::return_message(get_lang('Saved'), 'success');
             break;
         }

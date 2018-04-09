@@ -1,14 +1,15 @@
 <?php
 /* For license terms, see /license.txt */
+
+use Chamilo\CoreBundle\Entity\Session;
+use Chamilo\CoreBundle\Entity\SessionRelCourseRelUser;
+use Chamilo\UserBundle\Entity\User;
+
 /**
- * Process payments for the Buy Courses plugin
+ * Process payments for the Buy Courses plugin.
+ *
  * @package chamilo.plugin.buycourses
  */
-
-use Chamilo\UserBundle\Entity\User,
-    Chamilo\CoreBundle\Entity\SessionRelCourseRelUser,
-    Chamilo\CoreBundle\Entity\Session;
-
 $cidReset = true;
 
 require_once '../config.php';
@@ -78,7 +79,6 @@ if ($form->validate()) {
 
         header('Location: '.api_get_path(WEB_PLUGIN_PATH).'buycourses/src/service_process_confirm.php');
     }
-
     exit;
 }
 
@@ -96,7 +96,12 @@ if (!$culqiEnabled) {
     unset($paymentTypesOptions[BuyCoursesPlugin::PAYMENT_TYPE_CULQI]);
 }
 
-$form->addHtml(Display::return_message($plugin->get_lang('PleaseSelectThePaymentMethodBeforeConfirmYourOrder'), 'info'));
+$form->addHtml(
+    Display::return_message(
+        $plugin->get_lang('PleaseSelectThePaymentMethodBeforeConfirmYourOrder'),
+        'info'
+    )
+);
 $form->addRadio('payment_type', null, $paymentTypesOptions);
 $form->addHtml(
     Display::return_message(
@@ -105,12 +110,16 @@ $form->addHtml(
     )
 );
 $selectOptions = [
-    0 => get_lang('None')
+    0 => get_lang('None'),
 ];
 
 if ($typeUser) {
     $users = $em->getRepository('ChamiloUserBundle:User')->findAll();
-    $selectOptions[$userInfo['user_id']] = api_get_person_name($userInfo['firstname'], $userInfo['lastname']).' ('.get_lang('Myself').')';
+    $selectOptions[$userInfo['user_id']] = api_get_person_name(
+        $userInfo['firstname'],
+        $userInfo['lastname']
+    ).' ('.get_lang('Myself').')';
+
     if (!empty($users)) {
         /** @var User $user */
         foreach ($users as $user) {
@@ -130,7 +139,12 @@ if ($typeUser) {
         $selectOptions[$course->getCourse()->getId()] = $course->getCourse()->getTitle();
     }
     if (!$checker) {
-        $form->addHtml(Display::return_message($plugin->get_lang('YouNeedToBeRegisteredInAtLeastOneCourse'), 'error'));
+        $form->addHtml(
+            Display::return_message(
+                $plugin->get_lang('YouNeedToBeRegisteredInAtLeastOneCourse'),
+                'error'
+            )
+        );
     }
     $form->addSelect('info_select', get_lang('Course'), $selectOptions);
 } elseif ($typeSession) {
@@ -175,7 +189,9 @@ if ($typeUser) {
     // Here now checking the current user sessions
     $sessions = $user->getSessionCourseSubscriptions();
     foreach ($sessions as $session) {
-        $thisLpList = $em->getRepository('ChamiloCourseBundle:CLp')->findBy(['sessionId' => $session->getSession()->getId()]);
+        $thisLpList = $em
+            ->getRepository('ChamiloCourseBundle:CLp')
+            ->findBy(['sessionId' => $session->getSession()->getId()]);
 
         //Here check all the lpItems
         foreach ($thisLpList as $lp) {
@@ -209,7 +225,12 @@ if ($typeUser) {
     $selectOptions = $selectOptions + $courseLpList + $sessionLpList;
 
     if (!$checker) {
-        $form->addHtml(Display::return_message($plugin->get_lang('YourCoursesNeedAtLeastOneLearningPath'), 'error'));
+        $form->addHtml(
+            Display::return_message(
+                $plugin->get_lang('YourCoursesNeedAtLeastOneLearningPath'),
+                'error'
+            )
+        );
     }
     $form->addSelect('info_select', get_lang('LearningPath'), $selectOptions);
 }
@@ -221,10 +242,10 @@ $form->addButton('submit', $plugin->get_lang('ConfirmOrder'), 'check', 'success'
 
 // View
 $templateName = $plugin->get_lang('PaymentMethods');
-$interbreadcrumb[] = array(
+$interbreadcrumb[] = [
     "url" => "service_catalog.php",
     "name" => $plugin->get_lang('ListOfServicesOnSale'),
-);
+];
 
 $tpl = new Template($templateName);
 $tpl->assign('buying_service', true);

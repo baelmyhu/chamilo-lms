@@ -3,6 +3,7 @@
 /**
  * BLOG HOMEPAGE
  * This file takes care of all blog navigation and displaying.
+ *
  * @package chamilo.blogs
  */
 require_once __DIR__.'/../inc/global.inc.php';
@@ -31,7 +32,7 @@ $MonthsLong = api_get_months_long();
 $action = isset($_GET['action']) ? $_GET['action'] : null;
 
 /*
-	PROCESSING
+    PROCESSING
 */
 
 $safe_post_file_comment = isset($_POST['post_file_comment']) ? Security::remove_XSS($_POST['post_file_comment']) : null;
@@ -111,14 +112,14 @@ if (isset($_POST['assign_task_edit_submit'])) {
     );
 }
 if (!empty($_POST['register'])) {
-    if (is_array($_POST['user'])) {
+    if (isset($_POST['user']) && is_array($_POST['user'])) {
         foreach ($_POST['user'] as $index => $user_id) {
             Blog::subscribeUser((int) $_GET['blog_id'], $user_id);
         }
     }
 }
 if (!empty($_POST['unregister'])) {
-    if (is_array($_POST['user'])) {
+    if (isset($_POST['user']) && is_array($_POST['user'])) {
         foreach ($_POST['user'] as $index => $user_id) {
             Blog::unsubscribeUser($_GET['blog_id'], $user_id);
         }
@@ -200,7 +201,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'view_post') {
     }
 }
 /*
-	DISPLAY
+    DISPLAY
 */
 
 // Set breadcrumb
@@ -229,10 +230,10 @@ switch ($action) {
     default:
         $nameTools = Blog::getBlogTitle($blog_id);
 }
-$interbreadcrumb[] = array(
+$interbreadcrumb[] = [
     'url' => "blog.php?blog_id=$blog_id&".api_get_cidreq(),
     'name' => Blog::getBlogTitle($blog_id),
-);
+];
 
 $actionsLeft = Display::url(
     Display::return_icon('blog.png', get_lang('Home'), '', ICON_SIZE_MEDIUM),
@@ -381,7 +382,7 @@ switch ($action) {
                 );
             }
             if (isset($_GET['do']) && $_GET['do'] == 'edit_assignment') {
-                $taks .= Blog::displayAssignedTaskEditForm(
+                $task .= Blog::displayAssignedTaskEditForm(
                     $blog_id,
                     intval($_GET['task_id']),
                     intval($_GET['user_id'])

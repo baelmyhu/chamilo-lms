@@ -72,10 +72,9 @@
     };
 {% endif %}
 
-
 function doneResizing() {
-    var widhtWindow = $(window).width();
-    if ((widhtWindow>=1024) && (widhtWindow>=768)) {
+    var widthWindow = $(window).width();
+    if ((widthWindow>=1024) && (widthWindow>=768)) {
         $("#profileCollapse").addClass("in");
         $("#courseCollapse").addClass("in");
         $("#skillsCollapse").addClass("in");
@@ -106,7 +105,7 @@ $(document).ready(function() {
 
     // Removes the yellow input in Chrome
     if (navigator.userAgent.toLowerCase().indexOf("chrome") >= 0) {
-        $(window).load(function(){
+        $(window).on("load", function () {
             $('input:-webkit-autofill').each(function(){
                 var text = $(this).val();
                 var name = $(this).attr('name');

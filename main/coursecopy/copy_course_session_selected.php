@@ -1,9 +1,10 @@
 <?php
 /* For licensing terms, see /license.txt */
 
-use Chamilo\CourseBundle\Component\CourseCopy\CourseSelectForm;
 use Chamilo\CourseBundle\Component\CourseCopy\CourseBuilder;
 use Chamilo\CourseBundle\Component\CourseCopy\CourseRestorer;
+use Chamilo\CourseBundle\Component\CourseCopy\CourseSelectForm;
+use ChamiloSession as Session;
 
 /**
  * Copy resources from one course in a session to another one.
@@ -11,6 +12,7 @@ use Chamilo\CourseBundle\Component\CourseCopy\CourseRestorer;
  * @author Christian Fasanando <christian.fasanando@dokeos.com>
  * @author Julio Montoya <gugli100@gmail.com> Lots of bug fixes/improvements
  * @author Angel Fernando Quiroz Campos <angel.quiroz@beeznest.com> Code conventions
+ *
  * @package chamilo.backup
  */
 require_once __DIR__.'/../inc/global.inc.php';
@@ -48,10 +50,10 @@ if (function_exists('ini_set')) {
 $this_section = SECTION_COURSES;
 $nameTools = get_lang('CopyCourse');
 $returnLink = api_get_path(WEB_CODE_PATH).'course_info/maintenance_coach.php?'.api_get_cidreq();
-$interbreadcrumb[] = array(
+$interbreadcrumb[] = [
     'url' => $returnLink,
-    'name' => get_lang('Maintenance')
-);
+    'name' => get_lang('Maintenance'),
+];
 
 // Database Table Definitions
 $tbl_session_rel_course_rel_user = Database::get_main_table(
@@ -64,7 +66,7 @@ $tbl_course = Database::get_main_table(TABLE_MAIN_COURSE);
 /**
  * @param string $name
  */
-function make_select_session_list($name, $sessions, $attr = array())
+function make_select_session_list($name, $sessions, $attr = [])
 {
     $attrs = '';
     if (count($attr) > 0) {
@@ -95,11 +97,13 @@ function make_select_session_list($name, $sessions, $attr = array())
         }
     }
     $output .= '</select>';
+
     return $output;
 }
 
 /**
- * Show the form to copy courses
+ * Show the form to copy courses.
+ *
  * @global string $returnLink
  * @global string $courseCode
  */
@@ -117,7 +121,10 @@ function displayForm()
     $html .= '<div class="actions">';
     // Link back to the documents overview
     $html .= '<a href="'.$returnLink.'">'.Display::return_icon(
-            'back.png', get_lang('BackTo').' '.get_lang('Maintenance'), '', ICON_SIZE_MEDIUM
+            'back.png',
+        get_lang('BackTo').' '.get_lang('Maintenance'),
+        '',
+        ICON_SIZE_MEDIUM
         ).'</a>';
     $html .= '</div>';
 
@@ -211,18 +218,23 @@ function searchCourses($idSession, $type)
             $courseTitle = str_replace("'", "\'", $course['title']);
 
             $return .= '<option value="'.$course['code'].'" title="'.@htmlspecialchars(
-                    $course['title'].' ('.$course['visual_code'].')', ENT_QUOTES, api_get_system_encoding()
+                    $course['title'].' ('.$course['visual_code'].')',
+                ENT_QUOTES,
+                api_get_system_encoding()
                 ).'">'.
                 $course['title'].' ('.$course['visual_code'].')</option>';
         }
         $return .= '</select>';
-        $_SESSION['course_list_destination'] = $course_list_destination;
+        Session::write('course_list_destination', $course_list_destination);
 
         // Send response by ajax
         $xajaxResponse->addAssign(
-            'ajax_list_courses_destination', 'innerHTML', api_utf8_encode($return)
+            'ajax_list_courses_destination',
+            'innerHTML',
+            api_utf8_encode($return)
         );
     }
+
     return $xajaxResponse;
 }
 
@@ -278,28 +290,27 @@ Display::display_header($nameTools);
 if ((isset($_POST['action']) && $_POST['action'] == 'course_select_form') ||
     (isset($_POST['copy_option']) && $_POST['copy_option'] == 'full_copy')
 ) {
-
     $destinationCourse = $destinationSession = '';
     $originCourse = api_get_course_id();
     $originSession = api_get_session_id();
 
     if (isset($_POST['action']) && $_POST['action'] == 'course_select_form') {
-
         $destinationCourse = $_POST['destination_course'];
         $destinationSession = $_POST['destination_session'];
         $course = CourseSelectForm::get_posted_course(
-            'copy_course', $originSession, $originCourse
+            'copy_course',
+            $originSession,
+            $originCourse
         );
 
         $cr = new CourseRestorer($course);
         $cr->restore($destinationCourse, $destinationSession);
-
         echo Display::return_message(get_lang('CopyFinished'), 'confirmation');
 
         displayForm();
     } else {
-        $arrCourseOrigin = array();
-        $arrCourseDestination = array();
+        $arrCourseOrigin = [];
+        $arrCourseDestination = [];
         $destinationSession = '';
 
         if (isset($_POST['SessionCoursesListDestination'])) {
@@ -329,11 +340,11 @@ if ((isset($_POST['action']) && $_POST['action'] == 'course_select_form') ||
 
                 $cb = new CourseBuilder('', $courseInfo);
                 $course = $cb->build(
-                    $originSession, $courseCode
+                    $originSession,
+                    $courseCode
                 );
                 $cr = new CourseRestorer($course);
                 $cr->restore($courseDestination, $destinationSession);
-
                 echo Display::return_message(get_lang('CopyFinished'), 'confirmation');
             }
 
@@ -355,7 +366,7 @@ if ((isset($_POST['action']) && $_POST['action'] == 'course_select_form') ||
         );
     }
 
-    $arrCourseDestination = array();
+    $arrCourseDestination = [];
     $destinationSession = '';
 
     if (isset($_POST['SessionCoursesListDestination'])) {
@@ -386,7 +397,7 @@ if ((isset($_POST['action']) && $_POST['action'] == 'course_select_form') ||
                 get_lang('Back').' '.get_lang('To').' '.get_lang(
                     'PlatformAdmin'
                 ),
-                array('style' => 'vertical-align:middle')
+                ['style' => 'vertical-align:middle']
             ).
             get_lang('Back').'</a></div>';
     } else {

@@ -4,7 +4,6 @@
 /**
  * @package chamilo.admin
  */
-
 $cidReset = true;
 
 require_once __DIR__.'/../inc/global.inc.php';
@@ -19,7 +18,7 @@ $course_user_table = Database::get_main_table(TABLE_MAIN_COURSE_USER);
 $session_course_user_table = Database::get_main_table(TABLE_MAIN_SESSION_COURSE_USER);
 
 $tool_name = get_lang('ExportUserListXMLCSV');
-$interbreadcrumb[] = array("url" => 'index.php', "name" => get_lang('PlatformAdmin'));
+$interbreadcrumb[] = ["url" => 'index.php', "name" => get_lang('PlatformAdmin')];
 
 set_time_limit(0);
 $coursesSessions = [];
@@ -27,7 +26,7 @@ $coursesSessions[''] = '--';
 $allCoursesFromSessions = SessionManager::getAllCoursesFromAllSessions();
 $coursesSessions = array_merge($coursesSessions, $allCoursesFromSessions);
 
-$courses = array();
+$courses = [];
 $courses[''] = '--';
 $sql = "SELECT code,visual_code,title FROM $course_table ORDER BY visual_code";
 
@@ -58,7 +57,7 @@ $form->addElement('checkbox', 'addcsvheader', get_lang('AddCSVHeader'), get_lang
 $form->addElement('select', 'course_code', get_lang('OnlyUsersFromCourse'), $courses);
 $form->addElement('select', 'course_session', get_lang('OnlyUsersFromCourseSession'), $coursesSessions);
 $form->addButtonExport(get_lang('Export'));
-$form->setDefaults(array('file_type' => 'csv'));
+$form->setDefaults(['file_type' => 'csv']);
 
 if ($form->validate()) {
     $export = $form->exportValues();
@@ -101,7 +100,7 @@ if ($form->validate()) {
                         cu.relation_type<>".COURSE_RELATION_TYPE_RRHH."
                     ORDER BY lastname,firstname";
         $filename = 'export_users_'.$course_code.'_'.api_get_local_time();
-    } else if (strlen($courseSessionCode) > 0) {
+    } elseif (strlen($courseSessionCode) > 0) {
         $sql .= " FROM $user_table u, $session_course_user_table scu
                     WHERE
                         u.user_id = scu.user_id AND
@@ -125,13 +124,13 @@ if ($form->validate()) {
         }
         $filename = 'export_users_'.api_get_local_time();
     }
-    $data = array();
+    $data = [];
     $extra_fields = UserManager::get_extra_fields(0, 0, 5, 'ASC', false);
 
     if (!empty($export['addcsvheader'])) {
         if ($export['addcsvheader'] == '1' && ($export['file_type'] == 'csv' || $export['file_type'] == 'xls')) {
             if ($_configuration['password_encryption'] != 'none') {
-                $data[] = array(
+                $data[] = [
                     'UserId',
                     'LastName',
                     'FirstName',
@@ -142,9 +141,9 @@ if ($form->validate()) {
                     'OfficialCode',
                     'PhoneNumber',
                     'RegistrationDate',
-                );
+                ];
             } else {
-                $data[] = array(
+                $data[] = [
                     'UserId',
                     'LastName',
                     'FirstName',
@@ -156,7 +155,7 @@ if ($form->validate()) {
                     'OfficialCode',
                     'PhoneNumber',
                     'RegistrationDate',
-                );
+                ];
             }
 
             foreach ($extra_fields as $extra) {

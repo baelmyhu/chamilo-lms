@@ -2,7 +2,8 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * Script
+ * Script.
+ *
  * @package chamilo.gradebook
  */
 require_once __DIR__.'/../inc/global.inc.php';
@@ -80,14 +81,14 @@ if ($form->validate()) {
         $cat->setIsRequirement(false);
     }
     $cat->save();
-    header('Location: '.Security::remove_XSS($_SESSION['gradebook_dest']).'?editcat=&selectcat='.$cat->get_parent_id().'&'.api_get_cidreq());
+    header('Location: '.Category::getUrl().'editcat=&selectcat='.$cat->get_parent_id());
     exit;
 }
 $selectcat = isset($_GET['selectcat']) ? (int) $_GET['selectcat'] : '';
-$interbreadcrumb[] = array(
-    'url' => Security::remove_XSS($_SESSION['gradebook_dest']).'?selectcat='.$selectcat.'&'.api_get_cidreq(),
-    'name' => get_lang('Gradebook')
-);
+$interbreadcrumb[] = [
+    'url' => Category::getUrl().'selectcat='.$selectcat,
+    'name' => get_lang('Gradebook'),
+];
 $this_section = SECTION_COURSES;
 Display :: display_header(get_lang('EditCategory'));
 $form->display();

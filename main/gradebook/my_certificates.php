@@ -1,9 +1,11 @@
 <?php
-
 /* For licensing terms, see /license.txt */
+
 /**
- * List of achieved certificates by the current user
+ * List of achieved certificates by the current user.
+ *
  * @author Angel Fernando Quiroz Campos <angel.quiroz@beeznest.com>
+ *
  * @package chamilo.gradebook
  */
 $cidReset = true;

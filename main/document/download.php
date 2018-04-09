@@ -1,11 +1,11 @@
 <?php
 /* For licensing terms, see /license.txt */
 /**
- *  This file is responsible for passing requested documents to the browser.
- *  Many functions updated and moved to lib/document.lib.php
- *	@package chamilo.document
+ * This file is responsible for passing requested documents to the browser.
+ * Many functions updated and moved to lib/document.lib.php.
+ *
+ * @package chamilo.document
  */
-
 session_cache_limiter('none');
 
 require_once __DIR__.'/../inc/global.inc.php';
@@ -26,7 +26,7 @@ $doc_url = str_replace('///', '&', $doc_url);
 // Still a space present? it must be a '+' (that got replaced by mod_rewrite)
 $doc_url = str_replace(' ', '+', $doc_url);
 
-$doc_url = str_replace(array('../', '\\..', '\\0', '..\\'), array('', '', '', ''), $doc_url); //echo $doc_url;
+$doc_url = str_replace(['../', '\\..', '\\0', '..\\'], ['', '', '', ''], $doc_url); //echo $doc_url;
 
 if (strpos($doc_url, '../') || strpos($doc_url, '/..')) {
     $doc_url = '';
@@ -52,7 +52,7 @@ if (substr($refer_script, 0, 15) == '/fillsurvey.php') {
     if (is_dir($sys_course_path.$doc_url)) {
         // Remove last slash if present
         // mod_rewrite can change /some/path/ to /some/path// in some cases, so clean them all off (René)
-        while ($doc_url{$dul = strlen($doc_url) - 1} == '/') {
+        while ($doc_url[$dul = strlen($doc_url) - 1] == '/') {
             $doc_url = substr($doc_url, 0, $dul);
         }
         // Group folder?
@@ -82,7 +82,7 @@ if (isset($path_info['extension']) && $path_info['extension'] == 'swf') {
 }
 
 if (Security::check_abs_path($sys_course_path.$doc_url, $sys_course_path.'/')) {
-    $full_file_name = $sys_course_path.$doc_url;
+    $fullFileName = $sys_course_path.$doc_url;
     if ($fix_file_name) {
         $doc_url = $fixed_url;
     }
@@ -102,8 +102,8 @@ if (Security::check_abs_path($sys_course_path.$doc_url, $sys_course_path.'/')) {
     }
     // Launch event
     Event::event_download($doc_url);
-    $download = (!empty($_GET['dl']) ? true : false);
-    $result = DocumentManager::file_send_for_download($full_file_name, $download);
+    $download = !empty($_GET['dl']) ? true : false;
+    $result = DocumentManager::file_send_for_download($fullFileName, $download);
     if ($result === false) {
         api_not_allowed(true);
     }

@@ -1,21 +1,24 @@
 <?php
 /* For licensing terms, see /license.txt */
 /**
- * Library for the import of Aiken format
+ * Library for the import of Aiken format.
+ *
  * @author claro team <cvs@claroline.net>
  * @author Guillaume Lederer <guillaume@claroline.net>
  * @author César Perales <cesar.perales@gmail.com> Parse function for Aiken format
+ *
  * @package chamilo.exercise
  */
 
 /**
- * This function displays the form for import of the zip file with qti2
+ * This function displays the form for import of the zip file with qti2.
+ *
  * @param   string  Report message to show in case of error
  */
 function aiken_display_form()
 {
     $name_tools = get_lang('ImportAikenQuiz');
-    $form  = '<div class="actions">';
+    $form = '<div class="actions">';
     $form .= '<a href="exercise.php?show=test&'.api_get_cidreq().'">'.
         Display::return_icon(
             'back.png',
@@ -29,7 +32,7 @@ function aiken_display_form()
         'post',
         api_get_self()."?".api_get_cidreq(),
         null,
-        array('enctype' => 'multipart/form-data')
+        ['enctype' => 'multipart/form-data']
     );
     $form_validator->addElement('header', $name_tools);
     $form_validator->addElement('text', 'total_weight', get_lang('TotalWeight'));
@@ -41,11 +44,13 @@ function aiken_display_form()
 }
 
 /**
- * Gets the uploaded file (from $_FILES) and unzip it to the given directory
+ * Gets the uploaded file (from $_FILES) and unzip it to the given directory.
+ *
  * @param string The directory where to do the work
  * @param string The path of the temporary directory where the exercise was uploaded and unzipped
  * @param string $baseWorkDir
  * @param string $uploadPath
+ *
  * @return bool True on success, false on failure
  */
 function get_and_unzip_uploaded_exercise($baseWorkDir, $uploadPath)
@@ -99,8 +104,10 @@ function get_and_unzip_uploaded_exercise($baseWorkDir, $uploadPath)
 }
 
 /**
- * Main function to import the Aiken exercise
+ * Main function to import the Aiken exercise.
+ *
  * @param string $file
+ *
  * @return mixed True on success, error message on failure
  */
 function aiken_import_exercise($file)
@@ -115,9 +122,9 @@ function aiken_import_exercise($file)
     $uploadPath = 'aiken_'.api_get_unique_id().'/';
 
     // set some default values for the new exercise
-    $exercise_info = array();
+    $exercise_info = [];
     $exercise_info['name'] = preg_replace('/.(zip|txt)$/i', '', $file);
-    $exercise_info['question'] = array();
+    $exercise_info['question'] = [];
 
     // if file is not a .zip, then we cancel all
     if (!preg_match('/.(zip|txt)$/i', $file)) {
@@ -229,7 +236,8 @@ function aiken_import_exercise($file)
 
 /**
  * Parses an Aiken file and builds an array of exercise + questions to be
- * imported by the import_exercise() function
+ * imported by the import_exercise() function.
+ *
  * @param array The reference to the array in which to store the questions
  * @param string Path to the directory with the file to be parsed (without final /)
  * @param string Name of the last directory part for the file (without /)
@@ -237,7 +245,8 @@ function aiken_import_exercise($file)
  * @param string $exercisePath
  * @param string $file
  * @param string $questionFile
- * @return string|boolean True on success, error message on error
+ *
+ * @return string|bool True on success, error message on error
  * @assert ('','','') === false
  */
 function aiken_parse_file(&$exercise_info, $exercisePath, $file, $questionFile)
@@ -252,7 +261,7 @@ function aiken_parse_file(&$exercise_info, $exercisePath, $file, $questionFile)
 
     $question_index = 0;
     $correct_answer = '';
-    $answers_array = array();
+    $answers_array = [];
     $new_question = true;
     foreach ($data as $line => $info) {
         if ($question_index > 0 && $new_question == true && preg_match('/^(\r)?\n/', $info)) {
@@ -288,7 +297,7 @@ function aiken_parse_file(&$exercise_info, $exercisePath, $file, $questionFile)
             $correct_answer_index = array_search($matches[1], $answers_array);
             $exercise_info['question'][$question_index]['title'] = $matches[1];
         } elseif (preg_match('/^TAGS:\s?([A-Z])\s?/', $info, $matches)) {
-             //TAGS for chamilo >= 1.10
+            //TAGS for chamilo >= 1.10
             $exercise_info['question'][$question_index]['answer_tags'] = explode(',', $matches[1]);
         } elseif (preg_match('/^ETIQUETAS:\s?([A-Z])\s?/', $info, $matches)) {
             //TAGS for chamilo >= 1.10 (Spanish e-ducativa format)
@@ -297,15 +306,17 @@ function aiken_parse_file(&$exercise_info, $exercisePath, $file, $questionFile)
             //moving to next question (tolerate \r\n or just \n)
             if (empty($exercise_info['question'][$question_index]['correct_answers'])) {
                 error_log('Aiken: Error in question index '.$question_index.': no correct answer defined');
+
                 return 'ExerciseAikenErrorNoCorrectAnswerDefined';
             }
             if (empty($exercise_info['question'][$question_index]['answer'])) {
                 error_log('Aiken: Error in question index '.$question_index.': no answer option given');
+
                 return 'ExerciseAikenErrorNoAnswerOptionGiven';
             }
             $question_index++;
             //emptying answers array when moving to next question
-            $answers_array = array();
+            $answers_array = [];
             $new_question = true;
         } else {
             if (empty($exercise_info['question'][$question_index]['title'])) {
@@ -326,12 +337,15 @@ function aiken_parse_file(&$exercise_info, $exercisePath, $file, $questionFile)
     foreach ($exercise_info['question'] as $key => $question) {
         $exercise_info['question'][$key]['weighting'][current(array_keys($exercise_info['question'][$key]['weighting']))] = $total_weight / $total_questions;
     }
+
     return true;
 }
 
 /**
- * Imports the zip file
+ * Imports the zip file.
+ *
  * @param array $array_file ($_FILES)
+ *
  * @return bool
  */
 function aiken_import_file($array_file)
@@ -349,7 +363,6 @@ function aiken_import_file($array_file)
             Display::addFlash(Display::return_message(get_lang('Uploaded')));
 
             return $imported;
-
         } else {
             Display::addFlash(Display::return_message(get_lang($imported), 'error'));
 

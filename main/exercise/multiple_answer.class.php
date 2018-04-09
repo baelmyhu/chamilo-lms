@@ -4,21 +4,22 @@
 use ChamiloSession as Session;
 
 /**
- * Class MultipleAnswer
+ * Class MultipleAnswer.
  *
  * This class allows to instantiate an object of type MULTIPLE_ANSWER (MULTIPLE CHOICE, MULTIPLE ANSWER),
  * extending the class question
  *
  * @author Eric Marguin
+ *
  * @package chamilo.exercise
- **/
+ */
 class MultipleAnswer extends Question
 {
     public static $typePicture = 'mcma.png';
     public static $explanationLangVar = 'MultipleSelect';
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -28,17 +29,18 @@ class MultipleAnswer extends Question
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createAnswersForm($form)
     {
-        $editorConfig = array(
+        $editorConfig = [
             'ToolbarSet' => 'TestProposedAnswer',
             'Width' => '100%',
-            'Height' => '125'
-        );
+            'Height' => '125',
+        ];
 
-        $nb_answers = isset($_POST['nb_answers']) ? $_POST['nb_answers'] : 4; // The previous default value was 2. See task #1759.
+        // The previous default value was 2. See task #1759.
+        $nb_answers = isset($_POST['nb_answers']) ? $_POST['nb_answers'] : 4;
         $nb_answers += (isset($_POST['lessAnswers']) ? -1 : (isset($_POST['moreAnswers']) ? 1 : 0));
 
         $obj_ex = Session::read('objExercise');
@@ -48,18 +50,18 @@ class MultipleAnswer extends Question
         $html = '<table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th width="10">' . get_lang('Number').'</th>
-                    <th width="10">' . get_lang('True').'</th>
-                    <th width="50%">' . get_lang('Answer').'</th>
-                    <th width="50%">' . get_lang('Comment').'</th>
-                    <th width="10">' . get_lang('Weighting').'</th>
+                    <th width="10">'.get_lang('Number').'</th>
+                    <th width="10">'.get_lang('True').'</th>
+                    <th width="50%">'.get_lang('Answer').'</th>
+                    <th width="50%">'.get_lang('Comment').'</th>
+                    <th width="10">'.get_lang('Weighting').'</th>
                 </tr>
             </thead>
             <tbody>';
 
         $form->addHtml($html);
 
-        $defaults = array();
+        $defaults = [];
         $correct = 0;
         $answer = false;
         if (!empty($this->id)) {
@@ -71,7 +73,7 @@ class MultipleAnswer extends Question
         }
 
         $form->addElement('hidden', 'nb_answers');
-        $boxes_names = array();
+        $boxes_names = [];
 
         if ($nb_answers < 1) {
             $nb_answers = 1;
@@ -96,7 +98,7 @@ class MultipleAnswer extends Question
                 $defaults['correct[2]'] = false;
                 $defaults['weighting[2]'] = -5;
             }
-            $renderer = & $form->defaultRenderer();
+            $renderer = &$form->defaultRenderer();
 
             $renderer->setElementTemplate(
                 '<td><!-- BEGIN error --><span class="form_error">{error}</span><!-- END error --><br/>{element}</td>',
@@ -131,12 +133,12 @@ class MultipleAnswer extends Question
             );
             $boxes_names[] = 'correct['.$i.']';
 
-            $form->addHtmlEditor("answer[$i]", null, null, true, $editorConfig);
+            $form->addHtmlEditor("answer[$i]", null, null, false, $editorConfig);
             $form->addRule('answer['.$i.']', get_lang('ThisFieldIsRequired'), 'required');
 
-            $form->addHtmlEditor("comment[$i]", null, null, true, $editorConfig);
+            $form->addHtmlEditor("comment[$i]", null, null, false, $editorConfig);
 
-            $form->addElement('text', 'weighting['.$i.']', null, array('style' => "width: 60px;", 'value' => '0'));
+            $form->addElement('text', 'weighting['.$i.']', null, ['style' => "width: 60px;", 'value' => '0']);
             $form->addHtml('</tr>');
         }
 
@@ -178,23 +180,23 @@ class MultipleAnswer extends Question
                 $form->setDefaults($defaults);
             }
         }
-        $form->setConstants(array('nb_answers' => $nb_answers));
+        $form->setConstants(['nb_answers' => $nb_answers]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-	public function processAnswersCreation($form, $exercise)
+    public function processAnswersCreation($form, $exercise)
     {
         $questionWeighting = $nbrGoodAnswers = 0;
-        $objAnswer  = new Answer($this->id);
+        $objAnswer = new Answer($this->id);
         $nb_answers = $form->getSubmitValue('nb_answers');
 
         for ($i = 1; $i <= $nb_answers; $i++) {
             $answer = trim(str_replace(['<p>', '</p>'], '', $form->getSubmitValue('answer['.$i.']')));
             $comment = trim(str_replace(['<p>', '</p>'], '', $form->getSubmitValue('comment['.$i.']')));
-            $weighting = trim($form -> getSubmitValue('weighting['.$i.']'));
-            $goodAnswer = trim($form -> getSubmitValue('correct['.$i.']'));
+            $weighting = trim($form->getSubmitValue('weighting['.$i.']'));
+            $goodAnswer = trim($form->getSubmitValue('correct['.$i.']'));
 
             if ($goodAnswer) {
                 $weighting = abs($weighting);
@@ -215,7 +217,7 @@ class MultipleAnswer extends Question
         }
 
         // saves the answers into the data base
-        $objAnswer -> save();
+        $objAnswer->save();
 
         // sets the total weighting of the question
         $this->updateWeighting($questionWeighting);
@@ -223,18 +225,21 @@ class MultipleAnswer extends Question
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function return_header($exercise, $counter = null, $score = null)
     {
         $header = parent::return_header($exercise, $counter, $score);
-        $header .= '<table class="'.$this->question_table_class.'">
-            <tr>
-                <th>'.get_lang("Choice").'</th>
-                <th>'. get_lang("ExpectedChoice").'</th>
-                <th>'. get_lang("Answer").'</th>';
-        $header .= '<th>'.get_lang("Comment").'</th>';
+        $header .= '<table class="'.$this->question_table_class.'"><tr>';
+        $header .= '<th>'.get_lang('Choice').'</th>';
+        $header .= '<th>'.get_lang('ExpectedChoice').'</th>';
+        $header .= '<th>'.get_lang('Answer').'</th>';
+        if ($exercise->showExpectedChoice()) {
+            $header .= '<th>'.get_lang('Status').'</th>';
+        }
+        $header .= '<th>'.get_lang('Comment').'</th>';
         $header .= '</tr>';
+
         return $header;
     }
 }

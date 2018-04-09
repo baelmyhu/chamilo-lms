@@ -3,13 +3,16 @@
 
 /**
  * @author Claro Team <cvs@claroline.net>
- * @author Yannick Warnier <yannick.warnier@beeznest.com> - updated ImsAnswerHotspot to match QTI norms
+ * @author Yannick Warnier <yannick.warnier@beeznest.com> -
+ * updated ImsAnswerHotspot to match QTI norms
+ *
  * @package chamilo.exercise
  */
 class Ims2Question extends Question
 {
     /**
-     * Include the correct answer class and create answer
+     * Include the correct answer class and create answer.
+     *
      * @return Answer
      */
     public function setAnswer()
@@ -32,7 +35,6 @@ class Ims2Question extends Question
 
                 return $answer;
             case MATCHING:
-                //no break
             case MATCHING_DRAGGABLE:
                 $answer = new ImsAnswerMatching($this->id);
 
@@ -59,7 +61,7 @@ class Ims2Question extends Question
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function processAnswersCreation($form, $exercise)
     {
@@ -68,28 +70,28 @@ class Ims2Question extends Question
 }
 
 /**
- * Class
+ * Class.
+ *
  * @package chamilo.exercise
  */
 class ImsAnswerMultipleChoice extends Answer
 {
     /**
      * Return the XML flow for the possible answers.
-     *
      */
     public function imsExportResponses($questionIdent, $questionStatment)
     {
         // @todo getAnswersList() converts the answers using api_html_entity_decode()
         $this->answerList = $this->getAnswersList(true);
         $out = '    <choiceInteraction responseIdentifier="'.$questionIdent.'" >'."\n";
-        $out .= '      <prompt><![CDATA['.formatExerciseQtiTitle($questionStatment).']]></prompt>'."\n";
+        $out .= '      <prompt><![CDATA['.formatExerciseQtiText($questionStatment).']]></prompt>'."\n";
         if (is_array($this->answerList)) {
             foreach ($this->answerList as $current_answer) {
                 $out .= '<simpleChoice identifier="answer_'.$current_answer['id'].'" fixed="false">
-                         <![CDATA['.formatExerciseQtiTitle($current_answer['answer']).']]>';
+                         <![CDATA['.formatExerciseQtiText($current_answer['answer']).']]>';
                 if (isset($current_answer['comment']) && $current_answer['comment'] != '') {
                     $out .= '<feedbackInline identifier="answer_'.$current_answer['id'].'">
-                             <![CDATA['.formatExerciseQtiTitle($current_answer['comment']).']]>
+                             <![CDATA['.formatExerciseQtiText($current_answer['comment']).']]>
                              </feedbackInline>';
                 }
                 $out .= '</simpleChoice>'."\n";
@@ -101,8 +103,7 @@ class ImsAnswerMultipleChoice extends Answer
     }
 
     /**
-     * Return the XML flow of answer ResponsesDeclaration
-     *
+     * Return the XML flow of answer ResponsesDeclaration.
      */
     public function imsExportResponsesDeclaration($questionIdent)
     {
@@ -117,26 +118,27 @@ class ImsAnswerMultipleChoice extends Answer
         $out = '  <responseDeclaration identifier="'.$questionIdent.'" cardinality="'.$cardinality.'" baseType="identifier">'."\n";
 
         // Match the correct answers.
-        $out .= '    <correctResponse>'."\n";
         if (is_array($this->answerList)) {
+            $out .= '    <correctResponse>'."\n";
             foreach ($this->answerList as $current_answer) {
                 if ($current_answer['correct']) {
                     $out .= '      <value>answer_'.$current_answer['id'].'</value>'."\n";
                 }
             }
+            $out .= '    </correctResponse>'."\n";
         }
-        $out .= '    </correctResponse>'."\n";
 
         // Add the grading
-        $out .= '    <mapping>'."\n";
         if (is_array($this->answerList)) {
+            $out .= '    <mapping>'."\n";
             foreach ($this->answerList as $current_answer) {
                 if (isset($current_answer['grade'])) {
                     $out .= ' <mapEntry mapKey="answer_'.$current_answer['id'].'" mappedValue="'.$current_answer['grade'].'" />'."\n";
                 }
             }
+            $out .= '    </mapping>'."\n";
         }
-        $out .= '    </mapping>'."\n";
+
         $out .= '  </responseDeclaration>'."\n";
 
         return $out;
@@ -144,20 +146,18 @@ class ImsAnswerMultipleChoice extends Answer
 }
 
 /**
- * Class
+ * Class.
+ *
  * @package chamilo.exercise
  */
 class ImsAnswerFillInBlanks extends Answer
 {
     /**
      * Export the text with missing words.
-     *
-     *
      */
     public function imsExportResponses($questionIdent, $questionStatment)
     {
         $this->answerList = $this->getAnswersList(true);
-
         $text = isset($this->answerText) ? $this->answerText : '';
         if (is_array($this->answerList)) {
             foreach ($this->answerList as $key => $answer) {
@@ -167,14 +167,10 @@ class ImsAnswerFillInBlanks extends Answer
                 $text = str_replace('['.$answer.']', '<textEntryInteraction responseIdentifier="fill_'.$key.'" expectedLength="'.api_strlen($answer).'"/>', $text);
             }
         }
-        $out = $text;
 
-        return $out;
+        return $text;
     }
 
-    /**
-     *
-     */
     public function imsExportResponsesDeclaration($questionIdent)
     {
         $this->answerList = $this->getAnswersList(true);
@@ -186,7 +182,7 @@ class ImsAnswerFillInBlanks extends Answer
                 $answer = $answer['answer'];
                 $out .= '  <responseDeclaration identifier="fill_'.$answerKey.'" cardinality="single" baseType="identifier">'."\n";
                 $out .= '    <correctResponse>'."\n";
-                $out .= '      <value><![CDATA['.formatExerciseQtiTitle($answer).']]></value>'."\n";
+                $out .= '      <value><![CDATA['.formatExerciseQtiText($answer).']]></value>'."\n";
                 $out .= '    </correctResponse>'."\n";
                 if (isset($this->gradeList[$answerKey])) {
                     $out .= '    <mapping>'."\n";
@@ -203,11 +199,15 @@ class ImsAnswerFillInBlanks extends Answer
 }
 
 /**
- * Class
+ * Class.
+ *
  * @package chamilo.exercise
  */
 class ImsAnswerMatching extends Answer
 {
+    public $leftList;
+    public $rightList;
+
     /**
      * Export the question part as a matrix-choice, with only one possible answer per line.
      */
@@ -222,11 +222,11 @@ class ImsAnswerMatching extends Answer
         //add left column
         $out .= '  <simpleMatchSet>'."\n";
         if (is_array($this->leftList)) {
-            foreach ($this->leftList as $leftKey=>$leftElement) {
+            foreach ($this->leftList as $leftKey => $leftElement) {
                 $out .= '
                 <simpleAssociableChoice identifier="left_'.$leftKey.'" >
-                    <![CDATA['.formatExerciseQtiTitle($leftElement['answer']).']]>
-                </simpleAssociableChoice>'. "\n";
+                    <![CDATA['.formatExerciseQtiText($leftElement['answer']).']]>
+                </simpleAssociableChoice>'."\n";
             }
         }
 
@@ -239,8 +239,8 @@ class ImsAnswerMatching extends Answer
         if (is_array($this->rightList)) {
             foreach ($this->rightList as $rightKey => $rightElement) {
                 $out .= '<simpleAssociableChoice identifier="right_'.$i.'" >
-                        <![CDATA['.formatExerciseQtiTitle($rightElement['answer']).']]>
-                        </simpleAssociableChoice>'. "\n";
+                        <![CDATA['.formatExerciseQtiText($rightElement['answer']).']]>
+                        </simpleAssociableChoice>'."\n";
                 $i++;
             }
         }
@@ -250,16 +250,13 @@ class ImsAnswerMatching extends Answer
         return $out;
     }
 
-    /**
-     *
-     */
     public function imsExportResponsesDeclaration($questionIdent)
     {
         $this->answerList = $this->getAnswersList(true);
         $out = '  <responseDeclaration identifier="'.$questionIdent.'" cardinality="single" baseType="identifier">'."\n";
         $out .= '    <correctResponse>'."\n";
 
-        $gradeArray = array();
+        $gradeArray = [];
         if (isset($this->leftList) && is_array($this->leftList)) {
             foreach ($this->leftList as $leftKey => $leftElement) {
                 $i = 0;
@@ -273,13 +270,15 @@ class ImsAnswerMatching extends Answer
             }
         }
         $out .= '    </correctResponse>'."\n";
-        $out .= '    <mapping>'."\n";
+
         if (is_array($gradeArray)) {
+            $out .= '    <mapping>'."\n";
             foreach ($gradeArray as $gradeKey => $grade) {
                 $out .= '          <mapEntry mapKey="'.$gradeKey.'" mappedValue="'.$grade.'"/>'."\n";
             }
+            $out .= '    </mapping>'."\n";
         }
-        $out .= '    </mapping>'."\n";
+
         $out .= '  </responseDeclaration>'."\n";
 
         return $out;
@@ -287,7 +286,8 @@ class ImsAnswerMatching extends Answer
 }
 
 /**
- * Class
+ * Class.
+ *
  * @package chamilo.exercise
  */
 class ImsAnswerHotspot extends Answer
@@ -320,53 +320,47 @@ class ImsAnswerHotspot extends Answer
                 switch ($answer['hotspot_type']) {
                     case 'square':
                         $type = 'rect';
-                        $res = array();
+                        $res = [];
                         $coords = preg_match('/^\s*(\d+);(\d+)\|(\d+)\|(\d+)\s*$/', $answer['hotspot_coord'], $res);
                         $coords = $res[1].','.$res[2].','.((int) $res[1] + (int) $res[3]).",".((int) $res[2] + (int) $res[4]);
                         break;
                     case 'circle':
                         $type = 'circle';
-                        $res = array();
+                        $res = [];
                         $coords = preg_match('/^\s*(\d+);(\d+)\|(\d+)\|(\d+)\s*$/', $answer['hotspot_coord'], $res);
                         $coords = $res[1].','.$res[2].','.sqrt(pow(($res[1] - $res[3]), 2) + pow(($res[2] - $res[4])));
                         break;
                     case 'poly':
                         $type = 'poly';
-                        $coords = str_replace(array(';', '|'), array(',', ','), $answer['hotspot_coord']);
+                        $coords = str_replace([';', '|'], [',', ','], $answer['hotspot_coord']);
                         break;
                     case 'delineation':
                         $type = 'delineation';
-                        $coords = str_replace(array(';', '|'), array(',', ','), $answer['hotspot_coord']);
+                        $coords = str_replace([';', '|'], [',', ','], $answer['hotspot_coord']);
                         break;
                 }
                 $text .= '        <hotspotChoice shape="'.$type.'" coords="'.$coords.'" identifier="'.$key.'"/>'."\n";
             }
         }
         $text .= '      </graphicOrderInteraction>'."\n";
-        $out = $text;
 
-        return $out;
+        return $text;
     }
 
-    /**
-     *
-     */
     public function imsExportResponsesDeclaration($questionIdent)
     {
         $this->answerList = $this->getAnswersList(true);
         $this->gradeList = $this->getGradesList();
-        $out = '';
-        $out .= '  <responseDeclaration identifier="hotspot_'.$questionIdent.'" cardinality="ordered" baseType="identifier">'."\n";
-        $out .= '    <correctResponse>'."\n";
-
+        $out = '  <responseDeclaration identifier="hotspot_'.$questionIdent.'" cardinality="ordered" baseType="identifier">'."\n";
         if (is_array($this->answerList)) {
+            $out .= '    <correctResponse>'."\n";
             foreach ($this->answerList as $answerKey => $answer) {
                 $answerKey = $answer['id'];
                 $answer = $answer['answer'];
-                $out .= '<value><![CDATA['.formatExerciseQtiTitle($answerKey).']]></value>';
+                $out .= '<value><![CDATA['.formatExerciseQtiText($answerKey).']]></value>';
             }
+            $out .= '    </correctResponse>'."\n";
         }
-        $out .= '    </correctResponse>'."\n";
         $out .= '  </responseDeclaration>'."\n";
 
         return $out;
@@ -374,7 +368,8 @@ class ImsAnswerHotspot extends Answer
 }
 
 /**
- * Class
+ * Class.
+ *
  * @package chamilo.exercise
  */
 class ImsAnswerFree extends Answer
@@ -383,15 +378,28 @@ class ImsAnswerFree extends Answer
      * TODO implement
      * Export the question part as a matrix-choice, with only one possible answer per line.
      */
-    public function imsExportResponses($questionIdent, $questionStatment, $questionDesc = '', $questionMedia = '')
-    {
-        return '';
+    public function imsExportResponses(
+        $questionIdent,
+        $questionStatment,
+        $questionDesc = '',
+        $questionMedia = ''
+    ) {
+        $questionDesc = formatExerciseQtiText($questionDesc);
+
+        return '<extendedTextInteraction responseIdentifier="'.$questionIdent.'" >
+            <prompt>
+            '.$questionDesc.'
+            </prompt>
+            </extendedTextInteraction>';
     }
-    /**
-     *
-     */
-    public function imsExportResponsesDeclaration($questionIdent)
+
+    public function imsExportResponsesDeclaration($questionIdent, $question)
     {
-        return '';
+        $out = '  <responseDeclaration identifier="'.$questionIdent.'" cardinality="single" baseType="string">';
+        $out .= '<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+                <defaultValue><value>'.$question->weighting.'</value></defaultValue></outcomeDeclaration>';
+        $out .= '  </responseDeclaration>'."\n";
+
+        return $out;
     }
 }

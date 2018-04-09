@@ -3,10 +3,11 @@
 
 /**
  * Code for HotPotatoes integration.
+ *
  * @package chamilo.exercise
+ *
  * @author Istvan Mandak (original author)
  */
-
 require_once __DIR__.'/../inc/global.inc.php';
 require_once 'hotpotatoes.lib.php';
 
@@ -19,21 +20,17 @@ if (!api_is_allowed_to_edit(null, true)) {
     api_not_allowed();
 }
 
-if (isset($_SESSION['gradebook'])) {
-    $gradebook = $_SESSION['gradebook'];
-}
-
-if (!empty($gradebook) && $gradebook == 'view') {
-    $interbreadcrumb[] = array(
-        'url' => '../gradebook/'.$_SESSION['gradebook_dest'],
-        'name' => get_lang('ToolGradebook')
-    );
+if (api_is_in_gradebook()) {
+    $interbreadcrumb[] = [
+        'url' => Category::getUrl(),
+        'name' => get_lang('ToolGradebook'),
+    ];
 }
 // The breadcrumbs.
-$interbreadcrumb[] = array(
-    'url' => api_get_path(WEB_CODE_PATH).'.exercise/exercise.php?'.api_get_cidreq(),
-    'name' => get_lang('Exercises')
-);
+$interbreadcrumb[] = [
+    'url' => api_get_path(WEB_CODE_PATH).'exercise/exercise.php?'.api_get_cidreq(),
+    'name' => get_lang('Exercises'),
+];
 
 $is_allowedToEdit = api_is_allowed_to_edit(null, true);
 
@@ -92,7 +89,7 @@ $form = new FormValidator(
     'post',
     api_get_self()."?".api_get_cidreq(),
     null,
-    array('enctype' => 'multipart/form-data')
+    ['enctype' => 'multipart/form-data']
 );
 $form->addElement('header', $nameTools);
 $form->addElement('hidden', 'uploadPath');

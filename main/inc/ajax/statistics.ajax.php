@@ -1,10 +1,9 @@
 <?php
-
 /* For licensing terms, see /license.txt */
-/**
- * Responses to AJAX calls
- */
 
+/**
+ * Responses to AJAX calls.
+ */
 require_once __DIR__.'/../global.inc.php';
 
 api_protect_admin_script();
@@ -16,8 +15,6 @@ switch ($action) {
         header('Content-type: application/json');
         $list = [];
         $all = Statistics::getRecentLoginStats();
-        $distinct = Statistics::getRecentLoginStats(true);
-
         foreach ($all as $tick => $tock) {
             $list['labels'][] = $tick;
         }
@@ -42,6 +39,7 @@ switch ($action) {
         $list['datasets'][1]['pointHighlightFill'] = "#fff";
         $list['datasets'][1]['pointHighlightStroke'] = "rgba(0,204,0,1)";
 
+        $distinct = Statistics::getRecentLoginStats(true);
         foreach ($distinct as $tick => $tock) {
             $list['datasets'][1]['data'][] = $tock;
         }
@@ -49,5 +47,3 @@ switch ($action) {
         echo json_encode($list);
         break;
 }
-
-

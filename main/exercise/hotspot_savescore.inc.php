@@ -4,11 +4,14 @@
 use ChamiloSession as Session;
 
 /**
-*	This file saves every click in the hotspot tool into track_e_hotspots
-*	@package chamilo.exercise
-* 	@author Toon Keppens
-* 	@version $Id: admin.php 10680 2007-01-11 21:26:23Z pcool $
-*/
+ *	This file saves every click in the hotspot tool into track_e_hotspots.
+ *
+ *	@package chamilo.exercise
+ *
+ * 	@author Toon Keppens
+ *
+ * 	@version $Id: admin.php 10680 2007-01-11 21:26:23Z pcool $
+ */
 require_once __DIR__.'/../inc/global.inc.php';
 $courseCode = $_GET['coursecode'];
 $questionId = $_GET['questionId'];
@@ -25,8 +28,8 @@ if ($_GET['answerId'] == "0") {
     // user clicked ON a hotspot
     $hit = 1;
     $answerId = api_substr($_GET['answerId'], 22, 2);
-	// Save into session
-	$_SESSION['exerciseResult'][$questionId][$answerId] = $hit;
+    // Save into session
+    $_SESSION['exerciseResult'][$questionId][$answerId] = $hit;
 }
 //round-up the coordinates
 $coords = explode('/', $coordinates);
@@ -44,9 +47,9 @@ $params = [
     'course_id' => $courseCode,
     'quiz_id' => $exerciseId,
     'question_id' => $questionId,
-    'answer_id' =>  $answerId,
+    'answer_id' => $answerId,
     'correct' => $hit,
-    'coordinate' => $coordinates
+    'coordinate' => $coordinates,
 ];
 // Save insert id into session if users changes answer.
 $insert_id = Database::insert($TBL_TRACK_E_HOTSPOT, $params);

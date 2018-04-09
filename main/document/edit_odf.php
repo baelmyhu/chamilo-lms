@@ -1,10 +1,10 @@
 <?php
 /* For licensing terms, see /license.txt */
 /**
- * ODF document editor script
+ * ODF document editor script.
+ *
  * @package chamilo.document
  */
-
 require_once __DIR__.'/../inc/global.inc.php';
 
 $documentId = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -42,8 +42,7 @@ $pathinfo = pathinfo($headerFile);
 $showOdfEditor = false;
 $webOdfSupportedFiles = DocumentManager::get_web_odf_extension_list();
 
-if (
-    in_array(strtolower($pathinfo['extension']), $webOdfSupportedFiles) &&
+if (in_array(strtolower($pathinfo['extension']), $webOdfSupportedFiles) &&
     api_get_configuration_value('enabled_support_odf') === true
 ) {
     $showOdfEditor = true;
@@ -97,7 +96,7 @@ $htmlHeadXtra[] = '
 // Interbreadcrumb for the current directory root path
 $interbreadcrumb[] = [
     'url' => api_get_path(WEB_CODE_PATH).'document/document.php',
-    'name' => get_lang('Documents')
+    'name' => get_lang('Documents'),
 ];
 
 if (!empty($documentInfo['parents'])) {
@@ -108,7 +107,7 @@ if (!empty($documentInfo['parents'])) {
 
         $interbreadcrumb[] = [
             'url' => $documentParent['document_url'],
-            'name' => $documentParent['title']
+            'name' => $documentParent['title'],
         ];
     }
 }

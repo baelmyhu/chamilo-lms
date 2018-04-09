@@ -1,10 +1,36 @@
 <script>
     /* Makes row highlighting possible */
     $(document).ready( function() {
+        $("[data-toggle=popover]").each(function(i, obj) {
+            $(this).popover({
+                html: true,
+                content: function() {
+                    var id = $(this).attr('id')
+                    return $('#popover-content-' + id).html();
+                }
+            });
+        });
+
+        $('.scrollbar-inner').scrollbar();
+
         // Date time settings.
         moment.locale('{{ locale }}');
         $.datepicker.setDefaults($.datepicker.regional["{{ locale }}"]);
         $.datepicker.regional["local"] = $.datepicker.regional["{{ locale }}"];
+
+        // Fix old calls of "inc/lib/mediaplayer/player.swf" and convert to <audio> tag, then rendered by media element js
+        // see BT#13405
+        $('embed').each( function () {
+            var flashVars = $(this).attr('flashvars');
+            if (flashVars && flashVars.indexOf("file") == -1) {
+                var audioId = Math.floor( Math.random()*99999 );
+                flashVars = flashVars.replace('&autostart=false', '');
+                flashVars = flashVars.replace('&autostart=true', '');
+                var audioDiv = '<audio id="'+audioId+'" controls="controls" style="width:400px;" width:"400px;" src="'+flashVars+'" ><source src="'+flashVars+'" type="audio/mp3"  ></source></audio>';
+                $(this).hide();
+                $(this).after(audioDiv);
+            }
+        });
 
         // Chosen select
         $(".chzn-select").chosen({
@@ -69,7 +95,10 @@
 
         // Mediaelement
         if ( {{ show_media_element }} == 1) {
-            jQuery('video:not(.skip), audio:not(.skip)').mediaelementplayer(/* Options */);
+            $('video:not(.skip), audio:not(.skip)').mediaelementplayer({
+                success: function(mediaElement, originalNode, instance) {
+                }
+            });
         }
 
         // Table highlight.

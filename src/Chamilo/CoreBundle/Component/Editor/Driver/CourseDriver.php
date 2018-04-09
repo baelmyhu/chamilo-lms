@@ -4,10 +4,9 @@
 namespace Chamilo\CoreBundle\Component\Editor\Driver;
 
 /**
- * Class CourseDriver
+ * Class CourseDriver.
  *
  * @package Chamilo\CoreBundle\Component\Editor\Driver
- *
  */
 class CourseDriver extends Driver implements DriverInterface
 {
@@ -16,7 +15,7 @@ class CourseDriver extends Driver implements DriverInterface
     private $coursePath;
 
     /**
-     * Setups the folder
+     * Setups the folder.
      */
     public function setup()
     {
@@ -82,23 +81,23 @@ class CourseDriver extends Driver implements DriverInterface
             $alias = $courseCode.' '.get_lang('Documents');
             $userId = api_get_user_id();
 
-            $config = array(
+            $config = [
                 'driver' => 'CourseDriver',
                 'path' => $this->getCourseDocumentSysPath(),
                 'URL' => $this->getCourseDocumentRelativeWebPath(),
-                'accessControl' => array($this, 'access'),
+                'accessControl' => [$this, 'access'],
                 'alias' => $alias,
-                'attributes' => array(
+                'attributes' => [
                     // Hide shared_folder
-                    array(
+                    [
                         'pattern' => '/shared_folder/',
                         'read' => false,
                         'write' => false,
                         'hidden' => true,
-                        'locked' => false
-                    )
-                )
-            );
+                        'locked' => false,
+                    ],
+                ],
+            ];
 
             // admin/teachers can create dirs from ckeditor
             if ($this->allowToEdit()) {
@@ -128,7 +127,7 @@ class CourseDriver extends Driver implements DriverInterface
                         'read' => false,
                         'write' => false,
                         'hidden' => true,
-                        'locked' => false
+                        'locked' => false,
                     ];
                 }
             }
@@ -139,7 +138,7 @@ class CourseDriver extends Driver implements DriverInterface
                 'read' => false,
                 'write' => false,
                 'hidden' => true,
-                'locked' => false
+                'locked' => false,
             ];
 
             // Allow only the groups I have access
@@ -157,7 +156,7 @@ class CourseDriver extends Driver implements DriverInterface
                             'read' => true,
                             'write' => false,
                             'hidden' => false,
-                            'locked' => false
+                            'locked' => false,
                         ];
                     }
                 }
@@ -166,12 +165,13 @@ class CourseDriver extends Driver implements DriverInterface
             return $config;
         }
 
-        return array();
+        return [];
     }
 
     /**
      * This is the absolute document course path like
-     * /var/www/portal/data/courses/XXX/document/
+     * /var/www/portal/data/courses/XXX/document/.
+     *
      * @return string
      */
     public function getCourseDocumentSysPath()
@@ -200,7 +200,6 @@ class CourseDriver extends Driver implements DriverInterface
         return $url;
     }
 
-
     /**
      * @return string
      */
@@ -216,7 +215,6 @@ class CourseDriver extends Driver implements DriverInterface
     }
 
     /**
-     *
      * @return string
      */
     public function getCourseDirectory()
@@ -227,8 +225,9 @@ class CourseDriver extends Driver implements DriverInterface
     /**
      * {@inheritdoc}
      */
-    public function upload($fp, $dst, $name, $tmpname, $hashes = array())
+    public function upload($fp, $dst, $name, $tmpname, $hashes = [])
     {
+        // Needed to load course information in elfinder
         $this->setConnectorFromPlugin();
 
         if ($this->allowToEdit()) {
@@ -317,7 +316,7 @@ class CourseDriver extends Driver implements DriverInterface
     }
 
     /**
-     * Allow to upload/delete folder or files
+     * Allow to upload/delete folder or files.
      *
      * @return bool
      */
@@ -329,25 +328,27 @@ class CourseDriver extends Driver implements DriverInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function _mkdir($path, $name)
+    public function mkdir($path, $name)
     {
+        // Needed to load course information in elfinder
+        $this->setConnectorFromPlugin();
+
         if ($this->allowToEdit() == false) {
             return false;
         }
 
-        $path = $this->_joinPath($path, $name);
+        $result = parent::mkdir($path, $name);
 
-        if (mkdir($path)) {
-            $this->setConnectorFromPlugin();
-            chmod($path, $this->options['dirMode']);
-            clearstatcache();
+        if ($result && isset($result['hash'])) {
             $_course = $this->connector->course;
             $realPathRoot = $this->getCourseDocumentSysPath();
+            $realPath = $this->realpath($result['hash']);
 
             // Removing course path
-            $newPath = str_replace($realPathRoot, '/', $path);
+            $newPath = str_replace($realPathRoot, '/', $realPath);
+
             $documentId = add_document(
                 $_course,
                 $newPath,
@@ -363,12 +364,12 @@ class CourseDriver extends Driver implements DriverInterface
             );
 
             if (empty($documentId)) {
-                unlink($path);
+                $this->rm($result['hash']);
 
                 return false;
             }
 
-            return $path;
+            return $result;
         }
 
         return false;

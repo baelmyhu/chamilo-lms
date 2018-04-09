@@ -1,10 +1,11 @@
 <?php
 /* For licensing terms, see /license.txt */
+
 /**
- * Shows who is online in a specific session
+ * Shows who is online in a specific session.
+ *
  * @package chamilo.main
  */
-
 include_once './main/inc/global.inc.php';
 api_block_anonymous_users();
 
@@ -13,13 +14,12 @@ $tbl_session_course_user = Database::get_main_table(TABLE_MAIN_SESSION_COURSE_US
 
 /**
  * Header
- * include the HTTP, HTML headers plus the top banner
+ * include the HTTP, HTML headers plus the top banner.
  */
-
 Display::display_header(get_lang('UserOnlineListSession'));
 ?>
-<br /><br />
-<table class="data_table" width="60%">
+<br />
+<table class="data_table">
     <tr class="tableName">
         <td colspan="4">
             <strong><?php echo get_lang('UserOnlineListSession'); ?></strong>
@@ -40,7 +40,7 @@ Display::display_header(get_lang('UserOnlineListSession'));
         </th>
     </tr>
 <?php
-$session_is_coach = array();
+$session_is_coach = [];
 
 if (isset($_user['user_id']) && $_user['user_id'] != '') {
     $_user['user_id'] = intval($_user['user_id']);
@@ -81,7 +81,7 @@ if (isset($_user['user_id']) && $_user['user_id'] != '') {
 
     $online_time = time() - $time_limit * 60;
     $current_date = api_get_utc_datetime($online_time);
-    $students_online = array();
+    $students_online = [];
     foreach ($session_is_coach as $session) {
         $sql = "SELECT DISTINCT last_access.access_user_id,
                     last_access.access_date,
@@ -109,12 +109,12 @@ if (isset($_user['user_id']) && $_user['user_id'] != '') {
                 ";
             echo $student_online['name'];
             echo "	</td>
-                    <td align='center'>
+                    <td>
                  ";
             $courseInfo = api_get_course_info_by_id($student_online['c_id']);
             echo $courseInfo['title'];
             echo "	</td>
-                    <td align='center'>
+                    <td>
                  ";
             if (!empty($student_online['email'])) {
                 echo $student_online['email'];
@@ -122,7 +122,7 @@ if (isset($_user['user_id']) && $_user['user_id'] != '') {
                 echo get_lang('NoEmail');
             }
             echo "	</td>
-                    <td align='center'>
+                    <td>
                  ";
             echo '<a href="main/chat/chat.php?cidReq='.$courseInfo['code'].'&id_session='.$student_online['access_session_id'].'"> -> </a>';
             echo "	</td>

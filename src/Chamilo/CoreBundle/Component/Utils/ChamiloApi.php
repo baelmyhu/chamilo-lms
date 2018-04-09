@@ -3,8 +3,11 @@
 
 namespace Chamilo\CoreBundle\Component\Utils;
 
+use ChamiloSession as Session;
+
 /**
- * Class ChamiloApi
+ * Class ChamiloApi.
+ *
  * @package Chamilo\CoreBundle\Component
  */
 class ChamiloApi
@@ -13,6 +16,7 @@ class ChamiloApi
 
     /**
      * ChamiloApi constructor.
+     *
      * @param $configuration
      */
     public function __construct(array $configuration)
@@ -30,6 +34,7 @@ class ChamiloApi
 
     /**
      * @param string $variable
+     *
      * @return bool|string
      */
     public static function getConfigurationValue($variable)
@@ -42,14 +47,14 @@ class ChamiloApi
         return false;
     }
 
-
     /**
-     * Returns an array of resolutions that can be used for the conversion of documents to images
+     * Returns an array of resolutions that can be used for the conversion of documents to images.
+     *
      * @return array
      */
     public static function getDocumentConversionSizes()
     {
-        return array(
+        return [
             '540x405' => '540x405 (3/4)',
             '640x480' => '640x480 (3/4)',
             '720x540' => '720x540 (3/4)',
@@ -60,42 +65,58 @@ class ChamiloApi
             '1280x860' => '1280x960 (3/4)',
             '1400x1050' => '1400x1050 (3/4)',
             '1600x900' => '1600x900 (16/9)',
-        );
+        ];
     }
 
     /**
-     * Get the platform logo path
-     * @return null|string
+     * Get the platform logo path.
+     *
+     * @param string $theme
+     * @param bool   $getSysPath
+     *
+     * @return string
      */
-    public static function getWebPlatformLogoPath($theme = '')
+    public static function getPlatformLogoPath($theme = '', $getSysPath = false)
     {
         $theme = empty($theme) ? api_get_visual_theme() : $theme;
         $accessUrlId = api_get_current_access_url_id();
         $themeDir = \Template::getThemeDir($theme);
-        $customLogoPath = "$themeDir/images/header-logo-custom$accessUrlId.png";
+        $customLogoPath = $themeDir."images/header-logo-custom$accessUrlId.png";
 
         if (file_exists(api_get_path(SYS_PUBLIC_PATH)."css/$customLogoPath")) {
+            if ($getSysPath) {
+                return api_get_path(SYS_PUBLIC_PATH)."css/$customLogoPath";
+            }
+
             return api_get_path(WEB_CSS_PATH).$customLogoPath;
         }
 
-        $originalLogoPath = "$themeDir/images/header-logo.png";
+        $originalLogoPath = $themeDir."images/header-logo.png";
 
         if (file_exists(api_get_path(SYS_CSS_PATH).$originalLogoPath)) {
+            if ($getSysPath) {
+                return api_get_path(SYS_CSS_PATH).$originalLogoPath;
+            }
+
             return api_get_path(WEB_CSS_PATH).$originalLogoPath;
         }
 
-        return null;
+        return '';
     }
 
     /**
      * Get the platform logo.
      * Return a <img> if the logo image exists. Otherwise return a <h2> with the institution name.
-     * @param array $imageAttributes Optional.
+     *
+     * @param string $theme
+     * @param array  $imageAttributes optional
+     * @param bool   $getSysPath
+     *
      * @return string
      */
-    public static function getPlatformLogo($theme = '', $imageAttributes = [])
+    public static function getPlatformLogo($theme = '', $imageAttributes = [], $getSysPath = false)
     {
-        $logoPath = self::getWebPlatformLogoPath($theme);
+        $logoPath = self::getPlatformLogoPath($theme, $getSysPath);
         $institution = api_get_setting('Institution');
         $institutionUrl = api_get_setting('InstitutionUrl');
         $siteName = api_get_setting('siteName');
@@ -117,7 +138,7 @@ class ChamiloApi
                         $courseInfo['extLink']['url'],
                         ['class' => 'extLink']
                     );
-                } else if (!empty($courseInfo['extLink']['url'])) {
+                } elseif (!empty($courseInfo['extLink']['url'])) {
                     $headerLogo .= $courseInfo['extLink']['url'];
                 }
             }
@@ -131,10 +152,12 @@ class ChamiloApi
     }
 
     /**
-     * Like strip_tags(), but leaves an additional space and removes only the given tags
+     * Like strip_tags(), but leaves an additional space and removes only the given tags.
+     *
      * @param string $string
-     * @param array $tags Tags to be removed
-     * @return  string The original string without the given tags
+     * @param array  $tags   Tags to be removed
+     *
+     * @return string The original string without the given tags
      */
     public static function stripGivenTags($string, $tags)
     {
@@ -149,10 +172,12 @@ class ChamiloApi
     }
 
     /**
-     * Adds or Subtract a time in hh:mm:ss to a datetime
-     * @param string $time Time in hh:mm:ss format
-     * @param string $datetime Datetime as accepted by the Datetime class constructor
-     * @param bool $operation True for Add, False to Subtract
+     * Adds or Subtract a time in hh:mm:ss to a datetime.
+     *
+     * @param string $time      Time in hh:mm:ss format
+     * @param string $datetime  Datetime as accepted by the Datetime class constructor
+     * @param bool   $operation True for Add, False to Subtract
+     *
      * @return string
      */
     public static function addOrSubTimeToDateTime($time, $datetime = 'now', $operation = true)
@@ -169,9 +194,12 @@ class ChamiloApi
 
         return $date->format('Y-m-d H:i:s');
     }
+
     /**
-     * Returns the course id (integer) for the given course directory or the current ID if no directory is defined
-     * @param   string  $directory   The course directory/path that appears in the URL
+     * Returns the course id (integer) for the given course directory or the current ID if no directory is defined.
+     *
+     * @param string $directory The course directory/path that appears in the URL
+     *
      * @return int
      */
     public static function getCourseIdByDirectory($directory = null)
@@ -181,7 +209,7 @@ class ChamiloApi
             $row = \Database::select(
                 'id',
                 \Database::get_main_table(TABLE_MAIN_COURSE),
-                array('where'=> array('directory = ?' => array($directory))),
+                ['where' => ['directory = ?' => [$directory]]],
                 'first'
             );
 
@@ -191,6 +219,38 @@ class ChamiloApi
                 return false;
             }
         }
+
         return Session::read('_real_cid', 0);
+    }
+
+    /**
+     * Check if the current HTTP request is by AJAX.
+     *
+     * @return bool
+     */
+    public static function isAjaxRequest()
+    {
+        $requestedWith = isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? $_SERVER['HTTP_X_REQUESTED_WITH'] : null;
+
+        return $requestedWith === 'XMLHttpRequest';
+    }
+
+    /**
+     * Get a variable name for language file from a text.
+     *
+     * @param string $text
+     * @param string $prefix
+     *
+     * @return string
+     */
+    public static function getLanguageVar($text, $prefix = '')
+    {
+        $text = api_replace_dangerous_char($text);
+        $text = str_replace(['-', ' ', '.'], '_', $text);
+        $text = preg_replace('/\_{1,}/', '_', $text);
+        //$text = str_replace('_', '', $text);
+        $text = api_underscore_to_camel_case($text);
+
+        return $prefix.$text;
     }
 }

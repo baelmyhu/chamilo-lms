@@ -1,12 +1,14 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+use ChamiloSession as Session;
+
 /**
  * @package chamilo.social
+ *
  * @author Julio Montoya <gugli100@gmail.com>
  * @autor Alex Aragon <alex.aragon@beeznest.com> CSS Design and Template
  */
-
 $cidReset = true;
 
 require_once __DIR__.'/../inc/global.inc.php';
@@ -15,7 +17,7 @@ $user_id = api_get_user_id();
 $show_full_profile = true;
 // social tab
 $this_section = SECTION_SOCIAL;
-unset($_SESSION['this_section']);
+Session::erase('this_section');
 
 api_block_anonymous_users();
 
@@ -29,7 +31,7 @@ $userGroup = new UserGroup();
 
 //fast upload image
 if (api_get_setting('profile', 'picture') == 'true') {
-    $form = new FormValidator('profile', 'post', 'home.php', null, array());
+    $form = new FormValidator('profile', 'post', 'home.php', null, []);
 
     //	PICTURE
     $form->addElement('file', 'picture', get_lang('AddImage'));
@@ -86,7 +88,7 @@ $social_search_block = Display::panel(
 
 $results = $userGroup->get_groups_by_age(1, false);
 
-$groups_newest = array();
+$groups_newest = [];
 
 if (!empty($results)) {
     foreach ($results as $result) {
@@ -118,23 +120,24 @@ if (!empty($results)) {
         );
 
         $result['picture'] = '<img class="img-responsive" src="'.$picture['file'].'" />';
-        $group_actions = '<div class="group-more"><a class="btn btn-default" href="groups.php?#tab_browse-2">'.get_lang('SeeMore').'</a></div>';
+        $group_actions = '<div class="group-more"><a class="btn btn-default" href="groups.php?#tab_browse-2">'.
+            get_lang('SeeMore').'</a></div>';
         $group_info = '<div class="description"><p>'.cut($result['description'], 120, true)."</p></div>";
-        $groups_newest[] = array(
+        $groups_newest[] = [
             Display::url(
                 $result['picture'],
                 $group_url
             ),
             $result['name'],
-            $group_info.$group_actions
-        );
+            $group_info.$group_actions,
+        ];
     }
 }
 
 // Top popular
 $results = $userGroup->get_groups_by_popularity(1, false);
 
-$groups_pop = array();
+$groups_pop = [];
 foreach ($results as $result) {
     $result['description'] = Security::remove_XSS(
         $result['description'],
@@ -150,9 +153,13 @@ foreach ($results as $result) {
     } else {
         $result['count'] = $result['count'].' '.get_lang('Members');
     }
-    $result['name'] = '<div class="group-name">'.Display::url(
-            api_ucwords(cut($result['name'], 40, true)), $group_url)
-        .'</div><div class="count-username">'.Display::returnFontAwesomeIcon('user').$result['count'].'</div>';
+    $result['name'] = '<div class="group-name">'.
+        Display::url(
+            api_ucwords(cut($result['name'], 40, true)),
+            $group_url
+        )
+        .'</div><div class="count-username">'.
+        Display::returnFontAwesomeIcon('user').$result['count'].'</div>';
 
     $picture = $userGroup->get_picture_group(
         $id,
@@ -163,10 +170,10 @@ foreach ($results as $result) {
     $result['picture_uri'] = '<img class="img-responsive" src="'.$picture['file'].'" />';
     $group_actions = '<div class="group-more"><a class="btn btn-default" href="groups.php?#tab_browse-3">'.get_lang('SeeMore').'</a></div>';
     $group_info = '<div class="description"><p>'.cut($result['description'], 120, true)."</p></div>";
-    $groups_pop[] = array(
+    $groups_pop[] = [
         Display::url($result['picture_uri'], $group_url),
-        $result['name'], $group_info.$group_actions
-    );
+        $result['name'], $group_info.$group_actions,
+    ];
 }
 
 $list = count($groups_newest);

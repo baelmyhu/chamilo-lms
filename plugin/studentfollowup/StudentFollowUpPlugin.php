@@ -1,24 +1,15 @@
 <?php
 /* For licensing terms, see /license.txt */
 
-use Symfony\Component\Filesystem\Filesystem;
 use Chamilo\CoreBundle\Entity\SessionRelCourseRelUser;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Class StudentFollowUpPlugin
+ * Class StudentFollowUpPlugin.
  */
 class StudentFollowUpPlugin extends Plugin
 {
     public $hasEntity = true;
-
-    /**
-     * @return StudentFollowUpPlugin
-     */
-    public static function create()
-    {
-        static $result = null;
-        return $result ? $result : $result = new self();
-    }
 
     /**
      * StudentFollowUpPlugin constructor.
@@ -28,38 +19,51 @@ class StudentFollowUpPlugin extends Plugin
         parent::__construct(
             '0.1',
             'Julio Montoya',
-            array(
+            [
                 'tool_enable' => 'boolean',
-            )
+            ]
         );
     }
 
     /**
-     *
+     * @return StudentFollowUpPlugin
      */
+    public static function create()
+    {
+        static $result = null;
+
+        return $result ? $result : $result = new self();
+    }
+
     public function install()
     {
         $pluginEntityPath = $this->getEntityPath();
         if (!is_dir($pluginEntityPath)) {
+            if (!is_writable(dirname($pluginEntityPath))) {
+                $message = get_lang('ErrorCreatingDir').': '.$pluginEntityPath;
+                Display::addFlash(Display::return_message($message, 'error'));
+
+                return false;
+            }
             mkdir($pluginEntityPath, api_get_permissions_for_new_directories());
         }
 
         $fs = new Filesystem();
         $fs->mirror(__DIR__.'/Entity/', $pluginEntityPath, null, ['override']);
+        $schema = Database::getManager()->getConnection()->getSchemaManager();
 
-        $sql = "CREATE TABLE sfu_post (id INT AUTO_INCREMENT NOT NULL, insert_user_id INT NOT NULL, user_id INT NOT NULL, parent_id INT DEFAULT NULL, title VARCHAR(255) NOT NULL, content LONGTEXT DEFAULT NULL, external_care_id VARCHAR(255) DEFAULT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, private TINYINT(1) NOT NULL, external_source TINYINT(1) NOT NULL, tags LONGTEXT NOT NULL COMMENT '(DC2Type:array)', attachment VARCHAR(255) NOT NULL, lft INT DEFAULT NULL, rgt INT DEFAULT NULL, lvl INT DEFAULT NULL, root INT DEFAULT NULL, INDEX IDX_35F9473C9C859CC3 (insert_user_id), INDEX IDX_35F9473CA76ED395 (user_id), INDEX IDX_35F9473C727ACA70 (parent_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;";
-        Database::query($sql);
-        $sql = "ALTER TABLE sfu_post ADD CONSTRAINT FK_35F9473C9C859CC3 FOREIGN KEY (insert_user_id) REFERENCES user (id);";
-        Database::query($sql);
-        $sql = "ALTER TABLE sfu_post ADD CONSTRAINT FK_35F9473CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id);";
-        Database::query($sql);
-        $sql = "ALTER TABLE sfu_post ADD CONSTRAINT FK_35F9473C727ACA70 FOREIGN KEY (parent_id) REFERENCES sfu_post (id) ON DELETE SET NULL;";
-        Database::query($sql);
+        if ($schema->tablesExist('sfu_post') === false) {
+            $sql = "CREATE TABLE IF NOT EXISTS sfu_post (id INT AUTO_INCREMENT NOT NULL, insert_user_id INT NOT NULL, user_id INT NOT NULL, parent_id INT DEFAULT NULL, title VARCHAR(255) NOT NULL, content LONGTEXT DEFAULT NULL, external_care_id VARCHAR(255) DEFAULT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, private TINYINT(1) NOT NULL, external_source TINYINT(1) NOT NULL, tags LONGTEXT NOT NULL COMMENT '(DC2Type:array)', attachment VARCHAR(255) NOT NULL, lft INT DEFAULT NULL, rgt INT DEFAULT NULL, lvl INT DEFAULT NULL, root INT DEFAULT NULL, INDEX IDX_35F9473C9C859CC3 (insert_user_id), INDEX IDX_35F9473CA76ED395 (user_id), INDEX IDX_35F9473C727ACA70 (parent_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;";
+            Database::query($sql);
+            $sql = "ALTER TABLE sfu_post ADD CONSTRAINT FK_35F9473C9C859CC3 FOREIGN KEY (insert_user_id) REFERENCES user (id);";
+            Database::query($sql);
+            $sql = "ALTER TABLE sfu_post ADD CONSTRAINT FK_35F9473CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id);";
+            Database::query($sql);
+            $sql = "ALTER TABLE sfu_post ADD CONSTRAINT FK_35F9473C727ACA70 FOREIGN KEY (parent_id) REFERENCES sfu_post (id) ON DELETE SET NULL;";
+            Database::query($sql);
+        }
     }
 
-    /**
-     *
-     */
     public function uninstall()
     {
         $pluginEntityPath = $this->getEntityPath();
@@ -83,6 +87,7 @@ class StudentFollowUpPlugin extends Plugin
     /**
      * @param int $studentId
      * @param int $currentUserId
+     *
      * @return array
      */
     public static function getPermissions($studentId, $currentUserId)
@@ -125,37 +130,36 @@ class StudentFollowUpPlugin extends Plugin
                 if ($post) {
                     $isDrhRelatedViaPost = true;
                 }
+            }
 
-                // Check if course session coach
-                $sessions = SessionManager::get_sessions_by_user($studentId);
-
-                if (!empty($sessions)) {
-                    foreach ($sessions as $session) {
-                        $sessionId = $session['session_id'];
-                        $sessionDrhInfo = SessionManager::getSessionFollowedByDrh(
-                            $currentUserId,
-                            $sessionId
+            // Check if course session coach
+            $sessions = SessionManager::get_sessions_by_user($studentId);
+            if (!empty($sessions)) {
+                foreach ($sessions as $session) {
+                    $sessionId = $session['session_id'];
+                    $sessionDrhInfo = SessionManager::getSessionFollowedByDrh(
+                        $currentUserId,
+                        $sessionId
+                    );
+                    if (!empty($sessionDrhInfo)) {
+                        $isDrhRelatedToSession = true;
+                        break;
+                    }
+                    foreach ($session['courses'] as $course) {
+                        //$isCourseCoach = api_is_coach($sessionId, $course['real_id']);
+                        $coachList = SessionManager::getCoachesByCourseSession(
+                            $sessionId,
+                            $course['real_id']
                         );
-                        if (!empty($sessionDrhInfo)) {
-                            $isDrhRelatedToSession = true;
-                            break;
-                        }
-                        foreach ($session['courses'] as $course) {
-                            //$isCourseCoach = api_is_coach($sessionId, $course['real_id']);
-                            $coachList = SessionManager::getCoachesByCourseSession(
-                                $sessionId,
-                                $course['real_id']
-                            );
-                            if (!empty($coachList) && in_array($currentUserId, $coachList)) {
-                                $isCourseCoach = true;
-                                break(2);
-                            }
+                        if (!empty($coachList) && in_array($currentUserId, $coachList)) {
+                            $isCourseCoach = true;
+                            break 2;
                         }
                     }
                 }
-
-                $isCareTaker = $isDrhRelatedViaPost && $isDrhRelatedToSession;
             }
+
+            $isCareTaker = $isDrhRelatedViaPost && $isDrhRelatedToSession;
 
             $isAllow = $isAdmin || $isCareTaker || $isDrhRelatedToSession || $isCourseCoach;
             $showPrivate = $isAdmin || $isCareTaker;
@@ -169,9 +173,9 @@ class StudentFollowUpPlugin extends Plugin
 
     /**
      * @param string $status
-     * @param int $currentUserId
-     * @param int $start
-     * @param int $limit
+     * @param int    $currentUserId
+     * @param int    $start
+     * @param int    $limit
      *
      * @return array
      */
@@ -234,6 +238,6 @@ class StudentFollowUpPlugin extends Plugin
      */
     public static function getPageSize()
     {
-        return 2;
+        return 20;
     }
 }

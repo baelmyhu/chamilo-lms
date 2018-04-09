@@ -9,7 +9,6 @@
  *
  * @package chamilo.document
  */
-
 session_cache_limiter('public');
 
 require_once __DIR__.'/../inc/global.inc.php';
@@ -42,7 +41,7 @@ $full_file_name = api_get_path(SYS_COURSE_PATH).api_get_course_path().'/upload/f
 if (is_dir($full_file_name)) {
     //remove last slash if present
     //mod_rewrite can change /some/path/ to /some/path// in some cases, so clean them all off (René)
-    while ($doc_url{$dul = strlen($doc_url) - 1} == '/') {
+    while ($doc_url[$dul = strlen($doc_url) - 1] == '/') {
         $doc_url = substr($doc_url, 0, $dul);
     }
     //create the path
@@ -89,8 +88,8 @@ $forum_forum_visibility = api_get_item_visibility(
 if ($forum_thread_visibility == 1 && $forum_forum_visibility == 1) {
     if (Security::check_abs_path(
         $full_file_name,
-        api_get_path(SYS_COURSE_PATH).$courseInfo['path'].'/upload/forum/')
-    ) {
+        api_get_path(SYS_COURSE_PATH).$courseInfo['path'].'/upload/forum/'
+    )) {
         DocumentManager::file_send_for_download(
             $full_file_name,
             true,

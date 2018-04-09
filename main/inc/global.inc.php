@@ -10,9 +10,9 @@
  * - include of language files.
  *
  * @package chamilo.include
- * @todo remove the code that displays the button that links to the install page
- * 		but use a redirect immediately. By doing so the $alreadyInstalled variable can be removed.
  *
+ * @todo remove the code that displays the button that links to the install page
+ * but use a redirect immediately. By doing so the $alreadyInstalled variable can be removed.
  */
 
 // Showing/hiding error codes in global error messages.
@@ -37,7 +37,7 @@ if (file_exists($kernel->getConfigurationFile())) {
     // Recalculate a system absolute path symlinks insensible.
     $includePath = $_configuration['root_sys'].'main/inc/';
 } else {
-    $_configuration = array();
+    $_configuration = [];
     //Redirects to the main/install/ page
     if (!$alreadyInstalled) {
         $global_error_code = 2;
@@ -56,7 +56,6 @@ if (!isset($GLOBALS['_configuration'])) {
 }
 
 // Include the main Chamilo platform library file.
-
 require_once $_configuration['root_sys'].'main/inc/lib/api.lib.php';
 $passwordEncryption = api_get_configuration_value('password_encryption');
 
@@ -122,7 +121,7 @@ $params = array(
 
 // Doctrine ORM configuration
 
-$dbParams = array(
+$dbParams = [
     'driver' => 'pdo_mysql',
     'host' => $_configuration['db_host'],
     'user' => $_configuration['db_user'],
@@ -131,8 +130,8 @@ $dbParams = array(
     // Only relevant for pdo_sqlite, specifies the path to the SQLite database.
     'path' => isset($_configuration['db_path']) ? $_configuration['db_path'] : '',
     // Only relevant for pdo_mysql, pdo_pgsql, and pdo_oci/oci8,
-    'port' => isset($_configuration['db_port']) ? $_configuration['db_port'] : ''
-);
+    'port' => isset($_configuration['db_port']) ? $_configuration['db_port'] : '',
+];
 
 try {
     $database = new \Database();
@@ -207,23 +206,14 @@ $charset = 'UTF-8';
 \Patchwork\Utf8\Bootup::initAll();
 
 // Start session after the internationalization library has been initialized.
-ChamiloSession::instance()->start($alreadyInstalled);
-
-// Remove quotes added by PHP  - get_magic_quotes_gpc() is deprecated in PHP 5 see #2970
-
-if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-    array_walk_recursive_limited($_GET, 'stripslashes', true);
-    array_walk_recursive_limited($_POST, 'stripslashes', true);
-    array_walk_recursive_limited($_COOKIE, 'stripslashes', true);
-    array_walk_recursive_limited($_REQUEST, 'stripslashes', true);
-}
+ChamiloSession::start($alreadyInstalled);
 
 // access_url == 1 is the default chamilo location
 if ($_configuration['access_url'] != 1) {
     $url_info = api_get_access_url($_configuration['access_url']);
     if ($url_info['active'] == 1) {
-        $settings_by_access = & api_get_settings(null, 'list', $_configuration['access_url'], 1);
-        foreach ($settings_by_access as & $row) {
+        $settings_by_access = &api_get_settings(null, 'list', $_configuration['access_url'], 1);
+        foreach ($settings_by_access as &$row) {
             if (empty($row['variable'])) {
                 $row['variable'] = 0;
             }
@@ -238,8 +228,8 @@ if ($_configuration['access_url'] != 1) {
     }
 }
 
-$result = & api_get_settings(null, 'list', 1);
-foreach ($result as & $row) {
+$result = &api_get_settings(null, 'list', 1);
+foreach ($result as &$row) {
     if ($_configuration['access_url'] != 1) {
         if ($url_info['active'] == 1) {
             $var = empty($row['variable']) ? 0 : $row['variable'];
@@ -279,21 +269,26 @@ foreach ($result as & $row) {
     }
 }
 
-$result = & api_get_settings('Plugins', 'list', $_configuration['access_url']);
-$_plugins = array();
-foreach ($result as & $row) {
-    $key = & $row['variable'];
+$result = &api_get_settings('Plugins', 'list', $_configuration['access_url']);
+$_plugins = [];
+foreach ($result as &$row) {
+    $key = &$row['variable'];
     if (isset($_setting[$key]) && is_string($_setting[$key])) {
-        $_setting[$key] = array();
+        $_setting[$key] = [];
     }
-    $_setting[$key][] = $row['selected_value'];
-    $_plugins[$key][] = $row['selected_value'];
+    if ($row['subkey'] == null) {
+        $_setting[$key][] = $row['selected_value'];
+        $_plugins[$key][] = $row['selected_value'];
+    } else {
+        $_setting[$key][$row['subkey']] = $row['selected_value'];
+        $_plugins[$key][$row['subkey']] = $row['selected_value'];
+    }
 }
 
 // Error reporting settings.
 if (api_get_setting('server_type') == 'test') {
     ini_set('display_errors', '1');
-    ini_set('log_errors', '1');
+    ini_set('html_errors', '1');
     error_reporting(-1);
 
     if (function_exists('opcache_reset')) {
@@ -302,6 +297,8 @@ if (api_get_setting('server_type') == 'test') {
 } else {
     error_reporting(E_COMPILE_ERROR | E_ERROR | E_CORE_ERROR);
 }
+
+ini_set('log_errors', '1');
 
 // Load allowed tag definitions for kses and/or HTMLPurifier.
 require_once $libraryPath.'formvalidator/Rule/allowed_tags.inc.php';
@@ -317,15 +314,14 @@ $administrator['email'] = isset($administrator['email']) ? $administrator['email
 $administrator['name'] = isset($administrator['name']) ? $administrator['name'] : 'Admin';
 
 // Including configuration files
-$configurationFiles = array(
+$configurationFiles = [
     'mail.conf.php',
     'profile.conf.php',
     'course_info.conf.php',
     'add_course.conf.php',
     'events.conf.php',
     'auth.conf.php',
-    'portfolio.conf.php'
-);
+];
 
 foreach ($configurationFiles as $file) {
     $file = api_get_path(CONFIGURATION_PATH).$file;
@@ -333,7 +329,6 @@ foreach ($configurationFiles as $file) {
         require_once $file;
     }
 }
-
 
 /*  LOAD LANGUAGE FILES SECTION */
 
@@ -377,7 +372,7 @@ if (isset($this_script) && $this_script == 'sub_language') {
     //getting sub language info
     $sub_language = SubLanguageManager::get_all_information_of_language($_REQUEST['sub_language_id']);
 
-    $english_language_array = $parent_language_array = $sub_language_array = array();
+    $english_language_array = $parent_language_array = $sub_language_array = [];
 
     foreach ($language_files_to_load as $language_file_item) {
         $lang_list_pre = array_keys($GLOBALS);
@@ -430,7 +425,6 @@ if (isset($this_script) && $this_script == 'sub_language') {
 $valid_languages = api_get_languages();
 
 if (!empty($valid_languages)) {
-
     if (!in_array($user_language, $valid_languages['folder'])) {
         $user_language = api_get_setting('platformLanguage');
     }
@@ -483,6 +477,43 @@ if (!empty($valid_languages)) {
     if (isset($_GET['language'])) {
         $language_interface = $user_language;
     }
+
+    $allow = api_get_configuration_value('show_language_selector_in_menu');
+    // Overwrite all lang configs and use the menu language
+    if ($allow) {
+        if (isset($_SESSION['user_language_choice'])) {
+            $userEntity = api_get_user_entity(api_get_user_id());
+            if ($userEntity) {
+                if (isset($_GET['language'])) {
+                    $language_interface = $_SESSION['user_language_choice'];
+                    $userEntity->setLanguage($language_interface);
+                    Database::getManager()->merge($userEntity);
+                    Database::getManager()->flush();
+
+                    // Update cache
+                    api_get_user_info(
+                        api_get_user_id(),
+                        true,
+                        false,
+                        true,
+                        false,
+                        true,
+                        true
+                    );
+                    if (isset($_SESSION['_user'])) {
+                        $_SESSION['_user']['language'] = $language_interface;
+                    }
+                }
+                $language_interface = $_SESSION['user_language_choice'] = $userEntity->getLanguage();
+            }
+        } else {
+            $userInfo = api_get_user_info();
+            if (!empty($userInfo['language'])) {
+                $_SESSION['user_language_choice'] = $userInfo['language'];
+                $language_interface = $userInfo['language'];
+            }
+        }
+    }
 }
 
 // Sometimes the variable $language_interface is changed
@@ -492,7 +523,7 @@ if (!empty($valid_languages)) {
 $language_interface_initial_value = $language_interface;
 
 /**
- * Include the trad4all language file
+ * Include the trad4all language file.
  */
 // if the sub-language feature is on
 $parent_path = SubLanguageManager::get_parent_language_path($language_interface);
@@ -541,12 +572,10 @@ if (!$x = strpos($_SERVER['PHP_SELF'], 'whoisonline.php')) {
 
 // ===== end "who is logged in?" module section =====
 
-//Update of the logout_date field in the table track_e_login
+// Update of the logout_date field in the table track_e_login
 // (needed for the calculation of the total connection time)
-
 if (!isset($_SESSION['login_as']) && isset($_user)) {
     // if $_SESSION['login_as'] is set, then the user is an admin logged as the user
-
     $tbl_track_login = Database::get_main_table(TABLE_STATISTIC_TRACK_E_LOGIN);
     $sql = "SELECT login_id, login_date
             FROM $tbl_track_login
@@ -557,6 +586,7 @@ if (!isset($_SESSION['login_as']) && isset($_user)) {
 
     $q_last_connection = Database::query($sql);
     if (Database::num_rows($q_last_connection) > 0) {
+        $now = api_get_utc_datetime();
         $i_id_last_connection = Database::result($q_last_connection, 0, 'login_id');
 
         // is the latest logout_date still relevant?
@@ -564,17 +594,17 @@ if (!isset($_SESSION['login_as']) && isset($_user)) {
                 WHERE login_id = $i_id_last_connection";
         $q_logout_date = Database::query($sql);
         $res_logout_date = convert_sql_date(Database::result($q_logout_date, 0, 'logout_date'));
+        $lifeTime = api_get_configuration_value('session_lifetime');
 
-        if ($res_logout_date < time() - $_configuration['session_lifetime']) {
+        if ($res_logout_date < time() - $lifeTime) {
             // it isn't, we should create a fresh entry
-            Event::event_login($_user['user_id']);
-            // now that it's created, we can get its ID and carry on
-            $i_id_last_connection = Database::result($q_last_connection, 0, 'login_id');
+            Event::eventLogin($_user['user_id']);
+        // now that it's created, we can get its ID and carry on
+        } else {
+            $sql = "UPDATE $tbl_track_login SET logout_date = '$now'
+                    WHERE login_id = '$i_id_last_connection'";
+            Database::query($sql);
         }
-        $now = api_get_utc_datetime(time());
-        $sql = "UPDATE $tbl_track_login SET logout_date = '$now'
-                WHERE login_id='$i_id_last_connection'";
-        Database::query($sql);
 
         $tableUser = Database::get_main_table(TABLE_MAIN_USER);
         $sql = "UPDATE $tableUser SET last_login = '$now'

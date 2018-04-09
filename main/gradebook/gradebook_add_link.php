@@ -2,7 +2,8 @@
 /* For licensing terms, see /license.txt */
 
 /**
- * Script
+ * Script.
+ *
  * @package chamilo.gradebook
  */
 require_once __DIR__.'/../inc/global.inc.php';
@@ -33,7 +34,7 @@ if ($session_id == 0) {
         $session_id
     );
 } else {
-    $all_categories = Category::load_session_categories(null, $session_id);
+    $all_categories = Category::loadSessionCategories(null, $session_id);
 }
 $category = Category :: load($selectCat);
 $url = api_get_self().'?selectcat='.$selectCat.'&newtypeselected='.$typeSelected.'&course_code='.api_get_course_id().'&'.api_get_cidreq();
@@ -50,7 +51,8 @@ $typeform = new LinkForm(
 // if user selected a link type
 if ($typeform->validate() && isset($_GET['newtypeselected'])) {
     // reload page, this time with a parameter indicating the selected type
-    header('Location: '.api_get_self().'?selectcat='.$selectCat
+    header(
+        'Location: '.api_get_self().'?selectcat='.$selectCat
         .'&typeselected='.$typeform->exportValue('select_link')
         .'&course_code='.Security::remove_XSS($_GET['course_code']).'&'.api_get_cidreq()
     );
@@ -62,7 +64,7 @@ if (isset($typeSelected) && $typeSelected != '0') {
     $url = api_get_self().'?selectcat='.$selectCat.'&typeselected='.$typeSelected.'&course_code='.$courseCode.'&'.api_get_cidreq();
 
     $addform = new LinkAddEditForm(
-        LinkAddEditForm :: TYPE_ADD,
+        LinkAddEditForm::TYPE_ADD,
         $all_categories,
         $typeSelected,
         null,
@@ -99,7 +101,7 @@ if (isset($typeSelected) && $typeSelected != '0') {
         // Update view_properties
         if (isset($typeSelected) &&
             5 == $typeSelected &&
-            (isset($addvalues['select_link']) && $addvalues['select_link'] <> "")
+            (isset($addvalues['select_link']) && $addvalues['select_link'] != "")
         ) {
             $sql1 = 'SELECT thread_title from '.$tbl_forum_thread.'
 					 WHERE 
@@ -129,21 +131,21 @@ if (isset($typeSelected) && $typeSelected != '0') {
         }
 
         $link->add();
-        $addvalue_result = !empty($addvalues['addresult']) ? $addvalues['addresult'] : array();
+        $addvalue_result = !empty($addvalues['addresult']) ? $addvalues['addresult'] : [];
         if ($addvalue_result == 1) {
             header('Location: gradebook_add_result.php?selecteval='.$link->get_ref_id().'&'.api_get_cidreq());
             exit;
         } else {
-            header('Location: '.Security::remove_XSS($_SESSION['gradebook_dest']).'?linkadded=&selectcat='.$selectCat.'&'.api_get_cidreq());
+            header('Location: '.Category::getUrl().'linkadded=&selectcat='.$selectCat);
             exit;
         }
     }
 }
 
-$interbreadcrumb[] = array(
-    'url' => $_SESSION['gradebook_dest'].'?selectcat='.$selectCat.'&'.api_get_cidreq(),
-    'name' => get_lang('Gradebook')
-);
+$interbreadcrumb[] = [
+    'url' => Category::getUrl().'selectcat='.$selectCat,
+    'name' => get_lang('Gradebook'),
+];
 $this_section = SECTION_COURSES;
 
 $htmlHeadXtra[] = '<script>

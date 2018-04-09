@@ -1,5 +1,14 @@
 <?php
 /* For license terms, see /license.txt */
+
+use Chamilo\CourseBundle\Entity\CTool;
+use Chamilo\CoreBundle\Entity\Course;
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\DBALException;
+use Symfony\Component\Filesystem\Filesystem;
+use Chamilo\PluginBundle\Entity\ImsLti\ImsLtiTool;
+
 /**
  * Description of MsiLti
  *
@@ -7,14 +16,16 @@
  */
 class ImsLtiPlugin extends Plugin
 {
-    const TABLE_TOOL = 'plugin_msi_lti_tool';
+    const TABLE_TOOL = 'plugin_ims_lti_tool';
+
+    public $isAdminPlugin = true;
 
     /**
-     * Class cronstructor
+     * Class constructor
      */
     protected function __construct()
     {
-        $version = '1.0';
+        $version = '1.0 (beta)';
         $author = 'Angel Fernando Quiroz Campos';
 
         parent::__construct($version, $author, ['enabled' => 'boolean']);
@@ -25,7 +36,7 @@ class ImsLtiPlugin extends Plugin
     /**
      * Get the class instance
      * @staticvar MsiLtiPlugin $result
-     * @return MsiLtiPlugin
+     * @return ImsLtiPlugin
      */
     public static function create()
     {
@@ -47,7 +58,23 @@ class ImsLtiPlugin extends Plugin
      */
     public function install()
     {
-        $this->setupDatabase();
+        $pluginEntityPath = $this->getEntityPath();
+
+        if (!is_dir($pluginEntityPath)) {
+            if (!is_writable(dirname($pluginEntityPath))) {
+                $message = get_lang('ErrorCreatingDir').': '.$pluginEntityPath;
+                Display::addFlash(Display::return_message($message, 'error'));
+
+                return false;
+            }
+
+            mkdir($pluginEntityPath, api_get_permissions_for_new_directories());
+        }
+
+        $fs = new Filesystem();
+        $fs->mirror(__DIR__.'/Entity/', $pluginEntityPath, null, ['override']);
+
+        $this->createPluginTables();
     }
 
     /**
@@ -55,53 +82,65 @@ class ImsLtiPlugin extends Plugin
      */
     public function uninstall()
     {
-        $this->clearDatabase();
+        $pluginEntityPath = $this->getEntityPath();
+        $fs = new Filesystem();
+
+        if ($fs->exists($pluginEntityPath)) {
+            $fs->remove($pluginEntityPath);
+        }
+
+        try {
+            $this->dropPluginTables();
+            $this->removeTools();
+        } catch (DBALException $e) {
+            error_log('Error while uninstalling IMS/LTI plugin: '.$e->getMessage());
+        }
     }
 
     /**
      * Creates the plugin tables on database
+     *
      * @return boolean
      */
-    private function setupDatabase()
+    private function createPluginTables()
     {
         $entityManager = Database::getManager();
         $connection = $entityManager->getConnection();
-        $chamiloSchema = $connection->getSchemaManager();
-        $pluginSchema = new \Doctrine\DBAL\Schema\Schema();
+        $pluginSchema = new Schema();
         $platform = $connection->getDatabasePlatform();
+        if (!$connection->getSchemaManager()->tablesExist(self::TABLE_TOOL)) {
+            $toolTable = $pluginSchema->createTable(self::TABLE_TOOL);
+            $toolTable->addColumn(
+                'id',
+                \Doctrine\DBAL\Types\Type::INTEGER,
+                ['autoincrement' => true, 'unsigned' => true]
+            );
+            $toolTable->addColumn('name', Type::STRING);
+            $toolTable->addColumn('description', Type::TEXT)->setNotnull(false);
+            $toolTable->addColumn('launch_url', Type::TEXT);
+            $toolTable->addColumn('consumer_key', Type::STRING);
+            $toolTable->addColumn('shared_secret', Type::STRING);
+            $toolTable->addColumn('custom_params', Type::TEXT)->setNotnull(false);
+            $toolTable->addColumn('is_global', Type::BOOLEAN);
+            $toolTable->setPrimaryKey(['id']);
 
-        if ($chamiloSchema->tablesExist([self::TABLE_TOOL])) {
-            return false;
+            $queries = $pluginSchema->toSql($platform);
+
+            foreach ($queries as $query) {
+                Database::query($query);
+            }
         }
 
-        $toolTable = $pluginSchema->createTable(self::TABLE_TOOL);
-        $toolTable->addColumn(
-            'id',
-            \Doctrine\DBAL\Types\Type::INTEGER,
-            ['autoincrement' => true, 'unsigned' => true]
-        );
-        $toolTable->addColumn('name', \Doctrine\DBAL\Types\Type::STRING);
-        $toolTable->addColumn('description', \Doctrine\DBAL\Types\Type::TEXT, ['notnull' => false]);
-        $toolTable->addColumn('launch_url', \Doctrine\DBAL\Types\Type::TEXT);
-        $toolTable->addColumn('consumer_key', \Doctrine\DBAL\Types\Type::STRING);
-        $toolTable->addColumn('shared_secret', \Doctrine\DBAL\Types\Type::STRING);
-        $toolTable->addColumn('custom_params', \Doctrine\DBAL\Types\Type::TEXT);
-        $toolTable->setPrimaryKey(['id']);
-
-        $queries = $pluginSchema->toSql($platform);
-
-        foreach ($queries as $query) {
-            Database::query($query);
-        }
 
         return true;
     }
 
     /**
      * Drops the plugin tables on database
+     *
      * @return boolean
      */
-    private function clearDatabase()
+    private function dropPluginTables()
     {
         $entityManager = Database::getManager();
         $connection = $entityManager->getConnection();
@@ -118,13 +157,22 @@ class ImsLtiPlugin extends Plugin
     }
 
     /**
+     *
+     */
+    private function removeTools()
+    {
+        $sql = "DELETE FROM c_tool WHERE link LIKE 'ims_lti/start.php%' AND category = 'plugin'";
+        Database::query($sql);
+    }
+
+    /**
      * Set the course settings
      */
     private function setCourseSettings()
     {
         $button = Display::toolbarButton(
             $this->get_lang('AddExternalTool'),
-            api_get_path(WEB_PLUGIN_PATH).'ims_lti/add.php',
+            api_get_path(WEB_PLUGIN_PATH).'ims_lti/add.php?'.api_get_cidreq(),
             'cog',
             'primary'
         );
@@ -139,18 +187,15 @@ class ImsLtiPlugin extends Plugin
 
     /**
      * Add the course tool
-     * @param \Chamilo\CoreBundle\Entity\Course $course
+     * @param Course $course
      * @param ImsLtiTool $tool
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function addCourseTool(\Chamilo\CoreBundle\Entity\Course $course, ImsLtiTool $tool)
+    public function addCourseTool(Course $course, ImsLtiTool $tool)
     {
         $em = Database::getManager();
-
-        $cToolId = AddCourse::generateToolId($course->getId());
-
-        $cTool = new \Chamilo\CourseBundle\Entity\CTool();
+        $cTool = new CTool();
         $cTool
-            ->setId($cToolId)
             ->setCId($course->getId())
             ->setName($tool->getName())
             ->setLink($this->get_name().'/start.php?'.http_build_query(['id' => $tool->getId()]))
@@ -165,16 +210,32 @@ class ImsLtiPlugin extends Plugin
 
         $em->persist($cTool);
         $em->flush();
+
+        $cTool->setId($cTool->getIid());
+
+        $em->persist($cTool);
+        $em->flush();
     }
 
+    /**
+     * @return string
+     */
     protected function getConfigExtraText()
     {
         $text = $this->get_lang('ImsLtiDescription');
         $text .= sprintf(
             $this->get_lang('ManageToolButton'),
-            api_get_path(WEB_PLUGIN_PATH).'ims_lti/list.php'
+            api_get_path(WEB_PLUGIN_PATH).'ims_lti/admin.php'
         );
 
         return $text;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityPath()
+    {
+        return api_get_path(SYS_PATH).'src/Chamilo/PluginBundle/Entity/'.$this->getCamelCaseName();
     }
 }

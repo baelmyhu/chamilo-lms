@@ -6,7 +6,7 @@ namespace Chamilo\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * SystemTemplate
+ * SystemTemplate.
  *
  * @ORM\Table(name="system_template")
  * @ORM\Entity
@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class SystemTemplate
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -50,10 +50,16 @@ class SystemTemplate
      */
     private $content;
 
+    public function __construct()
+    {
+        $this->comment = '';
+    }
+
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
+     *
      * @return SystemTemplate
      */
     public function setTitle($title)
@@ -64,7 +70,7 @@ class SystemTemplate
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -74,9 +80,10 @@ class SystemTemplate
     }
 
     /**
-     * Set comment
+     * Set comment.
      *
      * @param string $comment
+     *
      * @return SystemTemplate
      */
     public function setComment($comment)
@@ -87,7 +94,7 @@ class SystemTemplate
     }
 
     /**
-     * Get comment
+     * Get comment.
      *
      * @return string
      */
@@ -97,9 +104,10 @@ class SystemTemplate
     }
 
     /**
-     * Set image
+     * Set image.
      *
      * @param string $image
+     *
      * @return SystemTemplate
      */
     public function setImage($image)
@@ -110,7 +118,7 @@ class SystemTemplate
     }
 
     /**
-     * Get image
+     * Get image.
      *
      * @return string
      */
@@ -120,9 +128,10 @@ class SystemTemplate
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
+     *
      * @return SystemTemplate
      */
     public function setContent($content)
@@ -133,7 +142,7 @@ class SystemTemplate
     }
 
     /**
-     * Get content
+     * Get content.
      *
      * @return string
      */
@@ -143,9 +152,9 @@ class SystemTemplate
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
