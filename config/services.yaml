@@ -1,0 +1,131 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    app_env: '%env(APP_ENV)%'
+    password_encryption: '%env(APP_ENCRYPT_METHOD)%'
+    secret: '%env(APP_SECRET)%'
+    locale: '%env(APP_LOCALE)%'
+    installed: '%env(APP_INSTALLED)%'
+    db_manager_enabled: '%env(bool:DB_MANAGER_ENABLED)%'
+    software_name: '%env(SOFTWARE_NAME)%'
+    software_url: '%env(SOFTWARE_URL)%'
+    deny_delete_users: '%env(bool:DENY_DELETE_USERS)%'
+    hosting_total_size_limit: '%env(int:HOSTING_TOTAL_SIZE_LIMIT)%'
+    theme_fallback: '%env(THEME_FALLBACK)%'
+    packager: '%env(PACKAGER)%'
+    default_template: '%env(DEFAULT_TEMPLATE)%'
+    container.dumper.inline_factories: true
+    twig:
+        form:
+            resources:
+                - 'GeneratorBundle::fields.html.twig'
+    course_info_is_not_editable: false
+
+    #    router.request_context.base_url: '%env(APP_URL_APPEND)%'
+    #    asset.request_context.base_path: '%env(APP_URL_APPEND)%'
+
+    # See https://glide.thephpleague.com/2.0/api/quick-reference/
+    glide_media_filters:
+        editor_thumbnail:
+            w: 64
+            h: 64
+        user_picture_small:
+            w: 48
+            h: 48
+        user_picture_profile:
+            w: 94
+            h: 94
+        course_picture_small:
+            w: 85
+            h: 47
+        course_picture_medium:
+            w: 400
+            h: 225
+        resource_show_preview:
+            w: 500
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: true       # Allows optimizing the container by removing unused services; this also means
+        # fetching services directly from the container via $container->get() won't work.
+        # The best practice is to be explicit about your dependencies anyway.
+
+    Vich\UploaderBundle\Naming\SubdirDirectoryNamer:
+        public: true
+
+    Symfony\Component\Mailer\Mailer:
+        public: true
+
+    Doctrine\ORM\EntityManager: "@doctrine.orm.default_entity_manager"
+
+    # Locale listener
+    Chamilo\CoreBundle\EventSubscriber\LocaleSubscriber:
+        arguments: ['%locale%', '@Chamilo\CoreBundle\Settings\SettingsManager', '@parameter_bag']
+
+    Chamilo\CoreBundle\EventSubscriber\LoginFailureSubscriber:
+        tags:
+            - name: kernel.event_subscriber
+              dispatcher: security.event_dispatcher.main
+
+    Chamilo\CoreBundle\State\CStudentPublicationPostStateProcessor:
+        bind:
+            $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
+
+    Chamilo\CoreBundle\State\CCalendarEventStateProcessor:
+        arguments:
+            $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
+        tags:
+            - { name: 'api_platform.state_processor' }
+
+    Chamilo\CoreBundle\State\UsergroupPostStateProcessor:
+      arguments:
+        $processor: '@api_platform.doctrine.orm.state.persist_processor'
+        $entityManager: '@doctrine.orm.entity_manager'
+        $security: '@security.helper'
+        $requestStack: '@request_stack'
+      tags:
+        - { name: 'api_platform.state_processor' }
+
+    Chamilo\CoreBundle\State\ColorThemeStateProcessor:
+      bind:
+        $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
+
+    Chamilo\CoreBundle\State\UserRelUserStateProcessor:
+      bind:
+        $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
+        $removeProcessor: '@api_platform.doctrine.orm.state.remove_processor'
+
+    Chamilo\CoreBundle\State\MessageProcessor:
+        bind:
+            $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
+            $removeProcessor: '@api_platform.doctrine.orm.state.remove_processor'
+
+    Chamilo\CoreBundle\EventSubscriber\AnonymousUserSubscriber:
+      tags:
+        - name: kernel.event_subscriber
+
+    Chamilo\CoreBundle\Security\Authorization\Voter\AnonymousVoter:
+      tags:
+        - name: security.voter
+
+    Chamilo\CoreBundle\ServiceHelper\ContainerHelper:
+        calls:
+            - setAuthorizationChecker: [ '@security.authorization_checker' ]
+            - setTokenStorage: [ '@security.token_storage' ]
+            - setKernel: [ '@kernel' ]
+            - setMessengerBus: [ '@messenger.bus.default' ]
+            - setValidator: [ '@validator' ]
+            - setSessionFactory: [ '@session.factory' ]
+
+cocur_slugify:
+    lowercase: true
+
+imports:
+    - { resource: ../src/CoreBundle/Resources/config/services.yml }
+    - { resource: ../src/LtiBundle/Resources/config/services.yml }
+    - { resource: ./authentication.yaml }
+    - { resource: ./hosting_limits.yaml }
+    - { resource: ./plugin.yaml }
