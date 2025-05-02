@@ -39,6 +39,10 @@ class Asset implements Stringable
     public const SYSTEM_TEMPLATE = 'system_template';
     public const TEMPLATE = 'template';
     public const SESSION = 'session';
+<<<<<<< HEAD
+=======
+    public const LINK = 'link';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]

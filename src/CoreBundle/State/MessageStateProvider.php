@@ -9,9 +9,17 @@ namespace Chamilo\CoreBundle\State;
 use ApiPlatform\Doctrine\Orm\Paginator;
 use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
 use ApiPlatform\Doctrine\Orm\State\ItemProvider;
+<<<<<<< HEAD
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use Chamilo\CoreBundle\Entity\Message;
+=======
+use ApiPlatform\Metadata\CollectionOperationInterface;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
+use Chamilo\CoreBundle\Entity\Message;
+use Doctrine\Common\Collections\Collection;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use LogicException;
@@ -33,6 +41,7 @@ final class MessageStateProvider implements ProviderInterface
 
     /**
      * Provides data based on the operation type (collection or item).
+<<<<<<< HEAD
      *
      * @return Paginator|Message|null
      */
@@ -41,6 +50,12 @@ final class MessageStateProvider implements ProviderInterface
         $isCollection = 'collection' === $context['operation_type'];
 
         if ($isCollection) {
+=======
+     */
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): Paginator|Message|null
+    {
+        if ($operation instanceof CollectionOperationInterface) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             return $this->handleCollection($operation, $context);
         }
 

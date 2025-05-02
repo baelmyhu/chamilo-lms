@@ -297,6 +297,10 @@ class ExtraFieldValue extends Model
                 case ExtraField::FIELD_TYPE_FILE:
                     if (isset($value['name']) && !empty($value['tmp_name']) && isset($value['error']) && 0 == $value['error']) {
                         $cleanedName = api_replace_dangerous_char($value['name']);
+<<<<<<< HEAD
+=======
+                        $cleanedName = disable_dangerous_file($cleanedName);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         $fileName = ExtraField::FIELD_TYPE_FILE."_{$params['item_id']}_$cleanedName";
 
                         $mimeType = mime_content_type($value['tmp_name']);
@@ -1138,7 +1142,11 @@ class ExtraFieldValue extends Model
         $em = Database::getManager();
         $qb = $em->createQueryBuilder();
         $qb = $qb->select('fv')
+<<<<<<< HEAD
             ->from('ChamiloCoreBundle:ExtraFieldValues', 'fv')
+=======
+            ->from(ExtraFieldValues::class, 'fv')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->join('fv.field', 'f')
             ->where(
                 $qb->expr()->eq('fv.itemId', ':item')

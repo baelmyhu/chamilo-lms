@@ -9,6 +9,10 @@ namespace Chamilo\CoreBundle\Settings;
 use Chamilo\CoreBundle\Entity\AccessUrl;
 use Chamilo\CoreBundle\Entity\Course;
 use Chamilo\CoreBundle\Entity\SettingsCurrent;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\ServiceHelper\SettingsManagerHelper;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
@@ -58,7 +62,12 @@ class SettingsManager implements SettingsManagerInterface
         EntityManager $manager,
         EntityRepository $repository,
         EventDispatcherInterface $eventDispatcher,
+<<<<<<< HEAD
         RequestStack $request
+=======
+        RequestStack $request,
+        protected readonly SettingsManagerHelper $settingsManagerHelper,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ) {
         $this->schemaRegistry = $schemaRegistry;
         $this->manager = $manager;
@@ -144,6 +153,15 @@ class SettingsManager implements SettingsManagerInterface
     {
         $name = $this->validateSetting($name);
 
+<<<<<<< HEAD
+=======
+        $overridden = $this->settingsManagerHelper->getOverride($name);
+
+        if (null !== $overridden) {
+            return $overridden;
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         [$category, $name] = explode('.', $name);
 
         if ($loadFromDb) {
@@ -393,9 +411,31 @@ class SettingsManager implements SettingsManagerInterface
         $parametersFromDb = $query->getQuery()->getResult();
         $parameters = [];
 
+<<<<<<< HEAD
         /** @var SettingsCurrent $parameter */
         foreach ($parametersFromDb as $parameter) {
             $parameters[$parameter->getCategory()][] = $parameter;
+=======
+        foreach ($parametersFromDb as $parameter) {
+            /** @var SettingsCurrent $parameter */
+            $category = $parameter->getCategory();
+            $variable = $parameter->getVariable();
+
+            $hidden = [];
+            $serviceKey = 'chamilo_core.settings.'.$category;
+            if ($this->schemaRegistry->has($serviceKey)) {
+                $schema = $this->schemaRegistry->get($serviceKey);
+                if (method_exists($schema, 'getHiddenSettings')) {
+                    $hidden = $schema->getHiddenSettings();
+                }
+            }
+
+            if (\in_array($variable, $hidden, true)) {
+                continue;
+            }
+
+            $parameters[$category][] = $parameter;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         return $parameters;
@@ -652,9 +692,13 @@ class SettingsManager implements SettingsManagerInterface
             'show_users_folders' => 'Tools',
             'show_default_folders' => 'Tools',
             'show_chat_folder' => 'Tools',
+<<<<<<< HEAD
             'enabled_text2audio' => 'Tools',
             'course_hide_tools' => 'Course',
             'enabled_support_pixlr' => 'Tools',
+=======
+            'course_hide_tools' => 'Course',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'show_groups_to_users' => 'Session',
             'accessibility_font_resize' => 'Platform',
             'hide_courses_in_sessions' => 'Session',
@@ -791,14 +835,20 @@ class SettingsManager implements SettingsManagerInterface
             'messaging_gdc_project_number' => 'WebServices',
             'messaging_gdc_api_key' => 'WebServices',
             'teacher_can_select_course_template' => 'Course',
+<<<<<<< HEAD
             'enable_record_audio' => 'Tools',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'allow_show_skype_account' => 'Platform',
             'allow_show_linkedin_url' => 'Platform',
             'enable_profile_user_address_geolocalization' => 'User',
             'show_official_code_whoisonline' => 'Profile',
             'icons_mode_svg' => 'display',
+<<<<<<< HEAD
             'user_name_order' => 'display',
             'user_name_sort_by' => 'display',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'default_calendar_view' => 'agenda',
             'exercise_invisible_in_session' => 'exercise',
             'configure_exercise_visibility_in_course' => 'exercise',
@@ -951,10 +1001,14 @@ class SettingsManager implements SettingsManagerInterface
             'show_default_folders' => 'document',
             'show_chat_folder' => 'chat',
             'enabled_support_svg' => 'editor',
+<<<<<<< HEAD
             'enabled_support_pixlr' => 'editor',
             'enable_webcam_clip' => 'document',
             'enable_record_audio' => 'course',
             'enabled_text2audio' => 'document',
+=======
+            'enable_webcam_clip' => 'document',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'permanently_remove_deleted_files' => 'document',
             'allow_delete_attendance' => 'attendance',
             'display_groups_forum_in_general_tool' => 'forum',

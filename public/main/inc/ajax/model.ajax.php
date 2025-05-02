@@ -556,7 +556,12 @@ switch ($action) {
         $count = AnnouncementManager::getNumberAnnouncements($cid, $sid);
         break;
     case 'get_work_teacher':
+<<<<<<< HEAD
         $count = getWorkListTeacher(0, $limit, null, null, $whereCondition, true);
+=======
+        $countResult = getWorkListTeacher(0, $limit, null, null, $whereCondition, true);
+        $count = is_array($countResult) ? count($countResult) : (int) $countResult;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         break;
     case 'get_work_student':
         $count = getWorkListStudent(0, $limit, null, null, $whereCondition, true);
@@ -677,7 +682,11 @@ switch ($action) {
         $count = ExerciseLib::get_count_exam_results(
             $exerciseId,
             $whereCondition,
+<<<<<<< HEAD
             '',
+=======
+            $courseId,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             false,
             true,
             $status
@@ -839,6 +848,10 @@ switch ($action) {
                     ['where' => $whereCondition, 'extra' => $extra_fields]
                 );
                 break;
+<<<<<<< HEAD
+=======
+            case 'replication':
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             case 'custom':
             case 'simple':
                 $count = SessionManager::getSessionsForAdmin(
@@ -1981,7 +1994,11 @@ switch ($action) {
                 break;
             case 'custom':
             case 'simple':
+<<<<<<< HEAD
             case 'all':
+=======
+            case 'replication':
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $result = SessionManager::getSessionsForAdmin(
                     api_get_user_id(),
                     [
@@ -2000,6 +2017,10 @@ switch ($action) {
                 break;
             case 'active':
             case 'close':
+<<<<<<< HEAD
+=======
+            case 'all':
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $result = SessionManager::formatSessionsAdminForGrid(
                     [
                         'where' => $whereCondition,

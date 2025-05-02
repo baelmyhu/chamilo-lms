@@ -1546,7 +1546,11 @@ function getWorkListTeacher(
     ?string $direction,
     ?string $where_condition,
     ?bool $getCount = false
+<<<<<<< HEAD
 ): array {
+=======
+): int|array {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $course_id = api_get_course_int_id();
     $session_id = api_get_session_id();
     $group_id = api_get_group_id();
@@ -2650,7 +2654,11 @@ function getAllWork(
         //$visibility = api_get_item_visibility($courseInfo, 'work', $work['id'], $sessionId);
         $studentPublication = $repo->find($work['iid']);
         $workId = $studentPublication->getIid();
+<<<<<<< HEAD
         $isVisible = $studentPublication->isVisible($courseEntity, $sessionEntity);
+=======
+        $isVisible = $studentPublication->isVisible(api_get_course_entity(), api_get_session_entity());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (false === $isVisible) {
             continue;
         }
@@ -5776,7 +5784,11 @@ function getWorkUserListData(
     $workIdList = [];
     if (!empty($workParents)) {
         foreach ($workParents as $work) {
+<<<<<<< HEAD
             $workIdList[] = $work->id;
+=======
+            $workIdList[] = $work->getIid();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
     }
 
@@ -5832,7 +5844,17 @@ function getWorkUserListData(
  */
 function downloadFile($id, $course_info, $isCorrection)
 {
+<<<<<<< HEAD
     return getFile($id, $course_info, true, $isCorrection, true);
+=======
+    return getFile(
+        $id,
+        $course_info,
+        true,
+        $isCorrection,
+        api_is_course_admin() || api_is_coach()
+    );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 
 /**
@@ -5917,7 +5939,11 @@ function getFileContents($id, $courseInfo, $sessionId = 0, $correction = false, 
         $forceAccessForCourseAdmins
     );
 
+<<<<<<< HEAD
     if (empty($isAllow)) {
+=======
+    if (!$isAllow) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return false;
     }
 
@@ -5955,9 +5981,15 @@ function getFileContents($id, $courseInfo, $sessionId = 0, $correction = false, 
     $is_editor = api_is_allowed_to_edit(true, true, true);
     $student_is_owner_of_work = user_is_author($studentPublication->getIid(), api_get_user_id());
 
+<<<<<<< HEAD
     if (($forceAccessForCourseAdmins && $isAllow) ||
         $is_editor ||
         $student_is_owner_of_work ||
+=======
+    if ($is_editor ||
+        $student_is_owner_of_work ||
+        ($forceAccessForCourseAdmins && $isAllow) ||
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ($doc_visible_for_all && $work_is_visible)
     ) {
         $title = $studentPublication->getTitle();

@@ -64,7 +64,11 @@
           type="text"
         />
         <label
+<<<<<<< HEAD
           v-t="'Database login'"
+=======
+          v-t="'Database user'"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
           for="dbUsernameForm"
         />
       </div>
@@ -82,7 +86,11 @@
           toggle-mask
         />
         <label
+<<<<<<< HEAD
           v-t="'Database password'"
+=======
+          v-t="'Database Password'"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
           for="dbPassForm"
         />
       </div>

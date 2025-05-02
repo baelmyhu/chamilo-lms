@@ -9,6 +9,10 @@ namespace Chamilo\CoreBundle\Migrations\Schema\V200;
 use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\Migrations\AbstractMigrationChamilo;
 use Chamilo\CoreBundle\Repository\Node\UserRepository;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\DBAL\Schema\Schema;
 
 use const PASSWORD_DEFAULT;
@@ -48,7 +52,14 @@ class Version20230720142900 extends AbstractMigrationChamilo
             ->setLastname('Fallback')
             ->setFirstname('User')
             ->setOfficialCode('FALLBACK')
+<<<<<<< HEAD
             ->setAuthSource('platform')
+=======
+            ->addAuthSourceByAuthentication(
+                'platform',
+                $this->container->get(AccessUrlHelper::class)->getCurrent()
+            )
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setPhone('0000000000')
             ->setLocale('en')
             ->setActive(User::SOFT_DELETED)

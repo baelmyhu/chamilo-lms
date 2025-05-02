@@ -77,6 +77,7 @@ if (isset($_POST['action'])) {
 
             break;
         case 'create_class_groups':
+<<<<<<< HEAD
             $classIds = [];
             foreach (array_keys($_POST) as $key) {
                 if (strpos($key, 'checkbox_class_id_') !== false) {
@@ -89,6 +90,9 @@ if (isset($_POST['action'])) {
             } else {
                 GroupManager::create_class_groups($_POST['group_category'], $classIds);
             }
+=======
+            GroupManager::create_class_groups($_POST['group_category']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             Display::addFlash(Display::return_message(get_lang('group(s) has (have) been added')));
             header('Location: '.$currentUrl);
             exit;
@@ -192,6 +196,7 @@ EOT;
             $group_el = [];
             $group_el[] = $form->createElement('static', null, null, ' ');
             if ($allowGroupCategories) {
+<<<<<<< HEAD
                 if (!isset($_GET['category_id'])) {
                     $group_el[] = $form->createElement(
                         'checkbox',
@@ -203,6 +208,15 @@ EOT;
                 } else {
                     $group_el[] = $form->createElement('static', null, null, ' ');
                 }
+=======
+                $group_el[] = $form->createElement(
+                    'checkbox',
+                    'same_category',
+                    null,
+                    get_lang('same for all'),
+                    ['onclick' => "javascript: switch_state('category');"]
+                );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
             $group_el[] = $form->createElement(
                 'checkbox',
@@ -218,6 +232,7 @@ EOT;
             $group_el = [];
             $group_el[] = $form->createElement('text', 'group_'.$group_number.'_name');
             if ($allowGroupCategories) {
+<<<<<<< HEAD
                 if(isset($_GET['category_id'])) {
                     $group_el[] = $form->createElement(
                         'select',
@@ -241,6 +256,15 @@ EOT;
                         ['id' => 'category_' . $group_number]
                     );
                 }
+=======
+                $group_el[] = $form->createElement(
+                    'select',
+                    'group_'.$group_number.'_category',
+                    null,
+                    $categories,
+                    ['id' => 'category_'.$group_number]
+                );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             } else {
                 $group_el[] = $form->createElement('hidden', 'group_'.$group_number.'_category', 0);
 
@@ -278,7 +302,11 @@ EOT;
     /*
      * Show form to generate new groups
      */
+<<<<<<< HEAD
     $create_groups_form = new FormValidator('create_groups', 'post', api_get_self().'?'.api_get_cidreq().(isset($_GET['category_id']) ? '&category_id='.$_GET['category_id'] : ''));
+=======
+    $create_groups_form = new FormValidator('create_groups', 'post', api_get_self().'?'.api_get_cidreq());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $create_groups_form->addElement('header', $nameTools);
     $create_groups_form->addText('number_of_groups', get_lang('Number of groups to create'), null, ['value' => '1']);
     $create_groups_form->addButton('submit', get_lang('Proceed to create group(s)'), 'plus', 'primary');
@@ -337,7 +365,20 @@ EOT;
     $obj = new UserGroupModel();
     $classes = $obj->getUserGroupInCourse($options);
     if (count($classes) > 0) {
+<<<<<<< HEAD
         $description = '<p>'.get_lang('Using this option, you can create groups based on the classes subscribed to your course.').'</p><br>';
+=======
+        $description = '<p>'.get_lang('Using this option, you can create groups based on the classes subscribed to your course.').'</p>';
+        $description .= '<ul>';
+        foreach ($classes as $index => $class) {
+            $number_of_users = count($obj->get_users_by_usergroup($class['id']));
+            $description .= '<li>';
+            $description .= $class['name'];
+            $description .= ' ('.$number_of_users.' '.get_lang('Users').')';
+            $description .= '</li>';
+        }
+        $description .= '</ul>';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $classForm = new FormValidator(
             'create_class_groups_form',
@@ -347,6 +388,7 @@ EOT;
         $classForm->addHeader(get_lang('Groups from classes'));
 
         $classForm->addHtml($description);
+<<<<<<< HEAD
 
         $classGroup = [];
 
@@ -383,6 +425,16 @@ EOT;
         $classForm->addHtml('<p class="alert alert-info">Si elle est désactivé les classes lié à ce groupe sont simplement une copie des utilisateurs de la classe séléctionnée. A contrario si elle est activé, la classe séléctionnée est lié au groupe et les modifications de la classe sont répercuté sur le groupe (ce mode empêche la modification du groupe)</p>');
 
         $classForm->addButtonSave(get_lang('Validate'));
+=======
+        $classForm->addElement('hidden', 'action');
+        if ($allowGroupCategories) {
+            $classForm->addSelect('group_category', null, $categories);
+        } else {
+            $classForm->addElement('hidden', 'group_category');
+        }
+        $classForm->addButtonSave(get_lang('Validate'));
+        $defaults['group_category'] = GroupManager::DEFAULT_GROUP_CATEGORY;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $defaults['action'] = 'create_class_groups';
         $classForm->setDefaults($defaults);
         $classForm->display();

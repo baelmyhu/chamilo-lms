@@ -125,8 +125,12 @@ echo Display::toolbarAction(
     ]
 );
 ?>
+<<<<<<< HEAD
 
 <form name="formulaire" method="post" action="<?php echo api_get_self(); ?>?id=<?php echo $id; if (!empty($_GET['add'])) {
+=======
+<form name="formulaire" method="post" action="<?php echo api_get_self(); ?>?id=<?php echo $id; if (!empty($add)) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     echo '&add=true';
 } ?>" style="margin:0px;" <?php if ($ajax_search) {
     echo ' onsubmit="valide();"';

@@ -2,6 +2,11 @@
 
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Framework\Container;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $cidReset = true;
 
 require_once __DIR__.'/../inc/global.inc.php';
@@ -18,6 +23,11 @@ $session_course_user_table = Database::get_main_table(TABLE_MAIN_SESSION_COURSE_
 $tool_name = get_lang('Export users list');
 $interbreadcrumb[] = ["url" => 'index.php', "name" => get_lang('Administration')];
 
+<<<<<<< HEAD
+=======
+$accessUrl = Container::getAccessUrlHelper()->getCurrent();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 set_time_limit(0);
 $coursesSessions = [];
 $coursesSessions[''] = '--';
@@ -87,6 +97,7 @@ if ($form->validate()) {
 
     $sql = "SELECT
                 u.id 	AS UserId,
+<<<<<<< HEAD
                 u.lastname 	AS LastName,
                 u.firstname 	AS FirstName,
                 u.email 		AS Email,
@@ -97,6 +108,14 @@ if ($form->validate()) {
                 u.official_code	AS OfficialCode,
                 u.phone		AS Phone,
                 u.registration_date AS RegistrationDate";
+=======
+                u.email 		AS Email,
+                ".(('none' != api_get_configuration_value('password_encryption')) ? " " : "u.password AS Password, ")."
+                u.status		AS Status,
+                u.official_code	AS OfficialCode,
+                u.phone		AS Phone,
+                u.created_at AS CreatedAt";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     if (strlen($course_code) > 0) {
         $sql .= " FROM $user_table u, $course_user_table cu
                     WHERE
@@ -171,6 +190,15 @@ if ($form->validate()) {
 
     $res = Database::query($sql);
     while ($user = Database::fetch_assoc($res)) {
+<<<<<<< HEAD
+=======
+        $userEntity = api_get_user_entity($user['UserId']);
+        $user['LastName'] = $userEntity->getLastname();
+        $user['FirstName'] = $userEntity->getFirstname();
+        $user['UserName'] = $userEntity->getUsername();
+        $user['AuthSource'] = implode(', ', $userEntity->getAuthSourcesAuthentications($accessUrl));
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $student_data = UserManager:: get_extra_user_data(
             $user['UserId'],
             true,

@@ -1,6 +1,11 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\GradebookEvaluation;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 /**
  * Class EvalForm.
  *
@@ -77,6 +82,10 @@ class EvalForm extends FormValidator
                 $this->build_add_user_to_eval();
                 break;
         }
+<<<<<<< HEAD
+=======
+        $this->protect();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $this->setDefaults();
     }
 
@@ -496,6 +505,15 @@ class EvalForm extends FormValidator
         }
         $weight = $weight_mask = $this->evaluation_object->get_weight();
 
+<<<<<<< HEAD
+=======
+        if (!isset($this->evaluation_object->entity)) {
+            $this->evaluation_object->entity = Database::getManager()
+                ->getRepository(GradebookEvaluation::class)
+                ->find($this->evaluation_object->get_id());
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $this->setDefaults([
             'hid_id' => $this->evaluation_object->get_id(),
             'name' => $this->evaluation_object->get_name(),
@@ -509,6 +527,10 @@ class EvalForm extends FormValidator
             'weight_mask' => $weight_mask,
             'max' => $this->evaluation_object->get_max(),
             'visible' => $this->evaluation_object->is_visible(),
+<<<<<<< HEAD
+=======
+            'min_score' => $this->evaluation_object->entity->getMinScore(),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ]);
         $id_current = isset($this->id) ? $this->id : null;
         $this->addElement('hidden', 'hid_id', $id_current);
@@ -695,6 +717,20 @@ class EvalForm extends FormValidator
             false,
             0
         );
+<<<<<<< HEAD
+=======
+        $this->addFloat(
+            'min_score',
+            get_lang('Minimum Score'),
+            false,
+            [
+                'size' => '4',
+                'maxlength' => '5',
+            ]
+        );
+        $this->addRule('min_score', get_lang('Only numbers'), 'numeric');
+        $this->addRule('min_score', get_lang('Negative value'), 'compare', '>=', 'server', false, false, 0);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $setting = api_get_setting('tool_visible_by_default_at_creation');
         $visibility_default = 1;
         if (isset($setting['gradebook']) && 'false' == $setting['gradebook']) {

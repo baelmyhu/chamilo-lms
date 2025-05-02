@@ -24,7 +24,11 @@ function updateCourseList(sessionId) {
     }, function (courseList) {
         $("<option>", {
             value: 0,
+<<<<<<< HEAD
             text: "'.get_lang('Select').'"
+=======
+            text: "'.api_htmlentities(get_lang('Select')).'"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }).appendTo($selectCourse);
 
         if (courseList.length > 0) {

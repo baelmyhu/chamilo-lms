@@ -101,9 +101,14 @@ if ($form->validate()) {
         $email = $userInfo['email'];
         $username = $userInfo['username'];
         $send_mail = intval($user['mail']['send_mail']);
+<<<<<<< HEAD
         $auth_source = PLATFORM_AUTH_SOURCE;
         $resetPassword = '1' == $user['password']['password_auto'] ? 0 : 2;
         $auth_source = $userInfo['auth_source'];
+=======
+        $resetPassword = '1' == $user['password']['password_auto'] ? 0 : 2;
+        $auth_sources = $userInfo['auth_sources'];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $password = '1' == $user['password']['password_auto'] ? api_generate_password() : $user['password']['password'];
 
         UserManager::update_user(
@@ -112,7 +117,11 @@ if ($form->validate()) {
             $userInfo['lastname'],
             $userInfo['username'],
             $password,
+<<<<<<< HEAD
             $auth_source,
+=======
+            $auth_sources,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $userInfo['email'],
             $userInfo['status'],
             $userInfo['official_code'],

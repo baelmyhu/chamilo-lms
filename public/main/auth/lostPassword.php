@@ -14,6 +14,12 @@
  *
  * @todo refactor, move relevant functions to code libraries
  */
+<<<<<<< HEAD
+=======
+
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 require_once __DIR__.'/../inc/global.inc.php';
 
 // Custom pages
@@ -118,7 +124,11 @@ if ($form->validate()) {
         exit;
     }
 
+<<<<<<< HEAD
     if ('extldap' === $user['auth_source']) {
+=======
+    if (in_array(UserAuthSource::CAS, $user['auth_sources'])) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         Display::addFlash(
             Display::return_message(get_lang('Could not reset password, contact your helpdesk.'), 'info', false)
         );
@@ -129,7 +139,11 @@ if ($form->validate()) {
     $userResetPasswordSetting = api_get_setting('user_reset_password');
 
     if ('true' === $userResetPasswordSetting) {
+<<<<<<< HEAD
         $userObj = api_get_user_entity($user['uid']);
+=======
+        $userObj = api_get_user_entity($user['id']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         Login::sendResetEmail($userObj);
 
         header('Location: '.api_get_path(WEB_PATH));

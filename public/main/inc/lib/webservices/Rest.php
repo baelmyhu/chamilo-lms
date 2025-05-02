@@ -7,7 +7,15 @@ use Chamilo\CoreBundle\Entity\ExtraFieldValues;
 use Chamilo\CoreBundle\Entity\Message;
 use Chamilo\CoreBundle\Entity\Session;
 use Chamilo\CoreBundle\Entity\User;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Framework\Container;
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\AbstractEvent;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\UserUpdatedEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CourseBundle\Entity\CLpCategory;
 use Chamilo\CourseBundle\Entity\CNotebook;
 use Chamilo\CourseBundle\Repository\CNotebookRepository;
@@ -586,7 +594,11 @@ class Rest extends WebService
     {
         $em = Database::getManager();
         /** @var CNotebookRepository $notebooksRepo */
+<<<<<<< HEAD
         $notebooksRepo = $em->getRepository('ChamiloCourseBundle:CNotebook');
+=======
+        $notebooksRepo = $em->getRepository(CNotebook::class);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $notebooks = $notebooksRepo->findByUser($this->user, $this->course, $this->session);
 
         return array_map(
@@ -1289,7 +1301,11 @@ class Rest extends WebService
         $language = '';
         $phone = '';
         $picture_uri = '';
+<<<<<<< HEAD
         $auth_source = $userParam['auth_source'] ?? PLATFORM_AUTH_SOURCE;
+=======
+        $auth_source = $userParam['auth_source'] ?? UserAuthSource::PLATFORM;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $expiration_date = '';
         $active = 1;
         $hr_dept_id = 0;
@@ -1329,7 +1345,11 @@ class Rest extends WebService
             $language,
             $phone,
             $picture_uri,
+<<<<<<< HEAD
             $auth_source,
+=======
+            [$auth_source],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $expiration_date,
             $active,
             $hr_dept_id
@@ -1787,6 +1807,11 @@ class Rest extends WebService
      */
     public function updateUserFromUserName($parameters)
     {
+<<<<<<< HEAD
+=======
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         // find user
         $userId = null;
         if (!is_array($parameters) || empty($parameters)) {
@@ -1810,10 +1835,19 @@ class Rest extends WebService
         }
 
         // tell the world we are about to update a user
+<<<<<<< HEAD
         $hook = HookUpdateUser::create();
         if (!empty($hook)) {
             $hook->notifyUpdateUser(HOOK_EVENT_TYPE_PRE);
         }
+=======
+        $eventDispatcher = Container::getEventDispatcher();
+
+        $eventDispatcher->dispatch(
+            new UserUpdatedEvent([], AbstractEvent::TYPE_PRE),
+            Events::USER_UPDATED
+        );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         // apply submitted modifications
         foreach ($parameters as $name => $value) {
@@ -1840,7 +1874,11 @@ class Rest extends WebService
                     $user->setProfileCompleted($value);
                     break;
                 case 'auth_source':
+<<<<<<< HEAD
                     $user->setAuthSource($value);
+=======
+                    $user->addAuthSourceByAuthentication($value, $accessUrl);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     break;
                 case 'status':
                     $user->setStatus($value);
@@ -1876,8 +1914,13 @@ class Rest extends WebService
                     }
                     $user->setLocale($value);
                     break;
+<<<<<<< HEAD
                 case 'registration_date':
                     $user->setRegistrationDate($value);
+=======
+                case 'created_at':
+                    $user->setCreatedAt($value);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     break;
                 case 'expiration_date':
                     $user->setExpirationDate(
@@ -1963,10 +2006,17 @@ class Rest extends WebService
         UserManager::getRepository()->updateUser($user, true);
 
         // tell the world we just updated this user
+<<<<<<< HEAD
         if (!empty($hook)) {
             $hook->setEventData(['user' => $user]);
             $hook->notifyUpdateUser(HOOK_EVENT_TYPE_POST);
         }
+=======
+        $eventDispatcher->dispatch(
+            new UserUpdatedEvent(['user' => $user], AbstractEvent::TYPE_POST),
+            Events::USER_UPDATED
+        );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         // invalidate cache for this user
         $cacheAvailable = api_get_configuration_value('apc');

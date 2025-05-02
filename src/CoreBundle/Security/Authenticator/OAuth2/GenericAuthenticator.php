@@ -9,6 +9,10 @@ namespace Chamilo\CoreBundle\Security\Authenticator\OAuth2;
 use Chamilo\CoreBundle\Entity\AccessUrl;
 use Chamilo\CoreBundle\Entity\AccessUrlRelUser;
 use Chamilo\CoreBundle\Entity\User;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\ExtraFieldRepository;
 use Chamilo\CoreBundle\Repository\ExtraFieldValuesRepository;
 use Chamilo\CoreBundle\Repository\Node\AccessUrlRepository;
@@ -91,7 +95,11 @@ class GenericAuthenticator extends AbstractAuthenticator
             /** @var User $user */
             $user = $this->userRepository->findOneBy(['username' => $username]);
 
+<<<<<<< HEAD
             if (!$user || 'platform' !== $user->getAuthSource()) {
+=======
+            if (!$user || $user->hasAuthSourceByAuthentication(UserAuthSource::PLATFORM)) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 if (!$providerParams['allow_create_new_users']) {
                     throw new AuthenticationException('This user doesn\'t have an account yet and auto-provisioning is not enabled. Please contact this portal administration team to request access.');
                 }
@@ -169,7 +177,14 @@ class GenericAuthenticator extends AbstractAuthenticator
                     $user->getEmail()
                 )
             )
+<<<<<<< HEAD
             ->setAuthSource('oauth2')
+=======
+            ->addAuthSourceByAuthentication(
+                'oauth2',
+                $this->urlHelper->getCurrent()
+            )
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setStatus($status)
             ->setRoleFromStatus($status)
         ;

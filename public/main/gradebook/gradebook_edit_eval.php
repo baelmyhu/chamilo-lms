@@ -49,6 +49,13 @@ if ($form->validate()) {
     $evaluation->setMax($values['max']);
     $evaluation->setVisible(empty($values['visible']) ? 0 : 1);
 
+<<<<<<< HEAD
+=======
+    if (isset($values['min_score'])) {
+        $evaluation->setMinScore($values['min_score']);
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $entityManager->flush();
 
     $logInfo = [

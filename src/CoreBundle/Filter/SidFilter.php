@@ -42,7 +42,11 @@ class SidFilter extends AbstractFilter
                 'property' => null,
                 'type' => 'string',
                 'required' => false,
+<<<<<<< HEAD
                 'description' => 'Course identifier',
+=======
+                'description' => 'Session identifier',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ],
         ];
     }
@@ -65,20 +69,40 @@ class SidFilter extends AbstractFilter
             return;
         }
 
+<<<<<<< HEAD
         $reflection = new ReflectionClass($resourceClass);
 
+=======
+        $alias = $queryBuilder->getRootAliases()[0];
+        $session = $this->getSession();
+
+        $reflection = new ReflectionClass($resourceClass);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $loadBaseSessionContent = \in_array(
             ResourceShowCourseResourcesInSessionInterface::class,
             $reflection->getInterfaceNames(),
             true
         );
 
+<<<<<<< HEAD
         // Session was set with a kernel request from CoreBundle\EventListener\CidReqListener class
         $session = $this->getSession();
+=======
+        $joins = $queryBuilder->getDQLPart('join');
+
+        if (empty($joins[$alias]) || !array_filter($joins[$alias], fn ($j) => 'resourceNode' === $j->getAlias())) {
+            $queryBuilder->leftJoin($alias.'.resourceNode', 'resourceNode');
+        }
+
+        if (empty($joins['resourceNode']) || !array_filter($joins['resourceNode'], fn ($j) => 'resourceLink' === $j->getAlias())) {
+            $queryBuilder->leftJoin('resourceNode.resourceLinks', 'resourceLink');
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (null === $session) {
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->orX(
+<<<<<<< HEAD
                     $queryBuilder->expr()->isNull('resource_links.session'),
                     $queryBuilder->expr()->eq('resource_links.session', 0)
                 )
@@ -99,6 +123,23 @@ class SidFilter extends AbstractFilter
                     $queryBuilder->expr()->eq('resource_links.session', ':session')
                 )
                 ->setParameter('session', $session?->getId())
+=======
+                    'resourceLink.session IS NULL',
+                    'resourceLink.session = 0'
+                )
+            );
+        } elseif ($loadBaseSessionContent) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->orX(
+                    'resourceLink.session = :session',
+                    'resourceLink.session IS NULL'
+                )
+            )->setParameter('session', $session->getId());
+        } else {
+            $queryBuilder
+                ->andWhere('resourceLink.session = :session')
+                ->setParameter('session', $session->getId())
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ;
         }
     }

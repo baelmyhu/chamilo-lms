@@ -102,6 +102,7 @@ $form->addSelect('category_id', get_lang('Category'), $items);
 // accumulate_scorm_time
 $form->addCheckBox(
     'accumulate_scorm_time',
+<<<<<<< HEAD
     [
         null,
         get_lang(
@@ -109,6 +110,11 @@ $form->addCheckBox(
         ),
     ],
     get_lang('Accumulate SCORM session time')
+=======
+    null,
+    get_lang('When enabled, the session time for SCORM Learning Paths will be cumulative, otherwise, it will only be counted from the last update time.'),
+    []
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 );
 
 // Start date
@@ -119,7 +125,11 @@ $form->addCheckBox(
     ['onclick' => 'activate_start_date()']
 );
 $form->addElement('html', '<div id="start_date_div" style="display:block;">');
+<<<<<<< HEAD
 $form->addDatePicker('published_on', get_lang('Publication date'));
+=======
+$form->addDateTimePicker('published_on', get_lang('Publication date'));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form->addElement('html', '</div>');
 
 //End date
@@ -130,7 +140,11 @@ $form->addCheckBox(
     ['onclick' => 'activate_end_date()']
 );
 $form->addElement('html', '<div id="end_date_div" style="display:none;">');
+<<<<<<< HEAD
 $form->addDatePicker('expired_on', get_lang('Expiration date'));
+=======
+$form->addDateTimePicker('expired_on', get_lang('Expiration date'));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form->addElement('html', '</div>');
 
 $subscriptionSettings = learnpath::getSubscriptionSettings();

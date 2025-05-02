@@ -5,7 +5,10 @@ export default {
   component: () => import("../views/personalfile/Home.vue"),
   children: [
     {
+<<<<<<< HEAD
       name: "personal_files",
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
       path: ":node/",
       component: () => import("../components/personalfile/Layout.vue"),
       redirect: { name: "PersonalFileList" },
@@ -27,7 +30,10 @@ export default {
         },
         {
           name: "PersonalFileUpdate",
+<<<<<<< HEAD
           //path: ':id/edit',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
           path: "edit_file",
           component: () => import("../views/personalfile/Update.vue"),
         },

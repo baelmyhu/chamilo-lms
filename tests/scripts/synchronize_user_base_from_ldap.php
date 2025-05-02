@@ -57,8 +57,12 @@ $anonymizeUserAccountsDisbaledFor3Years = false;
 use Chamilo\CoreBundle\Entity\ExtraFieldValues;
 use Chamilo\CoreBundle\Entity\ExtraField;
 use Chamilo\CoreBundle\Entity\TrackEDefault;
+<<<<<<< HEAD
 use Chamilo\UserBundle\Entity\User;
 use Doctrine\DBAL\FetchMode;
+=======
+use Chamilo\CoreBundle\Entity\User;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\ORM\OptimisticLockException;
 
 if (php_sapi_name() !== 'cli') {
@@ -127,8 +131,13 @@ foreach ($accessUrls as $accessUrl) {
             $extraFieldMap = $tableFieldMap[EXTRA_ARRAY_KEY];
             unset($tableFieldMap[EXTRA_ARRAY_KEY]);
         }
+<<<<<<< HEAD
         $extraFieldRepository = Database::getManager()->getRepository('ChamiloCoreBundle:ExtraField');
         $extraFieldValueRepository = Database::getManager()->getRepository('ChamiloCoreBundle:ExtraFieldValues');
+=======
+        $extraFieldRepository = Database::getManager()->getRepository(ExtraField::class);
+        $extraFieldValueRepository = Database::getManager()->getRepository(ExtraFieldValues::class);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         foreach ([false => $tableFieldMap, true => $extraFieldMap] as $areExtra => $fields) {
             foreach ($fields as $name => $value) {
                 $userField = (object)[
@@ -457,7 +466,11 @@ if ($anonymizeUserAccountsDisbaledFor3Years) {
         where default_event_type=\'user_disable\' and default_value_type=\'user_id\'
         group by default_value
         having max(default_date) < date_sub(now(), interval 3 year)'
+<<<<<<< HEAD
     )->fetchAll(FetchMode::COLUMN) as $userId) {
+=======
+    )->fetchFirstColumn() as $userId) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $longDisabledUserIds[] = $userId;
     }
     $anonymizedUserIds = [];
@@ -465,7 +478,11 @@ if ($anonymizeUserAccountsDisbaledFor3Years) {
         'select distinct default_value
         from track_e_default
         where default_event_type=\'user_anonymized\' and default_value_type=\'user_id\''
+<<<<<<< HEAD
     )->fetchAll(FetchMode::COLUMN) as $userId) {
+=======
+    )->fetchFirstColumn() as $userId) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $anonymizedUserIds[] = $userId;
     }
     foreach (array_diff($longDisabledUserIds, $anonymizedUserIds) as $userId) {

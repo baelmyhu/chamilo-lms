@@ -4,6 +4,11 @@
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
 use Chamilo\CoreBundle\Component\Utils\ObjectIcon;
 use Chamilo\CoreBundle\Component\Utils\ToolIcon;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\Portfolio;
+use Chamilo\CoreBundle\Entity\PortfolioCategory;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 if ($currentUserId == $user->getId()) {
     if ($allowEdit) {
@@ -38,7 +43,11 @@ if (!$allowEdit) {
 }
 
 $categories = $em
+<<<<<<< HEAD
     ->getRepository('ChamiloCoreBundle:PortfolioCategory')
+=======
+    ->getRepository(PortfolioCategory::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ->findBy($criteria);
 
 if ($course) {
@@ -49,7 +58,11 @@ if ($course) {
 $criteria['category'] = null;
 
 $items = $em
+<<<<<<< HEAD
     ->getRepository('ChamiloCoreBundle:Portfolio')
+=======
+    ->getRepository(Portfolio::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ->findBy($criteria);
 
 $template = new Template(null, false, false, false, false, false, false);

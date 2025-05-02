@@ -14,7 +14,11 @@ final class Version20241120123300 extends AbstractMigrationChamilo
 {
     public function getDescription(): string
     {
+<<<<<<< HEAD
         return 'Remove session-specific tools and related entities, keeping only course-base tools.';
+=======
+        return 'Remove session-specific tools and related entities, keeping only course-base tools, excluding course_homepage.';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public function up(Schema $schema): void
@@ -22,7 +26,16 @@ final class Version20241120123300 extends AbstractMigrationChamilo
         $repository = $this->entityManager->getRepository(CTool::class);
 
         $queryBuilder = $repository->createQueryBuilder('ct');
+<<<<<<< HEAD
         $queryBuilder->where('ct.session IS NOT NULL');
+=======
+        $queryBuilder
+            ->where('ct.session IS NOT NULL')
+            ->andWhere('ct.title != :excludedTitle')
+            ->setParameter('excludedTitle', 'course_homepage')
+        ;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $sessionTools = $queryBuilder->getQuery()->getResult();
 
         foreach ($sessionTools as $tool) {

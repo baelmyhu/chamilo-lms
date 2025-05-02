@@ -655,6 +655,10 @@ class ExtraFieldFixtures extends Fixture implements FixtureGroupInterface
                     $extraFieldOption = new ExtraFieldOptions();
                     $extraFieldOption->setField($extraField)
                         ->setDisplayText($option)
+<<<<<<< HEAD
+=======
+                        ->setValue($option)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         ->setOptionOrder(array_search($option, $options) + 1)
                     ;
 

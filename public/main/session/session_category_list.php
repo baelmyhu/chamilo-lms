@@ -30,7 +30,11 @@ $sort = isset($_GET['sort']) && in_array($_GET['sort'], ['title', 'nbr_session',
     : 'title';
 $idChecked = isset($_REQUEST['idChecked']) ? Security::remove_XSS($_REQUEST['idChecked']) : null;
 $order = isset($_REQUEST['order']) ? Security::remove_XSS($_REQUEST['order']) : 'ASC';
+<<<<<<< HEAD
 $keyword = isset($_REQUEST['keyword']) ? Security::remove_XSS($_REQUEST['keyword']) : null;
+=======
+$keyword = null;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 if ('delete_on_session' === $action || 'delete_off_session' === $action) {
     $delete_session = 'delete_on_session' == $action ? true : false;
@@ -40,6 +44,16 @@ if ('delete_on_session' === $action || 'delete_off_session' === $action) {
     exit();
 }
 
+<<<<<<< HEAD
+=======
+$frmSearch = new FormValidator('search', 'get', 'session_category_list.php', '', [], FormValidator::LAYOUT_INLINE);
+$frmSearch->addText('keyword', get_lang('Search'), false);
+$frmSearch->addButtonSearch(get_lang('Search'));
+if ($frmSearch->validate()) {
+    $keyword = $frmSearch->exportValues()['keyword'];
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $interbreadcrumb[] = ['url' => 'session_list.php', 'name' => get_lang('Session list')];
 
 if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
@@ -106,6 +120,7 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
             Display::getMdiIcon('google-classroom', 'ch-tool-icon-gradient', null, 32, get_lang('Training sessions list')),
             api_get_path(WEB_CODE_PATH).'session/session_list.php'
         );
+<<<<<<< HEAD
     $actionsRight = '<form method="POST" action="session_category_list.php" class="form--inline">
                         <div class="form-group">
                             <input class="form-control" type="text" name="keyword" aria-label="'.get_lang('Search').'"/>
@@ -114,6 +129,9 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
                                     <em class="fa fa-search"></em>'.get_lang('Search').'</button>
                         </div>
                     </form>';
+=======
+    $actionsRight = $frmSearch->returnForm();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     echo Display::toolbarAction('category', [$actionsLeft, $actionsRight]); ?>
     <form method="post" action="<?php echo api_get_self(); ?>?action=delete&sort=<?php echo $sort; ?>"

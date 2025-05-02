@@ -70,6 +70,10 @@ class Page
     #[ORM\Column(name: 'content', type: 'text')]
     protected string $content;
 
+<<<<<<< HEAD
+=======
+    #[Groups(['page:read', 'page:write'])]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[Gedmo\Slug(fields: ['title'], updatable: true, unique: true)]
     #[ORM\Column(name: 'slug', type: 'string', length: 255)]
     protected string $slug;

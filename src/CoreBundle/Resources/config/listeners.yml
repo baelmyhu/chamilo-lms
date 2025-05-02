@@ -102,6 +102,22 @@ services:
         tags:
             - {name: doctrine.orm.entity_listener, entity_manager: default, lazy: true}
 
+<<<<<<< HEAD
     Chamilo\CoreBundle\EventListener\MessageStatusListener: ~
 
     Chamilo\CoreBundle\EventListener\ResourceLinkListener: ~
+=======
+    Chamilo\CoreBundle\Entity\Listener\LanguageListener:
+        tags:
+            - { name: doctrine.orm.entity_listener, entity_manager: default, lazy: true }
+
+    Chamilo\CoreBundle\EventListener\MessageStatusListener: ~
+
+    Chamilo\CoreBundle\EventListener\ResourceLinkListener: ~
+
+    Chamilo\CoreBundle\EventListener\UserRelCourseVoteListener:
+      tags:
+        - { name: doctrine.orm.entity_listener, event: postPersist, entity_manager: default, lazy: true }
+        - { name: doctrine.orm.entity_listener, event: postUpdate, entity_manager: default, lazy: true }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94

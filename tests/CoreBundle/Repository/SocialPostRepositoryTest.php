@@ -112,8 +112,11 @@ class SocialPostRepositoryTest extends AbstractApiTest
                 '@id' => $studentIri,
                 'username' => $student->getUsername(),
             ],
+<<<<<<< HEAD
             'userReceiver' => null,
             'groupReceiver' => null,
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ]);
 
         $response = $client->request(
@@ -177,10 +180,15 @@ class SocialPostRepositoryTest extends AbstractApiTest
                 '@id' => $student1Iri,
                 'username' => $student1->getUsername(),
             ],
+<<<<<<< HEAD
             'userReceiver' => null,
             'content' => 'Hello world',
             'type' => SocialPost::TYPE_WALL_POST,
             'groupReceiver' => null,
+=======
+            'content' => 'Hello world',
+            'type' => SocialPost::TYPE_WALL_POST,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ]);
 
         // student1 posts in student2's wall
@@ -210,7 +218,10 @@ class SocialPostRepositoryTest extends AbstractApiTest
                 '@id' => $student2Iri,
                 'username' => $student2->getUsername(),
             ],
+<<<<<<< HEAD
             'groupReceiver' => null,
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ]);
 
         // student1 views student2's wall

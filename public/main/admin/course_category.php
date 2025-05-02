@@ -40,7 +40,13 @@ switch ($action) {
             CourseCategory::reorganizeTreePos($parentId);
             Display::addFlash(Display::return_message(get_lang('Deleted')));
         }
+<<<<<<< HEAD
         header('Location: '.api_get_self().'?category='.Security::remove_XSS($category));
+=======
+        header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php'.(
+            !empty($parentId) ? '?id='.(int) $parentId : ''
+            ));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         exit;
     case 'export':
         $courses = CourseCategory::getCoursesInCategory($categoryId);
@@ -48,7 +54,11 @@ switch ($action) {
             $name = api_get_local_time().'_'.$categoryInfo['code'];
             $courseList = [];
 
+<<<<<<< HEAD
             /* @var \Chamilo\CoreBundle\Entity\Course $course */
+=======
+            /* @var Course $course */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             foreach ($courses as $course) {
                 $courseList[] = [$course->getTitle()];
             }
@@ -57,7 +67,13 @@ switch ($action) {
             Export::arrayToCsvSimple($courseList, $name, false, $header);
         } else {
             Display::addFlash(Display::return_message(get_lang('No courses found for this category'), 'warning'));
+<<<<<<< HEAD
             header('Location: '.api_get_self().'?category='.Security::remove_XSS($categoryId));
+=======
+            header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php'.(
+                !empty($parentId) ? '?id='.(int) $parentId : ''
+                ));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             exit;
         }
         break;
@@ -67,7 +83,23 @@ switch ($action) {
         } else {
             Display::addFlash(Display::return_message(get_lang('Cannot move category up'), 'error'));
         }
+<<<<<<< HEAD
         header('Location: '.api_get_self().'?category='.Security::remove_XSS($category));
+=======
+        header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php'.(
+            !empty($parentId) ? '?id='.(int) $parentId : ''
+            ));
+        exit;
+    case 'moveDown':
+        if (CourseCategory::moveNodeDown($categoryId, $_GET['tree_pos'], $parentId)) {
+            Display::addFlash(Display::return_message(get_lang('Update successful')));
+        } else {
+            Display::addFlash(Display::return_message(get_lang('Cannot move category down'), 'error'));
+        }
+        header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php'.(
+            !empty($parentId) ? '?id='.(int) $parentId : ''
+            ));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         exit;
     case 'add':
         if (isset($_POST['formSent']) && $_POST['formSent']) {
@@ -76,7 +108,11 @@ switch ($action) {
                 $_POST['title'],
                 $_POST['auth_course_child'],
                 $_POST['description'],
+<<<<<<< HEAD
                 $parentId,
+=======
+                $_POST['parent_id'] ?? null,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             );
 
             if (isset($_FILES['image']) && $categoryEntity) {
@@ -84,7 +120,11 @@ switch ($action) {
                 CourseCategory::saveImage($categoryEntity, $_FILES['image'], $crop);
             }
             Display::addFlash(Display::return_message(get_lang('Item added')));
+<<<<<<< HEAD
             header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php?id='.$parentId);
+=======
+            header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php'.(!empty($_POST['parent_id']) ? '?id='.(int) $_POST['parent_id'] : ''));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             exit;
         }
         break;
@@ -95,7 +135,12 @@ switch ($action) {
                 $_REQUEST['title'],
                 $_REQUEST['auth_course_child'],
                 $_REQUEST['code'],
+<<<<<<< HEAD
                 $_REQUEST['description']
+=======
+                $_REQUEST['description'],
+                $_REQUEST['parent_id'] ?? null
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             );
 
             // Delete Picture Category
@@ -111,7 +156,11 @@ switch ($action) {
             }
 
             Display::addFlash(Display::return_message(get_lang('Update successful')));
+<<<<<<< HEAD
             header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php?id='.$parentId);
+=======
+            header('Location: '.api_get_path(WEB_CODE_PATH).'admin/course_category.php'.(!empty($_POST['parent_id']) ? '?id='.(int) $_POST['parent_id'] : ''));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             exit;
         }
         break;
@@ -173,7 +222,28 @@ if ('add' === $action || 'edit' === $action) {
         ),
     ];
     $form->addGroup($group, null, get_lang('Allow adding courses in this category?'));
+<<<<<<< HEAD
 
+=======
+    if ('add' === $action && !empty($categoryId)) {
+        $form->addHidden('parent_id', $categoryId);
+        $form->addLabel(get_lang('Parent category'), $parentInfo['title'].' ('.$parentInfo['code'].')');
+    } else {
+        $allCategories = CourseCategory::getAllCategories();
+        $parentOptions = ['' => get_lang('No parent')];
+        foreach ($allCategories as $cat) {
+            if ('edit' === $action && $cat['id'] == $categoryId) {
+                continue;
+            }
+            $parentOptions[$cat['id']] = '('.$cat['code'].') '.$cat['title'];
+        }
+        $form->addSelect(
+            'parent_id',
+            get_lang('Parent category'),
+            $parentOptions
+        );
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $form->addHtmlEditor(
         'description',
         get_lang('Description'),
@@ -199,10 +269,27 @@ if ('add' === $action || 'edit' === $action) {
     if ('edit' === $action  && !empty($categoryInfo)) {
         $text = get_lang('Save');
         $form->setDefaults($categoryInfo);
+<<<<<<< HEAD
         $form->addButtonSave($text);
     } else {
         $text = get_lang('Add category');
         $form->setDefaults(['auth_course_child' => 'TRUE']);
+=======
+        $form->setDefaults([
+            'parent_id' => $categoryInfo['parent_id'] ?? '',
+        ]);
+        $form->addButtonSave($text);
+    } else {
+        $text = get_lang('Add category');
+        $defaultValues = [
+            'auth_course_child' => 'TRUE',
+        ];
+
+        if ('add' === $action && !empty($categoryId)) {
+            $defaultValues['parent_id'] = $categoryId;
+        }
+        $form->setDefaults($defaultValues);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $form->addButtonCreate($text);
     }
     $form->display();

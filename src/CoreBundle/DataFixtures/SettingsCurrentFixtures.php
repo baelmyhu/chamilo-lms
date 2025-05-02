@@ -244,6 +244,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'course' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'access_url_specific_files',
+                    'title' => 'Enable URL-specific files',
+                    'comment' => 'When this feature is enabled on a multi-URL configuration, you can go to the main URL and provide URL-specific versions of any file (in the documents tool). The original file will be replaced by the alternative whenever seeing it from a different URL. This allows you to customize each URL even further, while enjoying the advantage of re-using the same courses many times.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'allow_course_theme',
                     'title' => 'Allow course themes',
                     'comment' => "Allows course graphical themes and makes it possible to change the style sheet used by a course to any of the possible style sheets available to Chamilo. When a user enters the course, the style sheet of the course will have priority over the user's own style sheet and the platform's default style sheet.",
@@ -364,11 +372,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'comment' => 'Use course images as the course icon in courses lists (instead of the default green blackboard icon).',
                 ],
                 [
+<<<<<<< HEAD
                     'name' => 'enable_record_audio',
                     'title' => 'Enable audio recorder',
                     'comment' => 'Enables the WebRTC (flashless) audio recorder at several locations inside Chamilo',
                 ],
                 [
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'hide_scorm_copy_link',
                     'title' => 'Hide SCORM Copy',
                     'comment' => 'Hide the Learning Path Copy icon from the Learning Paths list',
@@ -446,11 +457,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'comment' => 'Enable the MathJax library to visualize mathematical formulas. This is only useful if either ASCIIMathML or ASCIISVG settings are enabled.',
                 ],
                 [
+<<<<<<< HEAD
                     'name' => 'enabled_support_pixlr',
                     'title' => 'Enable external Pixlr services',
                     'comment' => 'Pixlr allow you to edit, adjust and filter your photos with features similar to Photoshop. It is the ideal complement to process images based on bitmaps',
                 ],
                 [
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'enabled_support_svg',
                     'title' => 'Create and edit SVG files',
                     'comment' => 'This option allows you to create and edit SVG (Scalable Vector Graphics) multilayer online, as well as export them to png format images.',
@@ -606,6 +620,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'social' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'hide_social_groups_block',
+                    'title' => 'Hide groups block in social network',
+                    'comment' => 'Removes the groups section from the social network view.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'allow_social_tool',
                     'title' => 'Social network tool (Facebook-like)',
                     'comment' => 'The social network tool allows users to define relations with other users and, by doing so, to define groups of friends. Combined with the internal messaging tool, this tool allows tight communication with friends, inside the portal environment.',
@@ -730,6 +752,34 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'language' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'platform_language',
+                    'title' => 'Default platform language',
+                    'comment' => 'Main language, used by default when no user language is set.',
+                ],
+                [
+                    'name' => 'language_priority_1',
+                    'title' => 'Highest priority language',
+                    'comment' => 'Primary language selected when multiple language contexts are set.',
+                ],
+                [
+                    'name' => 'language_priority_2',
+                    'title' => 'Secondary priority language',
+                    'comment' => 'Secondary fallback language if first priority is unavailable or out of context.',
+                ],
+                [
+                    'name' => 'language_priority_3',
+                    'title' => 'Third priority language',
+                    'comment' => 'Tertiary language fallback if higher priorities fail.',
+                ],
+                [
+                    'name' => 'language_priority_4',
+                    'title' => 'Fourth priority language',
+                    'comment' => 'Last language fallback option by order of priority.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'allow_use_sub_language',
                     'title' => 'Allow definition and use of sub-languages',
                     'comment' => "By enabling this option, you will be able to define variations for each of the language terms used in the platform's interface, in the form of a new language based on and extending an existing language. You'll find this option in the languages section of the administration panel.",
@@ -817,11 +867,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'comment' => 'Webcam Clip allow to users capture images from his webcam and send them to server in JPEG (.jpg or .jpeg) format',
                 ],
                 [
+<<<<<<< HEAD
                     'name' => 'enabled_text2audio',
                     'title' => 'Enable online services for text to speech conversion',
                     'comment' => 'Online tool to convert text to speech. Uses speech synthesis technology to generate audio files saved into your course.',
                 ],
                 [
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'pdf_export_watermark_by_course',
                     'title' => 'Enable watermark definition by course',
                     'comment' => 'When this option is enabled, teachers can define their own watermark for the documents in their courses.',
@@ -1032,6 +1085,29 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'platform' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'donotlistcampus',
+                    'title' => 'Do not list this campus on chamilo.org',
+                    'comment' => 'By default, Chamilo portals are automatically registered in a public list at chamilo.org, just using the title you gave to this portal (not the URL nor any private data). Check this box to avoid having the title of your portal appear.',
+                ],
+                [
+                    'name' => 'timezone',
+                    'title' => 'Default timezone',
+                    'comment' => 'Select the default timezone for this portal. This will help set the timezone (if the feature is enabled) for each new user or for any user that has not set a specific timezone yet. Timezones help show all time-related information on screen in the specific timezone of each user.',
+                ],
+                [
+                    'name' => 'chamilo_database_version',
+                    'title' => 'Current version of the database schema used by Chamilo',
+                    'comment' => 'Displays the current DB version to match the Chamilo core version.',
+                ],
+                [
+                    'name' => 'notification_event',
+                    'title' => 'Enable the notification tool for a more impactful communication channel with students',
+                    'comment' => 'Activates popup or system notifications for important platform events.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'institution',
                     'title' => 'Organization name',
                     'comment' => 'The name of the organization (appears in the header on the right)',
@@ -1393,6 +1469,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'announcement' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'announcements_hide_send_to_hrm_users',
+                    'title' => 'Hide option to send announcements to HR users',
+                    'comment' => 'Remove the checkbox to enable sending announcements to users with HR roles (still requires to confirm in the announcements tool).',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'hide_global_announcements_when_not_connected',
                     'title' => 'Hide global announcements for anonymous',
                     'comment' => 'Hide platform announcements from anonymous users, and only show them to authenticated users.',
@@ -1694,6 +1778,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'agenda' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'agenda_reminders_sender_id',
+                    'title' => 'ID of the user who officially sends the agenda reminders',
+                    'comment' => 'Sets which user appears as the sender of agenda reminder emails.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'agenda_colors',
                     'title' => 'Agenda colours',
                     'comment' => 'Set HTML-code colours for each type of event to change the colour when displaying the event.',
@@ -1859,6 +1951,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'title' => 'Attendance signing',
                     'comment' => "Enable taking signatures to confirm one's attendance.",
                 ],
+<<<<<<< HEAD
+=======
+                [
+                    'name' => 'multilevel_grading',
+                    'title' => 'Enable Multi-Level Attendance Grading',
+                    'comment' => 'Allows grading attendance with multiple levels instead of a simple present/absent system.',
+                ],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ],
             'display' => [
                 [
@@ -1881,6 +1981,7 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'title' => 'Use virtual keyboard',
                     'comment' => 'Make a virtual keyboard appear. This is useful when setting up restrictive exams in a physical room where students have no keyboard to limit their ability to cheat.',
                 ],
+<<<<<<< HEAD
                 [
                     'name' => 'user_name_order',
                     'title' => 'Order of user lastname and firstname',
@@ -1891,6 +1992,8 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'title' => 'Sort users by specific info by default',
                     'comment' => '',
                 ],
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ],
             'editor' => [
                 [
@@ -2130,11 +2233,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'language' => [
                 [
+<<<<<<< HEAD
                     'name' => 'user_name_order',
                     'title' => 'Order of user lastname and firstname',
                     'comment' => '',
                 ],
                 [
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'allow_course_multiple_languages',
                     'title' => 'Multiple-language courses',
                     'comment' => "Enable courses managed in more than one language. This option adds a language selector within the course page to let users switch easily, and adds a 'multiple_language' extra field to courses which allows for remote management procedures.",
@@ -2157,6 +2263,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'lp' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'lp_prerequisite_on_quiz_unblock_if_max_attempt_reached',
+                    'title' => 'Unlock prerequisites after last test attempt',
+                    'comment' => 'Allows users to continue in a learning path after using all quiz attempts of a test used as prerequisite for other items.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'add_all_files_in_lp_export',
                     'title' => 'Export all files when exporting a learning path',
                     'comment' => 'When exporting a LP, all files and folders in the same path of an html will be exported too.',
@@ -2698,6 +2812,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'gradebook' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'my_display_coloring',
+                    'title' => 'Display colors for scores in the gradebook',
+                    'comment' => 'Enables color coding for better score visibility in the gradebook.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'allow_gradebook_comments',
                     'title' => 'Gradebook comments',
                     'comment' => 'Enable gradebook comments so teachers can add a comment to the overall performance of the learner in this course. The comment will appear in the PDF export for the learner.',
@@ -2812,6 +2934,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'profile' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'visible_options',
+                    'title' => 'List of visible fields in profile',
+                    'comment' => 'Controls which profile fields are visible to users and others.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'add_user_course_information_in_mailto',
                     'title' => 'Pre-fill the mail with user and course info in footer contact',
                     'comment' => 'Add subject and body in the mailto: footer.',
@@ -2949,6 +3079,24 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'mail' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'smtp_unique_sender',
+                    'title' => 'Send all e-mails as one single sender',
+                    'comment' => 'Overrides sender for all emails to appear from a unique address.',
+                ],
+                [
+                    'name' => 'smtp_from_email',
+                    'title' => 'Send all e-mails from this e-mail address',
+                    'comment' => 'Sets the default email address used in the "from" field of emails.',
+                ],
+                [
+                    'name' => 'smtp_from_name',
+                    'title' => 'Send all e-mails as originating from this (organizational) name',
+                    'comment' => 'Sets the default display name used for sending platform emails. e.g. "Support team".',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'allow_email_editor_for_anonymous',
                     'title' => 'E-mail editor for anonymous',
                     'comment' => 'Allow anonymous users to send e-mails from the platform. In this day and age of information security this is not a recommended option.',
@@ -3045,6 +3193,24 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'security' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'password_requirements',
+                    'title' => 'Minimal password syntax requirements',
+                    'comment' => 'Defines the required structure for user passwords.',
+                ],
+                [
+                    'name' => 'allow_online_users_by_status',
+                    'title' => 'Filter users that can be seen as online',
+                    'comment' => 'Limits online user visibility to specific user roles.',
+                ],
+                [
+                    'name' => 'anonymous_autoprovisioning',
+                    'title' => 'Auto-provision more anonymous users',
+                    'comment' => 'Dynamically creates new anonymous users to support high visitor traffic.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'admins_can_set_users_pass',
                     'title' => 'Admins can set users passwords manually',
                     'comment' => '',
@@ -3112,6 +3278,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
             ],
             'session' => [
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'duplicate_specific_session_content_on_session_copy',
+                    'title' => 'Enable the copy of session-specific content to another session',
+                    'comment' => 'Allows duplication of resources that were created in the session when duplicating the session.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'allow_delete_user_for_session_admin',
                     'title' => 'Session admins can delete users',
                     'comment' => '',
@@ -3287,6 +3461,19 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'comment' => '',
                 ],
                 [
+<<<<<<< HEAD
+=======
+                    'name' => 'enable_auto_reinscription',
+                    'title' => 'Enable Automatic Reinscription',
+                    'comment' => 'Enable or disable automatic reinscription when course validity expires. The related cron job must also be activated.',
+                ],
+                [
+                    'name' => 'enable_session_replication',
+                    'title' => 'Enable Session Replication',
+                    'comment' => 'Enable or disable automatic session replication. The related cron job must also be activated.',
+                ],
+                [
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'name' => 'session_multiple_subscription_students_list_avoid_emptying',
                     'title' => 'Prevent emptying the subscribed users in session subscription',
                     'comment' => 'When using the multiple learners subscription to a session, prevent the normal behaviour which is to unsubscribe users who are not in the right panel when clicking submit. Keep all users there.',
@@ -3422,6 +3609,14 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'title' => 'Allow teachers to set which skills are acquired through their courses',
                     'comment' => 'By default, only admins can decide which skills can be acquired through which course.',
                 ],
+<<<<<<< HEAD
+=======
+                [
+                    'name' => 'manual_assignment_subskill_autoload',
+                    'title' => 'Assigning skills to user: sub-skills auto-loading',
+                    'comment' => 'When manually assigning skills to a user, the form can be set to automatically offer you to assign a sub-skill instead of the skill you selected.',
+                ],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ],
             'survey' => [
                 [
@@ -3477,6 +3672,56 @@ class SettingsCurrentFixtures extends Fixture implements FixtureGroupInterface
                     'comment' => "Allow ticket projects to be accesses by specific user roles. Example: ['permissions' => [1 => [17]] where project_id = 1, STUDENT_BOSS = 17.",
                 ],
             ],
+<<<<<<< HEAD
+=======
+            'ai_helpers' => [
+                [
+                    'name' => 'enable_ai_helpers',
+                    'title' => 'Enable the AI helper tool',
+                    'comment' => 'Enables all available AI-powered features in the platform.',
+                ],
+                [
+                    'name' => 'ai_providers',
+                    'title' => 'AI providers connection data',
+                    'comment' => 'Configuration data to connect with external AI services.',
+                ],
+                [
+                    'name' => 'learning_path_generator',
+                    'title' => 'Learning paths generator',
+                    'comment' => 'Generates personalized learning paths using AI suggestions.',
+                ],
+                [
+                    'name' => 'exercise_generator',
+                    'title' => 'Exercise generator',
+                    'comment' => 'Generates personalized tests with AI based on course content.',
+                ],
+                [
+                    'name' => 'open_answers_grader',
+                    'title' => 'Open answers grader',
+                    'comment' => 'Automatically grades open-ended answers using AI.',
+                ],
+                [
+                    'name' => 'tutor_chatbot',
+                    'title' => 'Tutor chatbot energized by AI',
+                    'comment' => 'Provides students with an AI-powered tutoring assistant.',
+                ],
+                [
+                    'name' => 'task_grader',
+                    'title' => 'Assignments grader',
+                    'comment' => 'Uses AI to evaluate and grade uploaded assignments.',
+                ],
+                [
+                    'name' => 'content_analyser',
+                    'title' => 'Content analyser',
+                    'comment' => 'Analyses learning materials to extract insights or improve quality.',
+                ],
+                [
+                    'name' => 'image_generator',
+                    'title' => 'Image generator',
+                    'comment' => 'Generates images based on prompts or content using AI.',
+                ],
+            ],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ];
     }
 }

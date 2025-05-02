@@ -206,7 +206,11 @@ if (api_is_allowed_to_edit(false, true)) {
 
     if (empty($sessionId) && 'true' === api_get_setting('allow_group_categories')) {
         $actionsLeft .= '<a href="group_category.php?'.api_get_cidreq().'&action=add_category">'.
+<<<<<<< HEAD
             Display::getMdiIcon(ActionIcon::CREATE_FOLDER, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('AddCategory')).'</a>';
+=======
+            Display::getMdiIcon(ActionIcon::CREATE_FOLDER, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Add category')).'</a>';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     $actionsLeft .= '<a href="import.php?'.api_get_cidreq().'&action=import">'.
@@ -236,6 +240,7 @@ echo UserManager::getUserSubscriptionTab(3);
 if ('true' === api_get_setting('allow_group_categories')) {
     if (empty($categories)) {
         $defaultCategoryId = GroupManager::create_category(
+<<<<<<< HEAD
             get_lang('Default groups'),
             '',
             0,
@@ -250,6 +255,9 @@ if ('true' === api_get_setting('allow_group_categories')) {
             1,
             0,
             0
+=======
+            get_lang('Default groups')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
         $defaultCategory = GroupManager::get_category($defaultCategoryId);
         $categories = [$defaultCategory];
@@ -280,11 +288,14 @@ if ('true' === api_get_setting('allow_group_categories')) {
                 href="group_category.php?'.api_get_cidreq().'&id='.$categoryId.'" title="'.get_lang('Edit').'">'.
                 Display::getMdiIcon('pencil', 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Edit this category')).'</a>';
 
+<<<<<<< HEAD
             // Add group
             $actions .= ' <a
                 href="group_creation.php?'.api_get_cidreq().'&category_id='.$categoryId.'">'.
                 Display::getMdiIcon(ActionIcon::SUBSCRIBE_GROUP_USERS_TO_RESOURCE, 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Create new group(s)')).'</a>';
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             // Delete
             $actions .= Display::url(
                 Display::getMdiIcon(ActionIcon::DELETE, count($categories) == 1 ? 'ch-tool-icon-disabled' : 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Delete')),

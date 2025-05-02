@@ -18,7 +18,11 @@
   }
 
   &__actions {
+<<<<<<< HEAD
     @apply flex gap-2 flex-wrap;
+=======
+    @apply flex gap-2 flex-wrap justify-center;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   }
 
   h1, h2, h3, h4, h5, h6 {

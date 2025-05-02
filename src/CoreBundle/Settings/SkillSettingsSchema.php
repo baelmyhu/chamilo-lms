@@ -29,6 +29,10 @@ class SkillSettingsSchema extends AbstractSettingsSchema
                     'skills_hierarchical_view_in_user_tracking' => 'false',
                     'skill_levels_names' => '',
                     'allow_skill_rel_items' => 'false',
+<<<<<<< HEAD
+=======
+                    'manual_assignment_subskill_autoload' => 'false',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ]
             )
         ;
@@ -59,6 +63,10 @@ class SkillSettingsSchema extends AbstractSettingsSchema
                 ]
             )
             ->add('allow_skill_rel_items', YesNoType::class)
+<<<<<<< HEAD
+=======
+            ->add('manual_assignment_subskill_autoload', YesNoType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ;
 
         $this->updateFormFieldsFromSettingsInfo($builder);

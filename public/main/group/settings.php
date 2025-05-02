@@ -25,6 +25,7 @@ $current_group = GroupManager::get_group_properties($group_id);
 $groupRepo = Container::getGroupRepository();
 /** @var CGroup $groupEntity */
 $groupEntity = $groupRepo->find($group_id);
+<<<<<<< HEAD
 $linkedCategory = GroupManager::get_category_from_group($group_id);
 
 if (isset($_GET['remove_consistent_link'])) {
@@ -32,6 +33,8 @@ if (isset($_GET['remove_consistent_link'])) {
     Display::addFlash(Display::return_message(get_lang('Group is no longer linked to the course'), 'normal'));
     header('Location: group.php?'.api_get_cidreq(true, false));
 }
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 if (null === $groupEntity) {
     api_not_allowed(true);
@@ -42,7 +45,13 @@ $interbreadcrumb[] = ['url' => 'group.php?'.api_get_cidreq(), 'name' => get_lang
 $interbreadcrumb[] = ['url' => 'group_space.php?'.api_get_cidreq(), 'name' => $groupEntity->getTitle()];
 $groupMember = GroupManager::isTutorOfGroup(api_get_user_id(), $groupEntity);
 
+<<<<<<< HEAD
 $courseInfo = api_get_course_info_by_id(api_get_course_int_id());
+=======
+if (!$groupMember && !api_is_allowed_to_edit(false, true)) {
+    api_not_allowed(true);
+}
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 // Build form
 $form = new FormValidator('group_edit', 'post', api_get_self().'?'.api_get_cidreq());
@@ -60,6 +69,7 @@ $form->addElement('html', '<div class="col-md-6">');
 // Group name
 $form->addElement('text', 'name', get_lang('Group name'));
 
+<<<<<<< HEAD
 if (!$groupMember && !api_is_allowed_to_edit(false, true)) {
     api_not_allowed(true);
 }
@@ -71,6 +81,8 @@ if (GroupManager::is_group_linked_to_usergroup($groupEntity)) {
     à une classe. Vous pouvez cependant rompre ce lien en cliquant sur le bouton ci-dessous<br><a href="settings.php?'.api_get_cidreq().'&remove_consistent_link=true" class="btn p-button-sm p-button p-mr-2 mt-2 pointer">Rompre le lien du groupe avec la classe</a></div>');
 }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 if ('true' === api_get_setting('allow_group_categories')) {
     $groupCategories = GroupManager::get_categories();
     $categoryList = [];

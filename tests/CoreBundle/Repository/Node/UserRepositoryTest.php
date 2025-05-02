@@ -216,7 +216,10 @@ class UserRepositoryTest extends AbstractApiTest
             ->setFirstname('Joe')
             ->setUsername('admin2')
             ->setSalt('')
+<<<<<<< HEAD
             ->setRegistrationDate(new DateTime())
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setExpirationDate(new DateTime())
             ->setOpenid('')
             ->setSlug('admin2')
@@ -229,7 +232,14 @@ class UserRepositoryTest extends AbstractApiTest
             ->setExpired(false)
             ->setTeach('teach')
             ->setApiToken('tok')
+<<<<<<< HEAD
             ->setAuthSource('auth')
+=======
+            ->addAuthSourceByAuthentication(
+                'auth',
+                $this->getAccessUrl()
+            )
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setProductions('prod')
             ->setCompetences('comp')
             ->setDiplomas('diploma')

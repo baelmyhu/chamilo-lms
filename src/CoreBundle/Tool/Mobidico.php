@@ -10,7 +10,11 @@ class Mobidico extends AbstractTool implements ToolInterface
 {
     public function getTitle(): string
     {
+<<<<<<< HEAD
         return 'mobidico';
+=======
+        return 'Mobidico';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public function getTitleToShow(): string
@@ -25,7 +29,11 @@ class Mobidico extends AbstractTool implements ToolInterface
 
     public function getLink(): string
     {
+<<<<<<< HEAD
         return '/plugin/mobidico/start.php';
+=======
+        return '/plugin/Mobidico/start.php';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public function getCategory(): string

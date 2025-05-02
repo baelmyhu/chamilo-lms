@@ -94,12 +94,20 @@ switch ($action) {
             $values = $form->getSubmitValues();
 
             $params = [
+<<<<<<< HEAD
                 'name' => $values['name'],
+=======
+                'title' => $values['name'],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'description' => $values['description'],
                 'total_tickets' => 0,
                 'sys_insert_user_id' => api_get_user_id(),
                 'sys_insert_datetime' => api_get_utc_datetime(),
+<<<<<<< HEAD
                 'course_required' => '',
+=======
+                'course_required' => isset($values['course_required']) ? (int) $values['course_required'] : 0,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'project_id' => $projectId,
             ];
             TicketManager::addCategory($params);
@@ -131,12 +139,20 @@ switch ($action) {
             $values = $form->getSubmitValues();
 
             $params = [
+<<<<<<< HEAD
                 'name' => $values['name'],
+=======
+                'title' => $values['name'],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'description' => $values['description'],
                 'sys_lastedit_datetime' => api_get_utc_datetime(),
                 'sys_lastedit_user_id' => api_get_user_id(),
             ];
+<<<<<<< HEAD
             $cat = TicketManager::updateCategory($_GET['id'], $params);
+=======
+            TicketManager::updateCategory($_GET['id'], $params);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             Display::addFlash(Display::return_message(get_lang('Update successful')));
             header('Location: '.api_get_self().'?project_id='.$projectId);
             exit;

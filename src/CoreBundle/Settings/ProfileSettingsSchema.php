@@ -21,7 +21,11 @@ class ProfileSettingsSchema extends AbstractSettingsSchema
         $builder
             ->setDefaults(
                 [
+<<<<<<< HEAD
                     'changeable_options' => [],
+=======
+                    'changeable_options' => ['name', 'officialcode', 'email', 'picture', 'login', 'password', 'language', 'phone', 'theme'],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'extended_profile' => 'false',
                     'account_valid_duration' => '3660',
                     'split_users_upload_directory' => 'true',
@@ -59,7 +63,11 @@ class ProfileSettingsSchema extends AbstractSettingsSchema
                     'career_diagram_legend' => 'false',
                     'career_diagram_disclaimer' => 'false',
                     'linkedin_organization_id' => 'false',
+<<<<<<< HEAD
                     'visible_options' => [],
+=======
+                    'visible_options' => ['name', 'officialcode', 'email', 'picture', 'login', 'password', 'language', 'phone', 'theme'],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ]
             )
             ->setTransformer(
@@ -118,6 +126,7 @@ class ProfileSettingsSchema extends AbstractSettingsSchema
                     ],
                 ]
             )
+<<<<<<< HEAD
             ->add(
                 'extended_profile',
                 YesNoType::class,
@@ -126,6 +135,9 @@ class ProfileSettingsSchema extends AbstractSettingsSchema
                     'help' => 'ExtendedProfileComment',
                 ]
             )
+=======
+            ->add('extended_profile', YesNoType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('account_valid_duration')
             ->add('split_users_upload_directory', YesNoType::class)
             ->add('user_selected_theme', YesNoType::class)
@@ -145,6 +157,7 @@ class ProfileSettingsSchema extends AbstractSettingsSchema
             ->add('disable_change_user_visibility_for_public_courses', YesNoType::class)
             ->add('my_space_users_items_per_page', TextType::class)
             ->add('add_user_course_information_in_mailto', YesNoType::class)
+<<<<<<< HEAD
             ->add(
                 'pass_reminder_custom_link',
                 TextType::class,
@@ -153,6 +166,9 @@ class ProfileSettingsSchema extends AbstractSettingsSchema
                     'help' => 'PassReminderCustomLinkComment',
                 ]
             )
+=======
+            ->add('pass_reminder_custom_link', TextType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('registration_add_helptext_for_2_names', YesNoType::class)
             ->add('disable_gdpr', YesNoType::class)
             ->add('data_protection_officer_name', TextType::class)

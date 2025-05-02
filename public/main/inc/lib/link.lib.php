@@ -832,14 +832,22 @@ class Link extends Model
      * @param $sessionId
      * @param bool $withBaseContent
      *
+<<<<<<< HEAD
      * @return CLink[]|null
+=======
+     * @return array<int, CLink>|null
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function getLinksPerCategory(
         $categoryId,
         $courseId,
         $sessionId,
         $withBaseContent = true
+<<<<<<< HEAD
     ) {
+=======
+    ): ?array {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $courseEntity = api_get_course_entity($courseId);
         $sessionEntity = api_get_session_entity($sessionId);
 

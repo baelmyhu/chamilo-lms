@@ -10,6 +10,12 @@ use Chamilo\CoreBundle\Entity\SequenceResource;
 use Chamilo\CoreBundle\Entity\Session as SessionEntity;
 use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\Framework\Container;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Event\CourseCreatedEvent;
+use Chamilo\CoreBundle\Event\AbstractEvent;
+use Chamilo\CoreBundle\Event\Events;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\SequenceResourceRepository;
 use Chamilo\CourseBundle\Component\CourseCopy\CourseBuilder;
 use Chamilo\CourseBundle\Component\CourseCopy\CourseRestorer;
@@ -74,8 +80,27 @@ class CourseManager
             $params['visual_code'] = $keys['currentCourseId'];
             $params['directory'] = $keys['currentCourseRepository'];
             $courseInfo = api_get_course_info($params['code']);
+<<<<<<< HEAD
             if (empty($courseInfo)) {
                 $course = AddCourse::register_course($params);
+=======
+
+            if (empty($courseInfo)) {
+                $eventDispatcher = Container::getEventDispatcher();
+
+                $eventDispatcher->dispatch(
+                    new CourseCreatedEvent([], AbstractEvent::TYPE_PRE),
+                    Events::COURSE_CREATED
+                );
+
+                $course = AddCourse::register_course($params);
+
+                $eventDispatcher->dispatch(
+                    new CourseCreatedEvent(['course' => $course], AbstractEvent::TYPE_POST),
+                    Events::COURSE_CREATED
+                );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 if (null !== $course) {
                     self::fillCourse($course, $params, $authorId);
 
@@ -896,6 +921,28 @@ class CourseManager
                     )
                 );
 
+<<<<<<< HEAD
+=======
+                $sendToStudent = (int) api_get_course_setting('email_alert_student_on_manual_subscription', $course);
+                if (1 === $sendToStudent) {
+                    $subject = get_lang('You have been enrolled in the course').' '.$course->getTitle();
+                    $message = sprintf(
+                        get_lang('Hello %s, you have been enrolled in the course %s.'),
+                        UserManager::formatUserFullName($user, true),
+                        $course->getTitle()
+                    );
+
+                    MessageManager::send_message_simple(
+                        $userId,
+                        $subject,
+                        $message,
+                        api_get_user_id(),
+                        false,
+                        true
+                    );
+                }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $send = (int) api_get_course_setting('email_alert_to_teacher_on_new_user_in_course', $course);
 
                 if (1 === $send) {
@@ -4474,6 +4521,7 @@ class CourseManager
     }
 
     /**
+<<<<<<< HEAD
      * @param int $course_id
      * @param int $session_id
      * @param int $url_id
@@ -4712,6 +4760,147 @@ class CourseManager
             Database::delete($table_course_ranking, ['c_id = ? AND session_id = ? AND url_id = ?' => $params]);
             Database::delete($table_user_course_vote, ['c_id = ? AND session_id = ? AND url_id = ?' => $params]);
         }
+=======
+     * Gets the course ranking based on user votes.
+     */
+    public static function get_course_ranking(
+        int $courseId,
+        int $sessionId = 0,
+        int $urlId = 0
+    ): array
+    {
+        $tableUserCourseVote = Database::get_main_table(TABLE_MAIN_USER_REL_COURSE_VOTE);
+
+        if (empty($courseId)) {
+            return [];
+        }
+
+        $sessionId = empty($sessionId) ? api_get_session_id() : $sessionId;
+        $urlId = empty($urlId) ? api_get_current_access_url_id() : $urlId;
+
+        $result = Database::select(
+            'COUNT(DISTINCT user_id) AS users, SUM(vote) AS totalScore',
+            $tableUserCourseVote,
+            ['where' => ['c_id = ?' => $courseId]],
+            'first'
+        );
+
+        $usersWhoVoted = $result ? (int) $result['users'] : 0;
+        $totalScore = $result ? (int) $result['totalScore'] : 0;
+
+        $pointAverageInPercentage = $usersWhoVoted > 0 ? round(($totalScore / $usersWhoVoted) * 100 / 5, 2) : 0;
+        $pointAverageInStar = $usersWhoVoted > 0 ? round($totalScore / $usersWhoVoted, 1) : 0;
+
+        $userVote = !api_is_anonymous() && self::get_user_course_vote(api_get_user_id(), $courseId, $sessionId, $urlId);
+
+        return [
+            'c_id' => $courseId,
+            'users' => $usersWhoVoted,
+            'total_score' => $totalScore,
+            'point_average' => $pointAverageInPercentage,
+            'point_average_star' => $pointAverageInStar,
+            'user_vote' => $userVote,
+        ];
+    }
+
+    /**
+     * Updates the course ranking (popularity) based on unique user votes.
+     */
+    public static function update_course_ranking($courseId = 0): void
+    {
+        $tableUserCourseVote = Database::get_main_table(TABLE_MAIN_USER_REL_COURSE_VOTE);
+        $tableCourse = Database::get_main_table(TABLE_MAIN_COURSE);
+
+        $courseId = intval($courseId);
+        if (empty($courseId)) {
+            return;
+        }
+
+        $result = Database::select(
+            'COUNT(DISTINCT user_id) AS popularity',
+            $tableUserCourseVote,
+            ['where' => ['c_id = ?' => $courseId]],
+            'first'
+        );
+
+        $popularity = $result ? (int) $result['popularity'] : 0;
+
+        Database::update(
+            $tableCourse,
+            ['popularity' => $popularity],
+            ['id = ?' => $courseId]
+        );
+    }
+
+    /**
+     * Add or update user vote for a course and update course ranking.
+     */
+    public static function add_course_vote(
+        int $userId,
+        int $vote,
+        int $courseId,
+        int $sessionId = 0,
+        int $urlId = 0
+    ): false|string
+    {
+        $tableUserCourseVote = Database::get_main_table(TABLE_MAIN_USER_REL_COURSE_VOTE);
+
+        if (empty($courseId) || empty($userId) || !in_array($vote, [1, 2, 3, 4, 5])) {
+            return false;
+        }
+
+        $sessionId = empty($sessionId) ? api_get_session_id() : $sessionId;
+        $urlId = empty($urlId) ? api_get_current_access_url_id() : $urlId;
+
+        $params = [
+            'user_id' => $userId,
+            'c_id' => $courseId,
+            'session_id' => $sessionId,
+            'url_id' => $urlId,
+            'vote' => $vote,
+        ];
+
+        $actionDone = 'nothing';
+
+        $existingVote = Database::select(
+            'id',
+            $tableUserCourseVote,
+            ['where' => ['user_id = ? AND c_id = ?' => [$userId, $courseId]]],
+            'first'
+        );
+
+        if (empty($existingVote)) {
+            Database::insert($tableUserCourseVote, $params);
+            $actionDone = 'added';
+        } else {
+            Database::update(
+                $tableUserCourseVote,
+                ['vote' => $vote, 'session_id' => $sessionId, 'url_id' => $urlId],
+                ['id = ?' => $existingVote['id']]
+            );
+            $actionDone = 'updated';
+        }
+
+        self::update_course_ranking($courseId);
+
+        return $actionDone;
+    }
+
+    /**
+     * Remove all votes for a course and update ranking.
+     */
+    public static function remove_course_ranking(int $courseId): void
+    {
+        $tableUserCourseVote = Database::get_main_table(TABLE_MAIN_USER_REL_COURSE_VOTE);
+
+        if (empty($courseId)) {
+            return;
+        }
+
+        Database::delete($tableUserCourseVote, ['c_id = ?' => $courseId]);
+
+        self::update_course_ranking($courseId);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -4931,7 +5120,11 @@ class CourseManager
             }
 
             // start buycourse validation
+<<<<<<< HEAD
             // display the course price and buy button if the buycourses plugin is enabled and this course is configured
+=======
+            // display the course price and buy button if the BuyCourses plugin is enabled and this course is configured
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $plugin = BuyCoursesPlugin::create();
             $isThisCourseInSale = $plugin->buyCoursesForGridCatalogValidator(
                 $course_info['real_id'],
@@ -5371,6 +5564,10 @@ class CourseManager
             'email_alert_students_on_new_homework',
             // Get send_mail_setting (auth)from table
             'email_alert_to_teacher_on_new_user_in_course',
+<<<<<<< HEAD
+=======
+            'email_alert_student_on_manual_subscription',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'enable_lp_auto_launch',
             'enable_exercise_auto_launch',
             'enable_document_auto_launch',
@@ -5384,6 +5581,11 @@ class CourseManager
             'hide_forum_notifications',
             'quiz_question_limit_per_day',
             'subscribe_users_to_forum_notifications',
+<<<<<<< HEAD
+=======
+            'learning_path_generator',
+            'exercise_generator',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ];
 
         $courseModels = ExerciseLib::getScoreModels();

@@ -40,7 +40,11 @@ class ExtraFieldValuesRepository extends ServiceEntityRepository
 
         $qb
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:ExtraField',
+=======
+                ExtraField::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'f',
                 Join::WITH,
                 'fv.field = f.id'

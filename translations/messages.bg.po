@@ -1,9 +1,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: chamilo\n"
+<<<<<<< HEAD
 "Language: bg_BG\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+=======
+"PO-Revision-Date: 2025-04-04 14:14+0000\n"
+"Last-Translator: Yannick Warnier <ywarnier@chamilo.org>\n"
+"Language-Team: Bulgarian <https://translation.chamilo.org/projects/chamilo/"
+"messages/bg/>\n"
+"Language: bg\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.4.2\n"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 msgid "You can generate badges for the skills learnt by your users, to give them recognition for their effort, through which they will be able to show off their acquired skills and competencies with icons that will be shown on their user profile. For more information on OpenBadges, check <a href='http://openbadges.org'>http://openbadges.org/</a>."
 msgstr ""
@@ -3218,7 +3230,11 @@ msgstr "например"
 msgid "Database Host"
 msgstr "Сървър на бази данни"
 
+<<<<<<< HEAD
 msgid "Database Login"
+=======
+msgid "Database user"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr "Потребителско име за сървъра на базата данни"
 
 msgid "Database Password"
@@ -3248,9 +3264,13 @@ msgstr "Име на администратора"
 msgid "Administrator login"
 msgstr "Потребителско име на администратора"
 
+<<<<<<< HEAD
 msgid "Administrator password (<font color=\"red\">you may want to change this</font>)"
 msgstr "Парола на администратора (<font color=\"red\">може би ще поискате да я смените</font>)"
 
+=======
+#, fuzzy
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgid "Project manager"
 msgstr "Отговарящ за съдържанието"
 
@@ -4619,10 +4639,17 @@ msgstr "Списъкът с потребителите е експортиран
 msgid "Download the file"
 msgstr "Щракнете тук, за да изтеглите файла."
 
+<<<<<<< HEAD
 msgid "Portal Administrator: Telephone"
 msgstr "Администратор на системата: телефон"
 
 msgid "The telephone number of the platform administrator"
+=======
+msgid "Portal Administrator: Phone number"
+msgstr "Администратор на системата: телефон"
+
+msgid "The phone number of the Platform Administrator (appears in the footer on the left)"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr "Телефонен номер, на който може да бъде намерен администраторът на системата."
 
 msgid "Send mail to new user"
@@ -4856,10 +4883,17 @@ msgstr "Потвърдете"
 msgid "Unsubscribe users from course"
 msgstr "Отписване на потребители от курса"
 
+<<<<<<< HEAD
 msgid "Missing class name"
 msgstr "Липсва наименование на класа."
 
 msgid "Class name exists"
+=======
+msgid "Missing class title"
+msgstr "Липсва наименование на класа."
+
+msgid "Class title exists"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr "Наименованието на класа вече съществува."
 
 msgid "CSV file import location"
@@ -5813,7 +5847,11 @@ msgstr "Множествена регистрация"
 msgid "Full-text search feature"
 msgstr "Пълнотекстова търсеща машина"
 
+<<<<<<< HEAD
 msgid "Select \"Yes\" to enable this feature. It is highly dependent on the Xapian extension for PHP, so this will not work if this extension is not installed on your server, in version 1.x at minimum."
+=======
+msgid "Select 'Yes' to enable this feature. It is highly dependent on the Xapian extension for PHP, so this will not work if this extension is not installed on your server, in version 1.x at minimum."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr "Изберете \"Да\", за да активирате тази функционалност. Тя зависи то PHP-разширението Xapianи и няма да работи, ако не сте инсталирали разширението на вашия сървър във версия 1.x минимум."
 
 msgid "Find a training session"
@@ -16799,7 +16837,11 @@ msgstr "Информацията в тази заявка е защитена; �
 msgid "Courses validation"
 msgstr "Одобряване на новите курсове"
 
+<<<<<<< HEAD
 msgid "When the \"Courses validation\" feature is enabled, a teacher is not able to create a course alone. He/she fills a course request. The platform administrator reviews the request and approves it or rejects it.<br />This feature relies on automated e-mail messaging; set Chamilo to access an e-mail server and to use a dedicated an e-mail account."
+=======
+msgid "When the 'Courses validation' feature is enabled, a teacher is not able to create a course alone. He/she fills a course request. The platform administrator reviews the request and approves it or rejects it.<br />This feature relies on automated e-mail messaging; set Chamilo to access an e-mail server and to use a dedicated an e-mail account."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr "Когато функцията \"Одобряване на новите курсове\" е активирана, преподавател не може да създава нов курс. Той/тя попълва заявка за нов курс. Администраторът на системата преглежда заявката и или я одобрява, или я отхвърля.<br />Тази функция силно зависи от автоматично генерирани e-mail съобщения; настройте достъп на системата до e-mail сървър чрез специално открит за нея акаунт."
 
 msgid "%s A request for additional information about the course request %s"
@@ -16823,7 +16865,11 @@ msgstr "За съжаление Вашата заявка за нов курс %
 msgid "Course validation - a link to the terms and conditions"
 msgstr "Одобряване на новите курсове - връзка към Условията за ползване"
 
+<<<<<<< HEAD
 msgid "This is the URL to the \"Terms and Conditions\" document that is valid for making a course request. If the address is set here, the user should read and agree with these terms and conditions before sending a course request.<br />If you enable Chamilo's \"Terms and Conditions\" module and if you want its URL to be used, then leave this setting empty."
+=======
+msgid "This is the URL to the 'Terms and Conditions' document that is valid for making a course request. If the address is set here, the user should read and agree with these terms and conditions before sending a course request.<br />If you enable Chamilo's 'Terms and Conditions' module and if you want its URL to be used, then leave this setting empty."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr "Това е URL на документа \"Условия за ползване\", който е валиден при подаване на заявка за нов курс. Ако адресът тук е зададен, преди потребителят да подаде заявката ще трябва да прочете и да се съгласи с условията за ползаване.<br />Ако активирате модула на Chamilo \"Условия за ползване\" и ако искате неговият URL да бъде използван - оставете в тази настройка празна стойност."
 
 msgid "The course has not been created due to an internal error."
@@ -16883,7 +16929,11 @@ msgstr ""
 msgid "WIRIS mathematical editor"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enable WIRIS mathematical editor. Installing this plugin you get WIRIS editor and WIRIS CAS.<br/>This activation is not fully realized unless it has been previously downloaded the <a href=\"http://www.wiris.com/es/plugins3/ckeditor/download\" target=\"_blank\">PHP plugin for CKeditor WIRIS</a> and unzipped its contents in the Chamilo's directory main/inc/lib/javascript/ckeditor/plugins/.<br/>This is necessary because Wiris is proprietary software and his services are <a href=\"http://www.wiris.com/store/who-pays\" target=\"_blank\">commercial</a>. To make adjustments to the plugin, edit configuration.ini file or replace his content by the file configuration.ini.default shipped with Chamilo."
+=======
+msgid "Enable WIRIS mathematical editor. Installing this plugin you get WIRIS editor and WIRIS CAS.<br/>This activation is not fully realized unless it has been previously downloaded the <a href='http://www.wiris.com/es/plugins3/ckeditor/download' target='_blank'>PHP plugin for CKeditor WIRIS</a> and unzipped its contents in the Chamilo's directory main/inc/lib/javascript/ckeditor/plugins/.<br/>This is necessary because Wiris is proprietary software and his services are <a href='http://www.wiris.com/store/who-pays' target='_blank'>commercial</a>. To make adjustments to the plugin, edit configuration.ini file or replace his content by the file configuration.ini.default shipped with Chamilo."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr ""
 
 msgid "File export as"
@@ -17069,7 +17119,11 @@ msgstr "Мъжки"
 msgid "Load the Mathjax library in all the system pages"
 msgstr "Да се зарежда скрипта ASCIIMathML.js във всички страници на системата"
 
+<<<<<<< HEAD
 msgid "Activate this setting if you want to show MathML-based mathematical formulas and ASCIIsvg-based mathematical graphics not only in the \"Documents\" tool, but elsewhere in the system."
+=======
+msgid "Activate this setting if you want to show MathML-based mathematical formulas and ASCIIsvg-based mathematical graphics not only in the 'Documents' tool, but elsewhere in the system."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr "Активирайте тази настройка, ако искате математическите формули (ASCIIMathML) и математическите графики (ASCIIsvg) да могат да се показват не само в инструмента \"Документи\", а и във всички останали страници на системата."
 
 msgid "Hide tools from teachers"
@@ -19370,6 +19424,7 @@ msgstr ""
 msgid "Announcement for a group"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Language priority 1"
 msgstr ""
 
@@ -19380,11 +19435,24 @@ msgid "Language priority 3"
 msgstr ""
 
 msgid "Language priority 4"
+=======
+msgid "Highest priority language"
+msgstr ""
+
+msgid "Secondary priority language"
+msgstr ""
+
+msgid "Third priority language"
+msgstr ""
+
+msgid "Fourth priority language"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr ""
 
 msgid "Language priority 5"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "The language with the highest priority"
 msgstr ""
 
@@ -19395,6 +19463,18 @@ msgid "The third language priority"
 msgstr ""
 
 msgid "The fourth language priority"
+=======
+msgid "Primary language selected when multiple language contexts are set."
+msgstr ""
+
+msgid "Secondary fallback language if first priority is unavailable or out of context."
+msgstr ""
+
+msgid "Tertiary language fallback if higher priorities fail."
+msgstr ""
+
+msgid "Last language fallback option by order of priority."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr ""
 
 msgid "The lowest language priority"
@@ -20045,7 +20125,11 @@ msgstr ""
 msgid "CAPTCHA"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enable a CAPTCHA on the login form to avoid password hammering"
+=======
+msgid "Enable a CAPTCHA on the login form, inscription form and lost password form to avoid password hammering"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr ""
 
 msgid "CAPTCHA mistakes allowance"
@@ -20120,7 +20204,11 @@ msgstr ""
 msgid "PDF header logo"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Whether to use the image at css/themes/[your-css]/images/pdf_logo_header.png as the PDF header logo for all PDF exports (instead of the normal portal logo)"
+=======
+msgid "Whether to use the image at var/themes/[your-theme]/images/pdf_logo_header.png as the PDF header logo for all PDF exports (instead of the normal portal logo)"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr ""
 
 msgid "Order users by official code"
@@ -21071,7 +21159,11 @@ msgstr ""
 msgid "Sender ID of Firebase Console for Cloud Messaging"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "You need register a project on <a href=\"https://console.firebase.google.com/\">Google Firebase Console</a>"
+=======
+msgid "You need register a project on <a href='https://console.firebase.google.com/'>Google Firebase Console</a>"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 msgstr ""
 
 msgid "Server key of Firebase Console for Cloud Messaging"
@@ -25045,4 +25137,7 @@ msgstr ""
 
 msgid "%02d h %02d m %02d s"
 msgstr ""
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94

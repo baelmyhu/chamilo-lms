@@ -194,7 +194,14 @@ function get_course_data($from, $number_of_items, $column, $direction, $dataFunc
         );
         $actions[] = Display::url(
             Display::getMdiIcon('delete', 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Delete')),
+<<<<<<< HEAD
             $path.'admin/course_list_admin.php?delete_course='.$courseCode,
+=======
+            $path.'admin/course_list_admin.php?'.http_build_query([
+                'delete_course' => $courseCode,
+                'sec_token' => Security::getTokenFromSession(),
+            ]),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             [
                 'onclick' => "javascript: if (!confirm('"
                     .addslashes(api_htmlentities(get_lang('Please confirm your choice'), ENT_QUOTES))."')) return false;",
@@ -266,7 +273,11 @@ function get_course_visibility_icon($visibility)
     }
 }
 
+<<<<<<< HEAD
 if (isset($_POST['action'])) {
+=======
+if (isset($_POST['action']) && Security::check_token('get')) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     switch ($_POST['action']) {
         // Delete selected courses
         case 'delete_courses':
@@ -358,7 +369,11 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
         'name' => get_lang('PlatformAdmin'),
     ];
     $tool_name = get_lang('CourseList');
+<<<<<<< HEAD
     if (isset($_GET['delete_course'])) {
+=======
+    if (isset($_GET['delete_course']) && Security::check_token('get')) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $result = CourseManager::delete_course($_GET['delete_course']);
         if ($result) {
             Display::addFlash(Display::return_message(get_lang('Deleted')));
@@ -425,6 +440,10 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
     );
 
     $parameters = [];
+<<<<<<< HEAD
+=======
+    $parameters['sec_token'] = Security::get_token();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     if (isset($_GET['keyword'])) {
         $parameters = ['keyword' => Security::remove_XSS($_GET['keyword'])];
     } elseif (isset($_GET['keyword_code'])) {

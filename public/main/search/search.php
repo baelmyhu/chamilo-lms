@@ -89,7 +89,11 @@ $htmlHeadXtra[] = '
       const diapoButton = document.querySelector("#card_"+targetBlockWithoutHash+" a");
 
       setTimeout(function() {
+<<<<<<< HEAD
         diapoButton.click();
+=======
+        diapoButton?.click();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
       }, 500);
     });
 </script>

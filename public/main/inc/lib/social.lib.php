@@ -976,6 +976,7 @@ class SocialManager extends UserManager
 
     /**
      * verify if Url Exist - Using Curl.
+<<<<<<< HEAD
      *
      * @param $uri url
      *
@@ -998,6 +999,30 @@ class SocialManager extends UserManager
         }
 
         return false;
+=======
+     */
+    public static function verifyUrl(string $uri): bool
+    {
+        $client = new Client();
+
+        try {
+            $response = $client->request('GET', $uri, [
+                'timeout' => 15,
+                'verify' => false,
+                'headers' => [
+                    'User-Agent' => $_SERVER['HTTP_USER_AGENT'],
+                ],
+            ]);
+
+            if (200 !== $response->getStatusCode()) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -1258,6 +1283,10 @@ class SocialManager extends UserManager
         $form->addHtml('</div></div>');
         $form->addHtml('</div>');
         $form->addHidden('url_content', '');
+<<<<<<< HEAD
+=======
+        $form->protect();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $html = Display::panel($form->returnForm(), get_lang('Social wall'));
 
         return $html;
@@ -1943,7 +1972,11 @@ class SocialManager extends UserManager
         if ($allowPauseTraining && $allowEdit) {
             $plugin = PauseTraining::create();
             $headers[] = [
+<<<<<<< HEAD
                 'url' => api_get_path(WEB_CODE_PATH).'auth/pausetraining.php',
+=======
+                'url' => api_get_path(WEB_CODE_PATH).'auth/PauseTraining.php',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'content' => $plugin->get_lang('PauseTraining'),
             ];
         }

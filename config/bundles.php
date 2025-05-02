@@ -24,7 +24,11 @@ return [
     Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle::class => ['all' => true],
     KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
     Nelmio\CorsBundle\NelmioCorsBundle::class => ['all' => true],
+<<<<<<< HEAD
     ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
+=======
+    ApiPlatform\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     Twig\Extra\TwigExtraBundle\TwigExtraBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     SymfonyCasts\Bundle\ResetPassword\SymfonyCastsResetPasswordBundle::class => ['all' => true],

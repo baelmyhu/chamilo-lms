@@ -376,7 +376,11 @@ if (!empty($courseList)) {
             } else {
                 $html .= "<tr>
                             <td colspan='6'>
+<<<<<<< HEAD
                                 ".get_lang('NoTest')."
+=======
+                                ".get_lang('There is no test for the moment')."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                             </td>
                         </tr>
                      ";
@@ -384,7 +388,11 @@ if (!empty($courseList)) {
         } else {
             $html .= "<tr>
                         <td colspan='6'>
+<<<<<<< HEAD
                             ".get_lang('NoTest')."
+=======
+                            ".get_lang('There is no test for the moment')."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         </td>
                     </tr>
                  ";

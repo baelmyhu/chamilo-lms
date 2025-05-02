@@ -1,7 +1,10 @@
 .github export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
+<<<<<<< HEAD
 .codeclimate.yml export-ignore
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 .flintci.yml export-ignore
 .scrutinizer.yml export-ignore
 .styleci.yml export-ignore

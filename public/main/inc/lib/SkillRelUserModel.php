@@ -12,7 +12,10 @@ class SkillRelUserModel extends Model
         'user_id',
         'skill_id',
         'acquired_skill_at',
+<<<<<<< HEAD
         'assigned_by',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'course_id',
         'session_id',
     ];

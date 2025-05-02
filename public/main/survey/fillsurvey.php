@@ -60,6 +60,11 @@ if (empty($courseInfo)) {
 $courseId = $courseInfo['real_id'];
 $userInfo = api_get_user_info();
 $sessionId = isset($_GET['sid']) ? (int) $_GET['sid'] : api_get_session_id();
+<<<<<<< HEAD
+=======
+$lpItemId = isset($_GET['lp_item_id']) ? (int) $_GET['lp_item_id'] : 0;
+$allowSurveyInLp = true;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 if (!empty($userInfo)) {
     $interbreadcrumb[] = [
@@ -89,6 +94,19 @@ if (null === $survey) {
 $surveyId = $survey->getIid();
 $invitationCode = $_GET['invitationcode'] ?? null;
 
+<<<<<<< HEAD
+=======
+$lpItemCondition = '';
+if ($allowSurveyInLp && !empty($lpItemId)) {
+    $lpItemCondition = " AND c_lp_item_id = $lpItemId";
+}
+
+$sessionCondition = '';
+if (true === api_get_setting('survey.show_surveys_base_in_sessions')) {
+    $sessionCondition = api_get_session_condition($sessionId);
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 /*$surveyCode = isset($_GET['scode']) ? Database::escape_string($_GET['scode']) : '';
 if ('' != $surveyCode) {
     // Firstly we check if this survey is ready for anonymous use:
@@ -122,7 +140,13 @@ if ('auto' === $invitationCode) {
             $userid,
             $surveyCode,
             $courseId,
+<<<<<<< HEAD
             $sessionId
+=======
+            $sessionId,
+            0,
+            $lpItemId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
         $lastInvitation = current($invitations);
 
@@ -142,7 +166,13 @@ if ('auto' === $invitationCode) {
             FROM $table_survey_invitation
             WHERE
                 c_id = $courseId AND
+<<<<<<< HEAD
                 invitation_code = '".Database::escape_string($autoInvitationCode)."'";
+=======
+                invitation_code = '".Database::escape_string($autoInvitationCode)."'
+                $sessionCondition
+                $lpItemCondition";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $result = Database::query($sql);
     $now = api_get_utc_datetime();
     if (0 == Database::num_rows($result)) {
@@ -153,7 +183,11 @@ if ('auto' === $invitationCode) {
             'invitation_code' => $autoInvitationCode,
             'invitation_date' => $now,
             'answered' => 0,
+<<<<<<< HEAD
             'c_lp_item_id' => 0,
+=======
+            'c_lp_item_id' => $lpItemId,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ];
         Database::insert($table_survey_invitation, $params);
     }
@@ -167,7 +201,13 @@ if ('auto' === $invitationCode) {
 $sql = "SELECT * FROM $table_survey_invitation
         WHERE
             c_id = $courseId AND
+<<<<<<< HEAD
             invitation_code = '".Database::escape_string($invitationCode)."'";
+=======
+            invitation_code = '".Database::escape_string($invitationCode)."'
+            $sessionCondition
+            $lpItemCondition";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $result = Database::query($sql);
 if (Database::num_rows($result) < 1) {
     api_not_allowed(true, get_lang('Wrong invitation code'));
@@ -256,7 +296,12 @@ if (count($_POST) > 0) {
                     SurveyUtil::remove_answer(
                         $survey_invitation['user_id'],
                         $surveyId,
+<<<<<<< HEAD
                         $survey_question_id
+=======
+                        $survey_question_id,
+                        $lpItemId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     );
 
                     foreach ($value as $answer_key => &$answer_value) {
@@ -273,7 +318,13 @@ if (count($_POST) > 0) {
                             $survey,
                             $question,
                             $option_id,
+<<<<<<< HEAD
                             $option_value
+=======
+                            $option_value,
+                            '',
+                            $lpItemId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         );
                     }
                 } else {
@@ -298,7 +349,12 @@ if (count($_POST) > 0) {
                     SurveyUtil::remove_answer(
                         $survey_invitation['user_id'],
                         $surveyId,
+<<<<<<< HEAD
                         $survey_question_id
+=======
+                        $survey_question_id,
+                        $lpItemId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     );
 
                     SurveyUtil::saveAnswer(
@@ -307,7 +363,12 @@ if (count($_POST) > 0) {
                         $question,
                         $value,
                         $option_value,
+<<<<<<< HEAD
                         $other
+=======
+                        $other,
+                        $lpItemId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     );
                 }
             }
@@ -358,6 +419,7 @@ if (count($_POST) > 0) {
                 SurveyUtil::remove_answer(
                     $survey_invitation['user_id'],
                     $survey_invitation['survey_id'],
+<<<<<<< HEAD
                     $survey_question_id
                 );
 
@@ -367,6 +429,26 @@ if (count($_POST) > 0) {
                     $questionList[$survey_question_id],
                     $value,
                     $option_value
+=======
+                    $survey_question_id,
+                    api_get_course_int_id(),
+                    $lpItemId
+                );
+
+
+                $surveyId = (int) $survey_invitation['survey_id'];
+                $repo = Container::getSurveyRepository();
+                $survey = $repo->find($surveyId);
+
+                SurveyUtil::saveAnswer(
+                    api_get_user_entity($survey_invitation['user_id']),
+                    $survey,
+                    $questionList[$survey_question_id],
+                    $value,
+                    $option_value,
+                    '',
+                    $lpItemId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 );
             }
         }
@@ -398,12 +480,23 @@ if ('' != $survey->getFormFields() &&
         }
     }
 
+<<<<<<< HEAD
     $url = api_get_self().'?cid='.$courseId.'&sid='.$sessionId;
+=======
+    $url = api_get_self().'?'.api_get_cidreq();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $listQueryParams = explode('&', $_SERVER['QUERY_STRING']);
     foreach ($listQueryParams as $param) {
         $url .= '&'.Security::remove_XSS($param);
     }
 
+<<<<<<< HEAD
+=======
+    if (!empty($lpItemId)) {
+        $url .= '&lp_item_id='.$lpItemId;
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     // We use the same form as in auth/profile.php
     $form = new FormValidator('profile', 'post', $url);
     if (api_is_western_name_order()) {
@@ -611,10 +704,17 @@ if ($survey->getFormFields() &&
 if (isset($_POST['finish_survey'])) {
     echo Display::return_message(get_lang('You have finished this survey.'), 'confirm');
     echo Security::remove_XSS($survey->getSurveythanks());
+<<<<<<< HEAD
     SurveyManager::updateSurveyAnswered($survey, $survey_invitation['user_id']);
     SurveyUtil::flagSurveyAsAnswered($survey->getCode(), $survey_invitation['c_id']);
 
     if ($courseInfo && !api_is_anonymous()) {
+=======
+    SurveyManager::updateSurveyAnswered($survey, $survey_invitation['user_id'], $lpItemId);
+    SurveyUtil::flagSurveyAsAnswered($survey->getCode(), $survey_invitation['c_id']);
+
+    if ($courseInfo && !api_is_anonymous() && 'learnpath' !== api_get_origin()) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         echo '<br /><br />';
         echo Display::toolbarButton(
             get_lang('Return to Course Homepage'),
@@ -1179,7 +1279,11 @@ $g_ic = isset($_GET['invitationcode']) ? Security::remove_XSS($_GET['invitationc
 $g_cr = isset($_GET['cidReq']) ? Security::remove_XSS($_GET['cidReq']) : '';
 $p_l = isset($_POST['language']) ? Security::remove_XSS($_POST['language']) : '';
 $add_parameters = isset($_GET['user_id']) ? '&user_id='.intval($_GET['user_id']) : '';
+<<<<<<< HEAD
 $url = api_get_self().'?cid='.$courseId.'&sid='.$sessionId.$add_parameters.
+=======
+$url = api_get_self().'?'.api_get_cidreq().$add_parameters.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     '&course='.$g_c.
     '&invitationcode='.$g_ic.
     '&show='.$show.
@@ -1189,6 +1293,14 @@ if (!empty($_GET['language'])) {
     $lang = Security::remove_XSS($_GET['language']);
     $url .= '&language='.$lang;
 }
+<<<<<<< HEAD
+=======
+
+if (!empty($lpItemId)) {
+    $url .= '&lp_item_id='.$lpItemId;
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form = new FormValidator(
     'question',
     'post',
@@ -1256,7 +1368,11 @@ if (isset($questions) && is_array($questions)) {
         }
         $form->addHtml('<div>'.Security::remove_XSS($question['survey_question']).'</div> ');
 
+<<<<<<< HEAD
         $userAnswerData = SurveyUtil::get_answers_of_question_by_user($question['survey_id'], $question['question_id']);
+=======
+        $userAnswerData = SurveyUtil::get_answers_of_question_by_user($question['survey_id'], $question['question_id'], $lpItemId);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $finalAnswer = null;
 
         if (!empty($userAnswerData[$user_id])) {

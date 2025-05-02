@@ -9,6 +9,10 @@ namespace Chamilo\CoreBundle\Repository;
 use Chamilo\CoreBundle\Entity\Course;
 use Chamilo\CoreBundle\Entity\Templates;
 use Chamilo\CoreBundle\Entity\User;
+<<<<<<< HEAD
+=======
+use Chamilo\CourseBundle\Entity\CDocument;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,13 +35,21 @@ class TemplatesRepository extends ServiceEntityRepository
 
         $qb->select('t', 'd.path')
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:Course',
+=======
+                Course::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'c',
                 Join::WITH,
                 't.id = c.id'
             )
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCourseBundle:CDocument',
+=======
+                CDocument::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'd',
                 Join::WITH,
                 'c.id = d.course'

@@ -21,6 +21,10 @@ const emit = defineEmits(["change"])
     v-model="model"
     :cancel="false"
     :stars="stars"
+<<<<<<< HEAD
     @change="emit('change', $event, model)"
+=======
+    @change="emit('change', $event)"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   />
 </template>

@@ -15,6 +15,10 @@ use Chamilo\CoreBundle\Repository\ExtraFieldOptionsRepository;
 use Chamilo\CoreBundle\Repository\ExtraFieldRepository;
 use Chamilo\CoreBundle\Repository\GradeBookCategoryRepository;
 use Chamilo\CoreBundle\Repository\GradebookCertificateRepository;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Repository\GradebookResultRepository;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\LanguageRepository;
 use Chamilo\CoreBundle\Repository\LegalRepository;
 use Chamilo\CoreBundle\Repository\MessageRepository;
@@ -27,6 +31,10 @@ use Chamilo\CoreBundle\Repository\Node\SocialPostAttachmentRepository;
 use Chamilo\CoreBundle\Repository\Node\TicketMessageAttachmentRepository;
 use Chamilo\CoreBundle\Repository\Node\UsergroupRepository;
 use Chamilo\CoreBundle\Repository\Node\UserRepository;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Repository\PluginRepository;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\PromotionRepository;
 use Chamilo\CoreBundle\Repository\ResourceNodeRepository;
 use Chamilo\CoreBundle\Repository\SequenceRepository;
@@ -41,6 +49,10 @@ use Chamilo\CoreBundle\Repository\TrackEExerciseRepository;
 use Chamilo\CoreBundle\Repository\TrackELoginRecordRepository;
 use Chamilo\CoreBundle\Repository\TrackELoginRepository;
 use Chamilo\CoreBundle\Serializer\UserToJsonNormalizer;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\ServiceHelper\ContainerHelper;
 use Chamilo\CoreBundle\ServiceHelper\ThemeHelper;
 use Chamilo\CoreBundle\Settings\SettingsManager;
@@ -59,7 +71,10 @@ use Chamilo\CourseBundle\Repository\CForumRepository;
 use Chamilo\CourseBundle\Repository\CForumThreadRepository;
 use Chamilo\CourseBundle\Repository\CGlossaryRepository;
 use Chamilo\CourseBundle\Repository\CGroupCategoryRepository;
+<<<<<<< HEAD
 use Chamilo\CourseBundle\Repository\CGroupRelUsergroupRepository;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CourseBundle\Repository\CGroupRepository;
 use Chamilo\CourseBundle\Repository\CLinkCategoryRepository;
 use Chamilo\CourseBundle\Repository\CLinkRepository;
@@ -89,6 +104,10 @@ use Chamilo\LtiBundle\Repository\ExternalToolRepository;
 use Database;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+<<<<<<< HEAD
+=======
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -364,6 +383,14 @@ class Container
         return self::$container->get(GradebookCertificateRepository::class);
     }
 
+<<<<<<< HEAD
+=======
+    public static function getGradebookResultRepository(): GradebookResultRepository
+    {
+        return self::$container->get(GradebookResultRepository::class);
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public static function getGroupRepository(): CGroupRepository
     {
         return self::$container->get(CGroupRepository::class);
@@ -484,6 +511,15 @@ class Container
         return self::$container->get(UsergroupRepository::class);
     }
 
+<<<<<<< HEAD
+=======
+    public static function getPluginRepository(): PluginRepository
+    {
+        /** @var PluginRepository $pluginRepo */
+        return self::$container->get(PluginRepository::class);
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public static function getUserToJsonNormalizer(): UserToJsonNormalizer
     {
         return self::$container->get(UserToJsonNormalizer::class);
@@ -658,8 +694,21 @@ class Container
         return self::$container->get(ThemeHelper::class);
     }
 
+<<<<<<< HEAD
     public static function getGroupRelUsergroupRepository(): CGroupRelUsergroupRepository
     {
         return self::$container->get(CGroupRelUsergroupRepository::class);
+=======
+    public static function getAccessUrlHelper(): AccessUrlHelper
+    {
+        /** @var AccessUrlHelper $helper */
+        return self::$container->get(AccessUrlHelper::class);
+    }
+
+    public static function getEventDispatcher(): EventDispatcherInterface
+    {
+        /** @var EventDispatcherInterface $dispatcher */
+        return self::$container->get('event_dispatcher');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 }

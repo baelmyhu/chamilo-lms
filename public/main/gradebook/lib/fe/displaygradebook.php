@@ -434,7 +434,11 @@ class DisplayGradebook
                         ) {
                             $actionsRight .= '<a href="'.api_get_path(
                                     WEB_PLUGIN_PATH
+<<<<<<< HEAD
                                 ).'customcertificate/src/index.php?'.
+=======
+                                ).'CustomCertificate/src/index.php?'.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                                 $my_api_cidreq.'&origin=gradebook&selectcat='.$catobj->get_id().'">'.
                                 Display::getMdiIcon('certificate', 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Attach certificate')).'</a>';
                         } else {

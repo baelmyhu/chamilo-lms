@@ -173,6 +173,13 @@ class learnpathItem
                 }
             }
 
+<<<<<<< HEAD
+=======
+/*
+	    // Xapian full text search does not work 
+	    // and if the option is activated it generates an error
+	    // So I comment this part of the code to avoid unnecesary errors 
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             // Get search_did.
             if ('true' === api_get_setting('search_enabled')) {
                 $tbl_se_ref = Database::get_main_table(TABLE_MAIN_SEARCH_ENGINE_REF);
@@ -200,6 +207,10 @@ class learnpathItem
                     $this->search_did = (int) $se_ref['search_did'];
                 }
             }
+<<<<<<< HEAD
+=======
+*/
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
     }
 

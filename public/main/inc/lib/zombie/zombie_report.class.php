@@ -207,8 +207,13 @@ class ZombieReport implements Countable
             $row[] = $item['username'];
             $row[] = $item['email'];
             $row[] = $item['status'];
+<<<<<<< HEAD
             $row[] = $item['auth_source'];
             $row[] = api_format_date($item['registration_date'], DATE_FORMAT_SHORT);
+=======
+            $row[] = $item['auth_sources'];
+            $row[] = api_format_date($item['created_at'], DATE_FORMAT_SHORT);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $row[] = api_format_date($item['login_date'], DATE_FORMAT_SHORT);
             $row[] = $item['active'];
             $result[] = $row;
@@ -240,7 +245,11 @@ class ZombieReport implements Countable
         $table->set_header($col++, get_lang('Login'));
         $table->set_header($col++, get_lang('e-mail'));
         $table->set_header($col++, get_lang('Profile'));
+<<<<<<< HEAD
         $table->set_header($col++, get_lang('Authentication source'));
+=======
+        $table->set_header($col++, get_lang('Authentication source'), false);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $table->set_header($col++, get_lang('Registered date'));
         $table->set_header($col++, get_lang('Latest access'), false);
         $table->set_header($col, get_lang('active'), false);

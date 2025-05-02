@@ -63,7 +63,11 @@ $em = Database::getManager();
 if ('1' === $lp->getSubscribeUsers()) {
 
     /** @var CLpRelUserRepository $cLpRelUserRepo */
+<<<<<<< HEAD
     $cLpRelUserRepo = $em->getRepository('ChamiloCourseBundle:CLpRelUser');
+=======
+    $cLpRelUserRepo = $em->getRepository(CLpRelUser::class);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $subscribedUsersInLp = $cLpRelUserRepo->getUsersSubscribedToItem(
         $entity,
         $course,
@@ -401,7 +405,11 @@ if (false === $export) {
 
 $interbreadcrumb[] = [
     'url' => api_get_path(WEB_CODE_PATH).'lp/lp_controller.php?'.api_get_cidreq(),
+<<<<<<< HEAD
     'name' => get_lang('LearningPaths'),
+=======
+    'name' => get_lang('Learning paths'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 ];
 
 $actions = Display::url(

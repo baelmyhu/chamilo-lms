@@ -9,13 +9,27 @@ use Chamilo\CoreBundle\Entity\SessionRelCourse;
 use Chamilo\CoreBundle\Entity\SkillRelUser;
 use Chamilo\CoreBundle\Entity\SkillRelUserComment;
 use Chamilo\CoreBundle\Entity\User;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Entity\UserRelUser;
 use Chamilo\CoreBundle\Framework\Container;
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+use Chamilo\CoreBundle\Entity\UserRelUser;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\UserCreatedEvent;
+use Chamilo\CoreBundle\Event\AbstractEvent;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\UserUpdatedEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\GroupRepository;
 use Chamilo\CoreBundle\Repository\Node\UserRepository;
 use ChamiloSession as Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Chamilo\CoreBundle\Entity\ExtraFieldValues as EntityExtraFieldValues;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\GradebookCategory;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  * This library provides functions for user management.
@@ -83,9 +97,12 @@ class UserManager
     /**
      * Creates a new user for the platform.
      *
+<<<<<<< HEAD
      * @author Hugues Peeters <peeters@ipm.ucl.ac.be>,
      * @author Roan Embrechts <roan_embrechts@yahoo.com>
      *
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      * @param string        $firstName
      * @param string        $lastName
      * @param int           $status                  (1 for course tutor, 5 for student, 6 for anonymous)
@@ -96,8 +113,13 @@ class UserManager
      * @param string        $language                User language    (optional)
      * @param string        $phone                   Phone number    (optional)
      * @param string        $pictureUri             Picture URI        (optional)
+<<<<<<< HEAD
      * @param string        $authSource              Authentication source (defaults to 'platform', dependind on constant)
      * @param string        $expirationDate          Account expiration date (optional, defaults to null)
+=======
+     * @param string        $authSources              Authentication source (defaults to 'platform', dependind on constant)
+     * @param string $expirationDate          Account expiration date (optional, defaults to null)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      * @param int           $active                  Whether the account is enabled or disabled by default
      * @param int           $hrDeptId              The department of HR in which the user is registered (defaults to 0)
      * @param array         $extra                   Extra fields (labels must be prefixed by "extra_")
@@ -116,6 +138,12 @@ class UserManager
      * If it exists, the current user id is the creator id. If a problem arises,
      * @assert ('Sam','Gamegie',5,'sam@example.com','jo','jo') > 1
      * @assert ('Pippin','Took',null,null,'jo','jo') === false
+<<<<<<< HEAD
+=======
+     *@author Hugues Peeters <peeters@ipm.ucl.ac.be>,
+     * @author Roan Embrechts <roan_embrechts@yahoo.com>
+     *
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function create_user(
         $firstName,
@@ -128,7 +156,11 @@ class UserManager
         $language = '',
         $phone = '',
         $pictureUri = '',
+<<<<<<< HEAD
         $authSource = null,
+=======
+        ?array $authSources = [],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $expirationDate = null,
         $active = 1,
         $hrDeptId = 0,
@@ -143,7 +175,11 @@ class UserManager
         $emailTemplate = [],
         $redirectToURLAfterLogin = ''
     ) {
+<<<<<<< HEAD
         $authSource = !empty($authSource) ? $authSource : PLATFORM_AUTH_SOURCE;
+=======
+        $authSources = !empty($authSources) ? $authSources : [UserAuthSource::PLATFORM];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $creatorId = empty($creatorId) ? api_get_user_id() : $creatorId;
 
         if (0 === $creatorId) {
@@ -166,6 +202,7 @@ class UserManager
             return false;
         }
 
+<<<<<<< HEAD
         global $_configuration;
         $original_password = $password;
 
@@ -184,11 +221,30 @@ class UserManager
         }
 
         $hostingLimitUsers = get_hosting_limit($access_url_id, 'hosting_limit_users');
+=======
+        Container::getEventDispatcher()
+            ->dispatch(
+                new UserCreatedEvent([], AbstractEvent::TYPE_PRE),
+                Events::USER_CREATED
+            )
+        ;
+
+        $original_password = $password;
+
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+        $access_url_id = $accessUrl->getId();
+
+        $hostingLimitUsers = get_hosting_limit($access_url_id, 'users');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if ($hostingLimitUsers !== null && $hostingLimitUsers > 0) {
             $num = self::get_number_of_users();
             if ($num >= $hostingLimitUsers) {
+<<<<<<< HEAD
                 api_warn_hosting_contact('hosting_limit_users');
+=======
+                api_warn_hosting_contact('users');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 Display::addFlash(
                     Display::return_message(
                         get_lang('Sorry, this installation has a users limit, which has now been reached. To increase the number of users allowed on this Chamilo installation, please contact your hosting provider or, if available, upgrade to a superior hosting plan.'),
@@ -201,7 +257,11 @@ class UserManager
         }
 
         if (1 === $status) {
+<<<<<<< HEAD
             $hostingLimitTeachers = get_hosting_limit($access_url_id, 'hosting_limit_teachers');
+=======
+            $hostingLimitTeachers = get_hosting_limit($access_url_id, 'teachers');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
             if ($hostingLimitTeachers !== null && $hostingLimitTeachers > 0) {
                 $num = self::get_number_of_users(1);
@@ -220,7 +280,11 @@ class UserManager
         }
 
         if (empty($password)) {
+<<<<<<< HEAD
             if (PLATFORM_AUTH_SOURCE === $authSource) {
+=======
+            if (in_array(UserAuthSource::PLATFORM, $authSources)) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 Display::addFlash(
                     Display::return_message(
                         get_lang('Required field').': '.get_lang(
@@ -236,7 +300,11 @@ class UserManager
             // We use the authSource as password.
             // The real validation will be by processed by the auth
             // source not Chamilo
+<<<<<<< HEAD
             $password = $authSource;
+=======
+            $password = $authSources;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         // Checking the user language
@@ -275,16 +343,29 @@ class UserManager
             ->setEmail($email)
             ->setOfficialCode($officialCode)
             ->setCreatorId($creatorId)
+<<<<<<< HEAD
             ->setAuthSource($authSource)
             ->setPhone($phone)
             ->setAddress($address)
             ->setLocale($language)
             ->setRegistrationDate($now)
+=======
+            ->setPhone($phone)
+            ->setAddress($address)
+            ->setLocale($language)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setHrDeptId($hrDeptId)
             ->setActive($active)
             ->setTimezone(api_get_timezone())
         ;
 
+<<<<<<< HEAD
+=======
+        foreach ($authSources as $authSource) {
+            $user->addAuthSourceByAuthentication($authSource, $accessUrl);
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (null !== $expirationDate) {
             $user->setExpirationDate($expirationDate);
         }
@@ -545,6 +626,11 @@ class UserManager
                     /** @var FormValidator $form */
                     $form->freeze(null, $elementTemplate);
                     $form->removeElement('submit');
+<<<<<<< HEAD
+=======
+                    $form->removeElement('pass1');
+                    $form->removeElement('pass2');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     $formData = $form->returnForm();
                     $url = api_get_path(WEB_CODE_PATH).'admin/user_information.php?user_id='.$user->getId();
                     $params = [
@@ -580,6 +666,20 @@ class UserManager
                     }
                 }
             }
+<<<<<<< HEAD
+=======
+
+            Container::getEventDispatcher()
+                ->dispatch(
+                    new UserCreatedEvent(
+                        ['return' => $user, 'originalPassword' => $original_password],
+                        AbstractEvent::TYPE_POST
+                    ),
+                    Events::USER_CREATED
+                )
+            ;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             Event::addEvent(LOG_USER_CREATE, LOG_USER_ID, $userId, null, $creatorId);
         } else {
             Display::addFlash(
@@ -806,7 +906,11 @@ class UserManager
      * @param string $lastname        The user's lastname
      * @param string $username        The user's username (login)
      * @param string $password        The user's password
+<<<<<<< HEAD
      * @param string $auth_source     The authentication source (default: "platform")
+=======
+     * @param string $auth_sources     The authentication source (default: "platform")
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      * @param string $email           The user's e-mail address
      * @param int    $status          The user's status
      * @param string $official_code   The user's official code (usually just an internal institutional code)
@@ -833,7 +937,11 @@ class UserManager
         $lastname,
         $username,
         $password,
+<<<<<<< HEAD
         $auth_source,
+=======
+        array $auth_sources,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $email,
         $status,
         $official_code,
@@ -851,6 +959,16 @@ class UserManager
         $address = null,
         $emailTemplate = []
     ) {
+<<<<<<< HEAD
+=======
+        $eventDispatcher = Container::getEventDispatcher();
+
+        $eventDispatcher->dispatch(
+            new UserUpdatedEvent([], AbstractEvent::TYPE_PRE),
+            Events::USER_UPDATED
+        );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $original_password = $password;
         $user_id = (int) $user_id;
         $creator_id = (int) $creator_id;
@@ -866,6 +984,7 @@ class UserManager
             return false;
         }
 
+<<<<<<< HEAD
         if (0 == $reset_password) {
             $password = null;
             $auth_source = $user->getAuthSource();
@@ -878,6 +997,18 @@ class UserManager
         } elseif (3 == $reset_password) {
             $password = $password;
             $auth_source = $auth_source;
+=======
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+
+        if (0 == $reset_password) {
+            $password = null;
+            $auth_sources = $user->getAuthSourcesAuthentications($accessUrl);
+        } elseif (1 == $reset_password) {
+            $original_password = $password = api_generate_password();
+            $auth_sources = [UserAuthSource::PLATFORM];
+        } elseif (2 == $reset_password) {
+            $auth_sources = [UserAuthSource::PLATFORM];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         // Checking the user language
@@ -918,7 +1049,10 @@ class UserManager
             ->setFirstname($firstname)
             ->setUsername($username)
             ->setStatus($status)
+<<<<<<< HEAD
             ->setAuthSource($auth_source)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setLocale($language)
             ->setEmail($email)
             ->setOfficialCode($official_code)
@@ -927,8 +1061,18 @@ class UserManager
             ->setExpirationDate($expiration_date)
             ->setActive($active)
             ->setHrDeptId((int) $hr_dept_id)
+<<<<<<< HEAD
         ;
 
+=======
+            ->removeAuthSources()
+        ;
+
+        foreach ($auth_sources as $authSource) {
+            $user->addAuthSourceByAuthentication($authSource, $accessUrl);
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (!is_null($password)) {
             $user->setPlainPassword($password);
         }
@@ -1024,6 +1168,14 @@ class UserManager
             );
         }
 
+<<<<<<< HEAD
+=======
+        $eventDispatcher->dispatch(
+            new UserUpdatedEvent(['user' => $user], AbstractEvent::TYPE_POST),
+            Events::USER_UPDATED
+        );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $user->getId();
     }
 
@@ -3410,11 +3562,19 @@ class UserManager
 
         if (!empty($dateFrom)) {
             $dateFrom = api_get_utc_datetime("$dateFrom 00:00:00");
+<<<<<<< HEAD
             $sql .= " AND u.registration_date >= '$dateFrom' ";
         }
         if (!empty($dateUntil)) {
             $dateUntil = api_get_utc_datetime("$dateUntil 23:59:59");
             $sql .= " AND u.registration_date <= '$dateUntil' ";
+=======
+            $sql .= " AND u.created_at >= '$dateFrom' ";
+        }
+        if (!empty($dateUntil)) {
+            $dateUntil = api_get_utc_datetime("$dateUntil 23:59:59");
+            $sql .= " AND u.created_at <= '$dateUntil' ";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         $res = Database::query($sql);
@@ -6094,7 +6254,11 @@ SQL;
     {
         $courses = [];
         $currentAccessUrlId = api_get_current_access_url_id();
+<<<<<<< HEAD
         $sql = "SELECT course.code, cru.user_id
+=======
+        $sql = "SELECT course.code, course.id as cid, cru.user_id
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 FROM course_rel_user cru
                     JOIN course ON cru.c_id = course.id
                     JOIN access_url_rel_user auru on cru.user_id = auru.user_id
@@ -6113,6 +6277,7 @@ SQL;
                 }
                 $courses[$row['code']]['subscribed']++;
                 $entityManager = Database::getManager();
+<<<<<<< HEAD
                 $repository = $entityManager->getRepository('ChamiloCoreBundle:GradebookCategory');
                 //todo check when have more than 1 gradebook
                 /** @var \Chamilo\CoreBundle\Entity\GradebookCategory $gradebook */
@@ -6121,6 +6286,17 @@ SQL;
                     $finished = 0;
                     $gb = Category::createCategoryObjectFromEntity($gradebook);
                     $finished = $gb->is_certificate_available($row['user_id']);
+=======
+                $repository = $entityManager->getRepository(GradebookCategory::class);
+                //todo check when have more than 1 gradebook
+                /** @var GradebookCategory $gradebook */
+                $gradebook = $repository->findOneBy(['course' => $row['cid']]);
+                if (!empty($gradebook)) {
+                    $finished = 0;
+                    Database::getManager()->persist($gradebook);
+                    $certificateRepo = $entityManager->getRepository(\Chamilo\CoreBundle\Entity\GradebookCertificate::class);
+                    $finished = $certificateRepo->getCertificateByUserId($gradebook->getId(), $row['user_id']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     if (!empty($finished)) {
                         $courses[$row['code']]['finished']++;
                     }
@@ -6162,18 +6338,32 @@ SQL;
                 }
                 $coursesInSessions[$index]['subscribed']++;
                 $entityManager = Database::getManager();
+<<<<<<< HEAD
                 $repository = $entityManager->getRepository('ChamiloCoreBundle:GradebookCategory');
                 /** @var \Chamilo\CoreBundle\Entity\GradebookCategory $gradebook */
                 $gradebook = $repository->findOneBy(
                     [
                         'courseCode' => $row['code'],
+=======
+                $repository = $entityManager->getRepository(GradebookCategory::class);
+                /** @var GradebookCategory $gradebook */
+                $gradebook = $repository->findOneBy(
+                    [
+                        'course' => $row['cid'],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         'sessionId' => $row['session_id'],
                     ]
                 );
                 if (!empty($gradebook)) {
                     $finished = 0;
+<<<<<<< HEAD
                     $gb = Category::createCategoryObjectFromEntity($gradebook);
                     $finished = $gb->is_certificate_available($row['user_id']);
+=======
+                    Database::getManager()->persist($gradebook);
+                    $certificateRepo = $entityManager->getRepository(\Chamilo\CoreBundle\Entity\GradebookCertificate::class);
+                    $finished = $certificateRepo->getCertificateByUserId($gradebook->getId(), $row['user_id']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     if (!empty($finished)) {
                         $coursesInSessions[$index]['finished']++;
                     }
@@ -6183,4 +6373,30 @@ SQL;
         return $coursesInSessions;
     }
 
+<<<<<<< HEAD
+=======
+    public static function redirectToResetPassword($userId): void
+    {
+        if ('true' !== api_get_setting('platform.force_renew_password_at_first_login')) {
+            return;
+        }
+        $askPassword = self::get_extra_user_data_by_field(
+            $userId,
+            'ask_new_password'
+        );
+        if (!empty($askPassword) && isset($askPassword['ask_new_password']) &&
+            1 === (int) $askPassword['ask_new_password']
+        ) {
+            $uniqueId = api_get_unique_id();
+            $userObj = api_get_user_entity($userId);
+            $userObj->setConfirmationToken($uniqueId);
+            $userObj->setPasswordRequestedAt(new \DateTime());
+            Database::getManager()->persist($userObj);
+            Database::getManager()->flush();
+            $url = api_get_path(WEB_CODE_PATH).'auth/reset.php?token='.$uniqueId;
+            api_location($url);
+        }
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

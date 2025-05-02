@@ -15,6 +15,10 @@ use Chamilo\CoreBundle\Entity\Tag;
 use Chamilo\CoreBundle\Entity\Tool;
 use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\Framework\Container;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Repository\AssetRepository;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\CourseCategoryRepository;
 use Chamilo\CoreBundle\Repository\ExtraFieldValuesRepository;
 use Chamilo\CoreBundle\Repository\LanguageRepository;
@@ -30,6 +34,11 @@ use Chamilo\CoreBundle\Settings\SettingsManager;
 use Chamilo\CoreBundle\Tool\ToolChain;
 use Chamilo\CourseBundle\Controller\ToolBaseController;
 use Chamilo\CourseBundle\Entity\CCourseDescription;
+<<<<<<< HEAD
+=======
+use Chamilo\CourseBundle\Entity\CLink;
+use Chamilo\CourseBundle\Entity\CShortcut;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CourseBundle\Entity\CTool;
 use Chamilo\CourseBundle\Entity\CToolIntro;
 use Chamilo\CourseBundle\Repository\CCourseDescriptionRepository;
@@ -133,6 +142,10 @@ class CourseController extends ToolBaseController
         Request $request,
         CShortcutRepository $shortcutRepository,
         EntityManagerInterface $em,
+<<<<<<< HEAD
+=======
+        AssetRepository $assetRepository
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ): Response {
         $requestData = json_decode($request->getContent(), true);
         // Sort behaviour
@@ -214,6 +227,25 @@ class CourseController extends ToolBaseController
         if (null !== $user) {
             $shortcutQuery = $shortcutRepository->getResources($course->getResourceNode());
             $shortcuts = $shortcutQuery->getQuery()->getResult();
+<<<<<<< HEAD
+=======
+
+            /** @var CShortcut $shortcut */
+            foreach ($shortcuts as $shortcut) {
+                $resourceNode = $shortcut->getShortCutNode();
+                $cLink = $em->getRepository(CLink::class)->findOneBy(['resourceNode' => $resourceNode]);
+
+                if ($cLink) {
+                    $shortcut->setCustomImageUrl(
+                        $cLink->getCustomImage()
+                            ? $assetRepository->getAssetUrl($cLink->getCustomImage())
+                            : null
+                    );
+                } else {
+                    $shortcut->setCustomImageUrl(null);
+                }
+            }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
         $responseData = [
             'shortcuts' => $shortcuts,
@@ -583,6 +615,7 @@ class CourseController extends ToolBaseController
     #[Route('/{id}/addToolIntro', name: 'chamilo_core_course_addtoolintro')]
     public function addToolIntro(Request $request, Course $course, EntityManagerInterface $em): Response
     {
+<<<<<<< HEAD
         $data = $request->getContent();
         $data = json_decode($data);
         $ctoolintroId = $data->iid;
@@ -631,6 +664,75 @@ class CourseController extends ToolBaseController
         );
 
         return new JsonResponse($responseData);
+=======
+        $data = json_decode($request->getContent());
+        $sessionId = $data->sid ?? ($data->resourceLinkList[0]->sid ?? 0);
+        $introText = $data->introText ?? null;
+
+        $session = $sessionId ? $em->getRepository(Session::class)->find($sessionId) : null;
+        $ctoolRepo = $em->getRepository(CTool::class);
+        $ctoolintroRepo = $em->getRepository(CToolIntro::class);
+
+        $ctoolSession = $ctoolRepo->findOneBy([
+            'title' => 'course_homepage',
+            'course' => $course,
+            'session' => $session,
+        ]);
+
+        if (!$ctoolSession) {
+            $toolEntity = $em->getRepository(Tool::class)->findOneBy(['title' => 'course_homepage']);
+            if ($toolEntity) {
+                $ctoolSession = (new CTool())
+                    ->setTool($toolEntity)
+                    ->setTitle('course_homepage')
+                    ->setCourse($course)
+                    ->setPosition(1)
+                    ->setVisibility(true)
+                    ->setParent($course)
+                    ->setCreator($course->getCreator())
+                    ->setSession($session)
+                    ->addCourseLink($course)
+                ;
+
+                $em->persist($ctoolSession);
+                $em->flush();
+            }
+        }
+
+        $ctoolIntro = $ctoolintroRepo->findOneBy(['courseTool' => $ctoolSession]);
+        if (!$ctoolIntro) {
+            $ctoolIntro = (new CToolIntro())
+                ->setCourseTool($ctoolSession)
+                ->setIntroText($introText ?? '')
+                ->setParent($course)
+            ;
+
+            $em->persist($ctoolIntro);
+            $em->flush();
+
+            return new JsonResponse([
+                'status' => 'created',
+                'cToolId' => $ctoolSession->getIid(),
+                'introIid' => $ctoolIntro->getIid(),
+                'introText' => $ctoolIntro->getIntroText(),
+            ]);
+        }
+
+        if (null !== $introText) {
+            $ctoolIntro->setIntroText($introText);
+            $em->persist($ctoolIntro);
+            $em->flush();
+
+            return new JsonResponse([
+                'status' => 'updated',
+                'cToolId' => $ctoolSession->getIid(),
+                'introIid' => $ctoolIntro->getIid(),
+                'introText' => $ctoolIntro->getIntroText(),
+            ]);
+        }
+
+        return new JsonResponse(['status' => 'no_action']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     #[Route('/check-enrollments', name: 'chamilo_core_check_enrollments', methods: ['GET'])]

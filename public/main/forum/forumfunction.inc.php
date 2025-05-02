@@ -216,6 +216,10 @@ function getForumCategoryAddForm(int $lp_id = null): string
     // Setting the form elements.
     $form->addHeader(get_lang('Add forum category'));
     $form->addText('forum_category_title', get_lang('Title'), true, ['autofocus']);
+<<<<<<< HEAD
+=======
+    $form->applyFilter('forum_category_title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $form->addHtmlEditor(
         'forum_category_comment',
         get_lang('Description'),
@@ -293,6 +297,10 @@ function forumForm(CForum $forum = null, int $lp_id = null): string
 
     // The title of the forum
     $form->addText('forum_title', get_lang('Title'), true, ['autofocus']);
+<<<<<<< HEAD
+=======
+    $form->applyFilter('forum_title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     // The comment of the forum.
     $form->addHtmlEditor(
@@ -521,6 +529,10 @@ function editForumCategoryForm(CForumCategory $category): string
     $form->addElement('hidden', 'action', 'edit_category');
     $form->addElement('hidden', 'forum_category_id');
     $form->addElement('text', 'forum_category_title', get_lang('Title'));
+<<<<<<< HEAD
+=======
+    $form->applyFilter('forum_category_title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     $form->addElement(
         'html_editor',
@@ -1934,6 +1946,10 @@ function show_add_post_form(CForum $forum, CForumThread $thread, CForumPost $pos
     }
 
     $form->addElement('text', 'post_title', get_lang('Title'));
+<<<<<<< HEAD
+=======
+    $form->applyFilter('post_title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $form->addHtmlEditor(
         'post_text',
         get_lang('Text'),
@@ -2197,6 +2213,10 @@ function newThread(CForum $forum, $form_values = '', $showPreview = true)
     }
 
     $form->addElement('text', 'post_title', get_lang('Title'));
+<<<<<<< HEAD
+=======
+    $form->applyFilter('post_title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $form->addHtmlEditor(
         'post_text',
         get_lang('Text'),

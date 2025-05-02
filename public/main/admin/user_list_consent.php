@@ -54,7 +54,11 @@ function prepare_user_sql_query($getCount)
                     u.status AS col7,
                     u.active AS col8,
                     u.id AS col9,
+<<<<<<< HEAD
                     u.registration_date AS col10,
+=======
+                    u.created_at AS col10,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     u.expiration_date AS exp,
                     u.password,
                     v.field_id,
@@ -98,7 +102,11 @@ function prepare_user_sql_query($getCount)
     foreach ($keywordList as $keyword) {
         $keywordListValues[$keyword] = null;
         if (isset($_GET[$keyword]) && !empty($_GET[$keyword])) {
+<<<<<<< HEAD
             $keywordListValues[$keyword] = $_GET[$keyword];
+=======
+            $keywordListValues[$keyword] = Security::remove_XSS($_GET[$keyword]);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $atLeastOne = true;
         }
     }

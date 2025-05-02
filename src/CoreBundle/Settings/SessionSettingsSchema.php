@@ -80,6 +80,11 @@ class SessionSettingsSchema extends AbstractSettingsSchema
                     'session_creation_form_set_extra_fields_mandatory' => '',
                     'session_model_list_field_ordered_by_id' => 'false',
                     'duplicate_specific_session_content_on_session_copy' => 'false',
+<<<<<<< HEAD
+=======
+                    'enable_auto_reinscription' => 'false',
+                    'enable_session_replication' => 'false',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ]
             )
         ;
@@ -93,6 +98,7 @@ class SessionSettingsSchema extends AbstractSettingsSchema
     public function buildForm(FormBuilderInterface $builder): void
     {
         $builder
+<<<<<<< HEAD
             ->add(
                 'add_users_by_coach',
                 YesNoType::class,
@@ -101,6 +107,9 @@ class SessionSettingsSchema extends AbstractSettingsSchema
                     'help' => 'AddUsersByCoachComment',
                 ]
             )
+=======
+            ->add('add_users_by_coach', YesNoType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('extend_rights_for_coach', YesNoType::class)
             ->add('show_session_coach', YesNoType::class)
             ->add('show_session_data', YesNoType::class)
@@ -110,6 +119,7 @@ class SessionSettingsSchema extends AbstractSettingsSchema
             ->add('allow_session_admins_to_manage_all_sessions', YesNoType::class)
             ->add('allow_teachers_to_create_sessions', YesNoType::class)
             ->add('prevent_session_admins_to_manage_all_users', YesNoType::class)
+<<<<<<< HEAD
             ->add(
                 'session_course_ordering',
                 TextType::class,
@@ -118,6 +128,9 @@ class SessionSettingsSchema extends AbstractSettingsSchema
                     'help' => 'SessionCourseOrderingComment',
                 ]
             )
+=======
+            ->add('session_course_ordering', TextType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('limit_session_admin_role', YesNoType::class)
             ->add('allow_tutors_to_assign_students_to_session', YesNoType::class)
             ->add('drh_can_access_all_session_content', YesNoType::class)

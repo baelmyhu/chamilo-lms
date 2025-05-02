@@ -664,6 +664,7 @@ class SkillModel extends Model
     /**
      * Get user's skills.
      *
+<<<<<<< HEAD
      * @param int  $userId
      * @param bool $getSkillData
      * @param int  $courseId
@@ -672,6 +673,17 @@ class SkillModel extends Model
      * @return array
      */
     public function getUserSkills($userId, $getSkillData = false, $courseId = 0, $sessionId = 0)
+=======
+     * @param int   $userId
+     * @param ?bool $getSkillData
+     * @param ?int  $courseId
+     * @param ?int  $sessionId
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getUserSkills(int $userId, ?bool $getSkillData = false, ?int $courseId = 0, ?int $sessionId = 0): array
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $em = Database::getManager();
         $userId = (int) $userId;
@@ -685,7 +697,11 @@ class SkillModel extends Model
 
         $sessionCondition = '';
         if (!empty($sessionId)) {
+<<<<<<< HEAD
             $sessionCondition = " AND course_id = $sessionId ";
+=======
+            $sessionCondition = " AND session_id = $sessionId ";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         $sql = 'SELECT DISTINCT
@@ -2355,7 +2371,10 @@ class SkillModel extends Model
             ->setSkill($skill)
             ->setArgumentation($argumentation)
             ->setArgumentationAuthorId($authorId)
+<<<<<<< HEAD
             ->setAssignedBy(0)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ;
 
         if ($showLevels && !empty($levelId)) {

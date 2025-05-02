@@ -12,13 +12,22 @@ use Chamilo\CoreBundle\Entity\AccessUrlRelColorTheme;
 use Chamilo\CoreBundle\Entity\ColorTheme;
 use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
 use Doctrine\ORM\EntityManagerInterface;
+<<<<<<< HEAD
 use League\Flysystem\FilesystemException;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use League\Flysystem\FilesystemOperator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 use const DIRECTORY_SEPARATOR;
 use const PHP_EOL;
 
+<<<<<<< HEAD
+=======
+/**
+ * @implements ProcessorInterface<ColorTheme, ColorTheme|void>
+ */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 final class ColorThemeStateProcessor implements ProcessorInterface
 {
     public function __construct(
@@ -29,12 +38,16 @@ final class ColorThemeStateProcessor implements ProcessorInterface
         private readonly FilesystemOperator $filesystem,
     ) {}
 
+<<<<<<< HEAD
     /**
      * @param mixed $data
      *
      * @throws FilesystemException
      */
     public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+=======
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []): ?ColorTheme
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         \assert($data instanceof ColorTheme);
 

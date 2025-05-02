@@ -1,6 +1,10 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\UserRelUser;
 use ChamiloSession as Session;
 
@@ -76,10 +80,24 @@ function LoginCheck($uid)
 function preventMultipleLogin($userId)
 {
     $table = Database::get_main_table(TABLE_STATISTIC_TRACK_E_ONLINE);
+<<<<<<< HEAD
     $userId = intval($userId);
     if ('true' === api_get_setting('prevent_multiple_simultaneous_login')) {
         if (!empty($userId) && !api_is_anonymous()) {
             $isFirstLogin = Session::read('first_user_login');
+=======
+    $userId = (int) $userId;
+    if ('true' === api_get_setting('prevent_multiple_simultaneous_login')) {
+        if (!empty($userId) && !api_is_anonymous()) {
+            $isFirstLogin = Session::read('first_user_login');
+            $currentIp = Session::read('current_ip');
+            $differentIp = false;
+            if (!empty($currentIp) && api_get_real_ip() !== $currentIp) {
+                $isFirstLogin = null;
+                $differentIp = true;
+            }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (empty($isFirstLogin)) {
                 $sql = "SELECT login_id FROM $table
                         WHERE login_user_id = $userId
@@ -94,7 +112,11 @@ function preventMultipleLogin($userId)
                 $userIsReallyOnline = user_is_online($userId);
 
                 // Trying double login.
+<<<<<<< HEAD
                 if (!empty($loginData) && true == $userIsReallyOnline) {
+=======
+                if (!empty($loginData) && true == $userIsReallyOnline || $differentIp) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     session_regenerate_id();
                     Session::destroy();
                     header('Location: '.api_get_path(WEB_PATH).'index.php?loginFailed=1&error=multiple_connection_not_allowed');
@@ -102,6 +124,10 @@ function preventMultipleLogin($userId)
                 } else {
                     // First time
                     Session::write('first_user_login', 1);
+<<<<<<< HEAD
+=======
+                    Session::write('current_ip', api_get_real_ip());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 }
             }
         }
@@ -169,12 +195,23 @@ function online_logout($user_id = null, $logout_redirect = false)
     // (using *authent_name*_logout as the function name) and the following code
     // will find and execute it
     $uinfo = api_get_user_info($user_id);
+<<<<<<< HEAD
     if ((PLATFORM_AUTH_SOURCE != $uinfo['auth_source']) && is_array($extAuthSource)) {
         if (is_array($extAuthSource[$uinfo['auth_source']])) {
             $subarray = $extAuthSource[$uinfo['auth_source']];
             if (!empty($subarray['logout']) && file_exists($subarray['logout'])) {
                 require_once $subarray['logout'];
                 $logout_function = $uinfo['auth_source'].'_logout';
+=======
+    if (!in_array(UserAuthSource::PLATFORM, $uinfo['auth_sources']) && is_array($extAuthSource)) {
+        $firstAuthSource = $uinfo['auth_sources'][0];
+
+        if (is_array($extAuthSource[$firstAuthSource])) {
+            $subarray = $extAuthSource[$firstAuthSource];
+            if (!empty($subarray['logout']) && file_exists($subarray['logout'])) {
+                require_once $subarray['logout'];
+                $logout_function = $firstAuthSource.'_logout';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 if (function_exists($logout_function)) {
                     $logout_function($uinfo);
                 }
@@ -201,7 +238,11 @@ function online_logout($user_id = null, $logout_redirect = false)
     Session::destroy();
 
     $pluginKeycloak = 'true' === api_get_plugin_setting('keycloak', 'tool_enable');
+<<<<<<< HEAD
     if ($pluginKeycloak && 'keycloak' === $uinfo['auth_source']) {
+=======
+    if ($pluginKeycloak && in_array('keycloak', $uinfo['auth_sources'])) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $pluginUrl = api_get_path(WEB_PLUGIN_PATH).'keycloak/start.php?slo';
         header('Location: '.$pluginUrl);
         exit;

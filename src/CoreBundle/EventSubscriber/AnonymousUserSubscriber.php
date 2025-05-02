@@ -8,6 +8,10 @@ namespace Chamilo\CoreBundle\EventSubscriber;
 
 use Chamilo\CoreBundle\Entity\TrackELogin;
 use Chamilo\CoreBundle\Entity\User;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Settings\SettingsManager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +27,12 @@ class AnonymousUserSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly Security $security,
         private readonly EntityManagerInterface $entityManager,
+<<<<<<< HEAD
         private readonly SettingsManager $settingsManager
+=======
+        private readonly SettingsManager $settingsManager,
+        private readonly AccessUrlHelper $accessUrlHelper,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ) {}
 
     public function onKernelRequest(RequestEvent $event): void
@@ -34,6 +43,10 @@ class AnonymousUserSubscriber implements EventSubscriberInterface
 
         $request = $event->getRequest();
         $userIp = $request->getClientIp() ?: '127.0.0.1';
+<<<<<<< HEAD
+=======
+        $accessUrl = $this->accessUrlHelper->getCurrent();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $anonymousUserId = $this->getOrCreateAnonymousUserId($userIp);
         if (null !== $anonymousUserId) {
@@ -70,10 +83,17 @@ class AnonymousUserSubscriber implements EventSubscriberInterface
                     'picture_uri' => $user->getPictureUri(),
                     'status' => $user->getStatus(),
                     'active' => $user->isActive(),
+<<<<<<< HEAD
                     'auth_source' => $user->getAuthSource(),
                     'theme' => $user->getTheme(),
                     'language' => $user->getLocale(),
                     'registration_date' => $user->getRegistrationDate()->format('Y-m-d H:i:s'),
+=======
+                    'auth_sources' => $user->getAuthSourcesAuthentications($accessUrl),
+                    'theme' => $user->getTheme(),
+                    'language' => $user->getLocale(),
+                    'created_at' => $user->getCreatedAt()->format('Y-m-d H:i:s'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'expiration_date' => $user->getExpirationDate() ? $user->getExpirationDate()->format('Y-m-d H:i:s') : null,
                     'last_login' => $user->getLastLogin() ? $user->getLastLogin()->format('Y-m-d H:i:s') : null,
                     'is_anonymous' => true,
@@ -98,7 +118,11 @@ class AnonymousUserSubscriber implements EventSubscriberInterface
         $anonymousAutoProvisioning = 'true' === $this->settingsManager->getSetting('security.anonymous_autoprovisioning');
 
         if (!$anonymousAutoProvisioning) {
+<<<<<<< HEAD
             $anonymousUser = $userRepository->findOneBy(['status' => User::ANONYMOUS], ['registrationDate' => 'ASC']);
+=======
+            $anonymousUser = $userRepository->findOneBy(['status' => User::ANONYMOUS], ['createdAt' => 'ASC']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if ($anonymousUser) {
                 return $anonymousUser->getId();
             }
@@ -110,7 +134,11 @@ class AnonymousUserSubscriber implements EventSubscriberInterface
         if (0 === $maxAnonymousUsers) {
             $maxAnonymousUsers = self::MAX_ANONYMOUS_USERS;
         }
+<<<<<<< HEAD
         $anonymousUsers = $userRepository->findBy(['status' => User::ANONYMOUS], ['registrationDate' => 'ASC']);
+=======
+        $anonymousUsers = $userRepository->findBy(['status' => User::ANONYMOUS], ['createdAt' => 'ASC']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         // Check in TrackELogin if there is an anonymous user with the same IP
         foreach ($anonymousUsers as $user) {

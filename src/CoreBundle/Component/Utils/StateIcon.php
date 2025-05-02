@@ -62,4 +62,11 @@ enum StateIcon: string
     case OFFLINE = 'account-off';
     // Soft deleted (for a user)
     case REJECT = 'cancel';
+<<<<<<< HEAD
+=======
+    // Item is visible in the catalogue
+    case CATALOGUE_ON = 'book-plus';
+    // Item is hidden from the catalogue
+    case CATALOGUE_OFF = 'book-minus-outline';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

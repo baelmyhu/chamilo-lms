@@ -404,6 +404,24 @@ switch ($action) {
 
         $to = [];
         if (empty($group_id)) {
+<<<<<<< HEAD
+=======
+            if (!empty($sessionId)) {
+                $userGroups = Container::getUsergroupRepository()->findBySession($session);
+                $groupSelectTitle = get_lang('Classes of session').' '.$session->getTitle();
+            } else {
+                $userGroups = Container::getUsergroupRepository()->findByCourse($course);
+                $groupSelectTitle = get_lang('Classes of course');
+            }
+
+            if (!empty($userGroups)) {
+                $groupSelect = ['' => get_lang('Select a class')];
+                foreach ($userGroups as $group) {
+                    $groupSelect[$group->getId()] = $group->getTitle();
+                }
+                $form->addSelect('usergroup_id', $groupSelectTitle, $groupSelect, ['id' => 'usergroup_id']);
+            }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (isset($_GET['remind_inactive'])) {
                 $email_ann = '1';
                 $content_to_modify = sprintf(
@@ -508,6 +526,7 @@ switch ($action) {
         }
 
         $ajaxUrl = api_get_path(WEB_AJAX_PATH).'announcement.ajax.php?'.api_get_cidreq().'&a=preview';
+<<<<<<< HEAD
 
         $form->addHtml("
             <script>
@@ -535,14 +554,96 @@ switch ($action) {
                                 });
                                 $('#announcement_preview_result').html('' +
                                     '".addslashes(get_lang('Announcement will be sent to'))."<br/>' + resultToString
+=======
+        $ajaxUserGroupUrl = api_get_path(WEB_AJAX_PATH).'usergroup.ajax.php?'.api_get_cidreq();
+        $form->addHtml("
+        <script>
+            $(function () {
+                $('#usergroup_id').on('change', function () {
+                    const groupId = $(this).val();
+                    const selected = $('#users_to');
+                    selected.empty();
+                    if (!groupId) return;
+                    $.ajax({
+                        url: '".$ajaxUserGroupUrl."',
+                        type: 'POST',
+                        data: {
+                            a: 'get_users_by_group_course',
+                            group_id: groupId,
+                            course_code: '".api_get_course_id()."',
+                            session_id: '".api_get_session_id()."'
+                        },
+                        success: function (response) {
+                            const result = JSON.parse(response);
+                            for (let user of result) {
+                                selected.append(new Option(user.name, 'USER:' + user.id));
+                            }
+                            $('#announcement_preview_result').html('');
+                        }
+                    })
+                });
+
+                $('#announcement_preview').on('click', function () {
+                    const selectedClass = $('#usergroup_id').val();
+                    if (selectedClass) {
+                        var users = [];
+                        var userLabels = [];
+                        $('#users_to option').each(function () {
+                            users.push($(this).val());
+                            userLabels.push($(this).text());
+                        });
+                        if (users.length === 0) {
+                            $('#announcement_preview_result').html('');
+                            $('#announcement_preview_result').show();
+                            return;
+                        }
+                        var resultHtml = '<strong>".addslashes(get_lang('Announcement will be sent to'))."</strong><ul>';
+                        userLabels.forEach(function (name) {
+                            resultHtml += '<li>' + name + '</li>';
+                        });
+                        resultHtml += '</ul>';
+                        $('#announcement_preview_result').html(resultHtml);
+                        $('#announcement_preview_result').show();
+                        $('#send_button').show();
+                    } else {
+                        var users = [];
+                        var form = $('#announcement').serialize();
+                        $('#users_to option').each(function () {
+                            users.push($(this).val());
+                        });
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'json',
+                            url: '" . $ajaxUrl . "',
+                            data: {users: JSON.stringify(users), form: form},
+                            beforeSend: function () {
+                                $('#announcement_preview_result').html('<i class=\"fa fa-spinner\"></i>');
+                                $('#send_button').hide();
+                            },
+                            success: function (result) {
+                                let list = '<ul>';
+                                for (let name of result) {
+                                    list += '<li>' + name + '</li>';
+                                }
+                                list += '</ul>';
+                                $('#announcement_preview_result').html(
+                                    '<strong>".addslashes(get_lang('Announcement will be sent to'))."</strong><br>' + list
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                                 );
                                 $('#announcement_preview_result').show();
                                 $('#send_button').show();
                             }
                         });
+<<<<<<< HEAD
                     });
                 });
             </script>
+=======
+                    }
+                });
+            });
+        </script>
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ");
 
         if (isset($defaults['users'])) {
@@ -671,8 +772,12 @@ switch ($action) {
             $notificationPeriod = $data['notification_period'] ?? [];
 
             $reminders = $notificationCount ? array_map(null, $notificationCount, $notificationPeriod) : [];
+<<<<<<< HEAD
 
             if (isset($id) && $id) {
+=======
+            if (!empty($id)) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 // there is an Id => the announcement already exists => update mode
                 $file_comment = $announcementAttachmentIsDisabled ? null : $_POST['file_comment'];
                 $file = $announcementAttachmentIsDisabled ? [] : $_FILES['user_upload'];

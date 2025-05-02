@@ -9,15 +9,46 @@ namespace Chamilo\CoreBundle\Repository;
 use Chamilo\CoreBundle\Entity\AbstractResource;
 use Chamilo\CoreBundle\Entity\Course;
 use Chamilo\CoreBundle\Entity\ResourceLink;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Entity\Session;
+=======
+use Chamilo\CoreBundle\Entity\ResourceType;
+use Chamilo\CoreBundle\Entity\Session;
+use Chamilo\CoreBundle\Entity\Tool;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\Entity\Usergroup;
 use Chamilo\CourseBundle\Entity\CGroup;
 use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
+<<<<<<< HEAD
 class ResourceLinkRepository extends SortableRepository
 {
+=======
+/**
+ * @template-extends SortableRepository<ResourceLink>
+ */
+class ResourceLinkRepository extends SortableRepository
+{
+    private array $toolList = [
+        'course_description' => '/main/course_description/index.php',
+        'document' => '/resources/document/%resource_node_id%/',
+        'learnpath' => '/main/lp/lp_controller.php',
+        'link' => '/resources/links/%resource_node_id%/',
+        'quiz' => '/main/exercise/exercise.php',
+        'announcement' => '/main/announcements/announcements.php',
+        'glossary' => '/resources/glossary/%resource_node_id%/',
+        'attendance' => '/main/attendance/index.php',
+        'course_progress' => '/main/course_progress/index.php',
+        'agenda' => '/resources/ccalendarevent',
+        'forum' => '/main/forum/index.php',
+        'student_publication' => '/resources/assignment/%resource_node_id%',
+        'survey' => '/main/survey/survey_list.php',
+        'notebook' => '/main/notebook/index.php',
+    ];
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct(EntityManagerInterface $em)
     {
         parent::__construct($em, $em->getClassMetadata(ResourceLink::class));
@@ -50,4 +81,105 @@ class ResourceLinkRepository extends SortableRepository
             $this->remove($link);
         }
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Retrieves the list of available tools filtered by a predefined tool list.
+     *
+     * @return array the list of tools with their IDs and titles
+     */
+    public function getAvailableTools(): array
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder
+            ->select('DISTINCT t.id, t.title')
+            ->from(ResourceLink::class, 'rl')
+            ->innerJoin(ResourceType::class, 'rt', 'WITH', 'rt.id = rl.resourceTypeGroup')
+            ->innerJoin(Tool::class, 't', 'WITH', 't.id = rt.tool')
+            ->where('rl.course IS NOT NULL')
+            ->andWhere('t.title IN (:toolList)')
+            ->setParameter('toolList', array_keys($this->toolList))
+        ;
+
+        $result = $queryBuilder->getQuery()->getArrayResult();
+
+        $tools = [];
+        foreach ($result as $row) {
+            $tools[$row['id']] = ucfirst(str_replace('_', ' ', $row['title']));
+        }
+
+        return $tools;
+    }
+
+    /**
+     * Retrieves a usage report of tools with dynamic links.
+     *
+     * @return array the tool usage data including counts, last update timestamps, and dynamic links
+     */
+    public function getToolUsageReportByTools(array $toolIds): array
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+
+        $queryBuilder
+            ->select(
+                'COUNT(rl.id) AS resource_count',
+                'IDENTITY(rl.course) AS course_id',
+                'IDENTITY(rl.session) AS session_id',
+                'IDENTITY(c.resourceNode) AS course_resource_node_id',
+                't.title AS tool_name',
+                'c.title AS course_name',
+                's.title AS session_name',
+                'MAX(rl.updatedAt) AS last_updated'
+            )
+            ->from(ResourceLink::class, 'rl')
+            ->innerJoin(ResourceType::class, 'rt', 'WITH', 'rt.id = rl.resourceTypeGroup')
+            ->innerJoin(Tool::class, 't', 'WITH', 't.id = rt.tool')
+            ->innerJoin(Course::class, 'c', 'WITH', 'c.id = rl.course')
+            ->leftJoin(Session::class, 's', 'WITH', 's.id = rl.session')
+            ->where($queryBuilder->expr()->in('t.id', ':toolIds'))
+            ->groupBy('rl.course, rl.session, t.title')
+            ->orderBy('t.title', 'ASC')
+            ->addOrderBy('c.title', 'ASC')
+            ->addOrderBy('s.title', 'ASC')
+            ->setParameter('toolIds', $toolIds)
+        ;
+
+        $result = $queryBuilder->getQuery()->getArrayResult();
+
+        return array_map(function ($row) {
+            $toolName = $row['tool_name'];
+            $baseLink = $this->toolList[$toolName] ?? null;
+            $link = '-';
+            if ($baseLink) {
+                $link = str_replace(
+                    ['%resource_node_id%'],
+                    [$row['course_resource_node_id']],
+                    $baseLink
+                );
+
+                $queryParams = [
+                    'cid' => $row['course_id'],
+                ];
+
+                if (!empty($row['session_id'])) {
+                    $queryParams['sid'] = $row['session_id'];
+                }
+
+                $link .= '?'.http_build_query($queryParams);
+            }
+
+            return [
+                'tool_name' => $toolName,
+                'session_id' => $row['session_id'],
+                'session_name' => $row['session_name'] ?: '-',
+                'course_id' => $row['course_id'],
+                'course_name' => $row['course_name'],
+                'resource_count' => (int) $row['resource_count'],
+                'last_updated' => $row['last_updated'] ?: '-',
+                'link' => $link,
+            ];
+        }, $result);
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

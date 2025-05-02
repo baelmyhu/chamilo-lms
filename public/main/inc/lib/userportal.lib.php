@@ -857,7 +857,11 @@ class IndexManager
                 ];
             } else {
                 $items[] = [
+<<<<<<< HEAD
                     'link' => api_get_path(WEB_CODE_PATH).'dashboard/index.php',
+=======
+                    'link' => api_get_path(WEB_CODE_PATH).'Dashboard/index.php',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'title' => get_lang('Dashboard'),
                 ];
             }

@@ -21,6 +21,10 @@ class AttendanceSettingsSchema extends AbstractSettingsSchema
                     'enable_sign_attendance_sheet' => 'false',
                     'attendance_calendar_set_duration' => 'false',
                     'attendance_allow_comments' => 'false',
+<<<<<<< HEAD
+=======
+                    'multilevel_grading' => 'false',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ]
             )
 //            ->setAllowedTypes(
@@ -32,6 +36,7 @@ class AttendanceSettingsSchema extends AbstractSettingsSchema
     public function buildForm(FormBuilderInterface $builder): void
     {
         $builder
+<<<<<<< HEAD
             ->add(
                 'allow_delete_attendance',
                 YesNoType::class,
@@ -43,6 +48,13 @@ class AttendanceSettingsSchema extends AbstractSettingsSchema
             ->add('enable_sign_attendance_sheet', YesNoType::class)
             ->add('attendance_calendar_set_duration', YesNoType::class)
             ->add('attendance_allow_comments', YesNoType::class)
+=======
+            ->add('allow_delete_attendance', YesNoType::class)
+            ->add('enable_sign_attendance_sheet', YesNoType::class)
+            ->add('attendance_calendar_set_duration', YesNoType::class)
+            ->add('attendance_allow_comments', YesNoType::class)
+            ->add('multilevel_grading', YesNoType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ;
 
         $this->updateFormFieldsFromSettingsInfo($builder);

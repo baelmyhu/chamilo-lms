@@ -17,7 +17,11 @@ class Attendance extends AbstractTool implements ToolInterface
 
     public function getLink(): string
     {
+<<<<<<< HEAD
         return '/main/attendance/index.php';
+=======
+        return '/resources/attendance/:nodeId/';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public function getIcon(): string

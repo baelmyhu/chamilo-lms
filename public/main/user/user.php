@@ -642,7 +642,13 @@ if ($canRead) {
     );
     $form->addHidden('type', $type);
     $form->addText('keyword', '', false);
+<<<<<<< HEAD
     $form->addElement('hidden', 'cidReq', api_get_course_id());
+=======
+    $form->addElement('hidden', 'cid', api_get_course_int_id());
+    $form->addElement('hidden', 'sid', api_get_session_id());
+    $form->addElement('hidden', 'gid', api_get_group_id());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $form->addButtonSearch(get_lang('Search'));
     $actionsRight = $form->returnForm();
 
@@ -1023,18 +1029,27 @@ function active_filter($active, $urlParams, $row)
  */
 function modify_filter($user_id, $row, $data)
 {
+<<<<<<< HEAD
     $canEditUsers = 'true' == api_get_setting('allow_user_course_subscription_by_course_admin') || api_is_platform_admin();
 
     $is_allowed_to_track = api_is_allowed_to_edit(true, true);
     $user_id = $data[0];
     $userInfo = api_get_user_info($user_id);
     $isInvitee = INVITEE == $userInfo['status'] ? true : false;
+=======
+    $canEditUsers = 'true' === api_get_setting('allow_user_course_subscription_by_course_admin') || api_is_platform_admin();
+    $is_allowed_to_track = api_is_allowed_to_edit(true, true);
+    $user_id = $data[0];
+    $userInfo = api_get_user_info($user_id);
+    $isInvitee = INVITEE == $userInfo['status'];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $course_info = $_course = api_get_course_info();
     $current_user_id = api_get_user_id();
     $sessionId = api_get_session_id();
     $courseId = $_course['id'];
     $type = isset($_REQUEST['type']) ? intval($_REQUEST['type']) : STUDENT;
 
+<<<<<<< HEAD
     $result = '';
     if ($is_allowed_to_track) {
         $result .= '<a href="../my_space/myStudents.php?'.api_get_cidreq().'&student='.$user_id.'&details=true&course='.$courseId.'&origin=user_course&id_session='.api_get_session_id().'"
@@ -1049,12 +1064,31 @@ function modify_filter($user_id, $row, $data)
         $result .= ' <a
         href="'.api_get_path(WEB_CODE_PATH).'admin/user_list.php?action=login_as&user_id='.$user_id.'&sec_token='.Security::getTokenFromSession().'">'.
             Display::getMdiIcon('login_as', 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Login as')).'</a>&nbsp;&nbsp;';
+=======
+    $result = '<div class="flex items-center justify-center gap-2 text-sm">';
+
+    // Reporting
+    if ($is_allowed_to_track) {
+        $result .= Display::url(
+            Display::getMdiIcon(ActionIcon::VIEW_DETAILS, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Reporting')),
+            '../my_space/myStudents.php?'.api_get_cidreq().'&student='.$user_id.'&details=true&course='.$courseId.'&origin=user_course&id_session='.api_get_session_id()
+        );
+    }
+
+    // Login as
+    if (api_is_platform_admin()) {
+        $result .= Display::url(
+            Display::getMdiIcon(ActionIcon::LOGIN_AS, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Login as')),
+            api_get_path(WEB_PATH).'?_switch_user='.$userInfo['username']
+        );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     if (api_is_allowed_to_edit(null, true)) {
         if (empty($sessionId)) {
             $isTutor = isset($data['is_tutor']) ? (int) $data['is_tutor'] : 0;
             $isTutor = empty($isTutor) ? 1 : 0;
+<<<<<<< HEAD
 
             $text = get_lang('Remove assistant role');
             if ($isTutor) {
@@ -1109,5 +1143,46 @@ function modify_filter($user_id, $row, $data)
         }
     }
 
+=======
+            $text = $isTutor ? get_lang('Convert to assistant') : get_lang('Remove assistant role');
+            $disabled = $isInvitee ? 'disabled' : '';
+
+            // Edit
+            if (api_get_configuration_value('extra')) {
+                $result .= Display::url(
+                    Display::getMdiIcon(ActionIcon::EDIT, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Edit')),
+                    api_get_path(WEB_CODE_PATH).'extra/userInfo.php?'.api_get_cidreq().'&editMainUserInfo='.$user_id
+                );
+            }
+
+            // Convert to assistant / Remove
+            if (STUDENT == $data['user_status_in_course']) {
+                $result .= Display::url(
+                    Display::getMdiIcon($isTutor ? ActionIcon::ACCEPT : ActionIcon::REJECT, 'ch-tool-icon text-xl', ICON_SIZE_MEDIUM, null, $text),
+                    'user.php?'.api_get_cidreq().'&action=set_tutor&is_tutor='.$isTutor.'&user_id='.$user_id.'&type='.$type,
+                    ['class' => $disabled]
+                );
+            }
+        }
+
+        // Unsubscribe
+        if ($canEditUsers && ($user_id != $current_user_id || api_is_platform_admin())) {
+            $result .= Display::url(
+                Display::getMdiIcon(ActionIcon::EXIT, 'ch-tool-icon text-xl delete-swal', null, ICON_SIZE_MEDIUM, get_lang('Unsubscribe')),
+                api_get_self().'?'.api_get_cidreq().'&type='.$type.'&unregister=yes&user_id='.$user_id
+            );
+        }
+    } else {
+        if (1 == $course_info['unsubscribe'] && $user_id == $current_user_id) {
+            $result .= Display::url(
+                Display::getMdiIcon(ActionIcon::EXIT, 'ch-tool-icon text-xl delete-swal', null, ICON_SIZE_MEDIUM, get_lang('Unsubscribe')),
+                api_get_self().'?'.api_get_cidreq().'&type='.$type.'&unregister=yes&user_id='.$user_id
+            );
+        }
+    }
+
+    $result .= '</div>';
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     return $result;
 }

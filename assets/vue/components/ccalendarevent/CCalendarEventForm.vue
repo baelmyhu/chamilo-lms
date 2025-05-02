@@ -24,6 +24,25 @@
       :required="false"
       editor-id="calendar-event-content"
     />
+<<<<<<< HEAD
+=======
+
+    <div class="m-4 flex flex-col gap-2">
+      <label
+        for="color-picker"
+        class="font-semibold text-sm"
+      >
+        {{ t("Color") }}
+      </label>
+      <input
+        id="color-picker"
+        type="color"
+        v-model="item.color"
+        class="w-14 h-10 cursor-pointer border rounded"
+      />
+    </div>
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     <CalendarInvitations v-model="item" />
 
     <CalendarRemindersEditor
@@ -37,6 +56,10 @@
 
 <script setup>
 import { computed, ref, watch } from "vue"
+<<<<<<< HEAD
+=======
+import { useRoute } from "vue-router"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 import { useVuelidate } from "@vuelidate/core"
 import { required } from "@vuelidate/validators"
 import BaseInputText from "../basecomponents/BaseInputText.vue"
@@ -47,8 +70,13 @@ import CalendarRemindersEditor from "./CalendarRemindersEditor.vue"
 import BaseTinyEditor from "../basecomponents/BaseTinyEditor.vue"
 
 const { t } = useI18n()
+<<<<<<< HEAD
 
 // eslint-disable-next-line no-undef
+=======
+const route = useRoute()
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 const props = defineProps({
   values: {
     type: Object,
@@ -78,12 +106,21 @@ const rules = computed(() => ({
     endDate: {
       required,
     },
+<<<<<<< HEAD
+=======
+    color: {
+      required,
+    },
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   },
 }))
 
 const v$ = useVuelidate(rules, { item })
 
+<<<<<<< HEAD
 // eslint-disable-next-line no-undef
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 defineExpose({
   v$,
 })
@@ -98,4 +135,30 @@ watch(dateRange, (newValue) => {
   item.value.startDate = newValue[0]
   item.value.endDate = newValue[1]
 })
+<<<<<<< HEAD
+=======
+
+function getContextTypeFromRoute() {
+  if (route.query.type === "global") return "global"
+  if (route.query.sid && route.query.sid !== "0") return "session"
+  if (route.query.cid && (!route.query.sid || route.query.sid === "0")) return "course"
+  return "personal"
+}
+
+function getDefaultColorByType(type) {
+  const defaultColors = {
+    global: "#FF0000",
+    course: "#458B00",
+    session: "#00496D",
+    personal: "#4682B4",
+  }
+
+  return defaultColors[type] || defaultColors.personal
+}
+
+if (!item.value.color) {
+  const type = getContextTypeFromRoute()
+  item.value.color = getDefaultColorByType(type)
+}
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 </script>

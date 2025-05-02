@@ -8,7 +8,11 @@ export const usePlatformConfig = defineStore("platformConfig", () => {
   const studentView = ref("teacherview")
   const plugins = ref([])
   const visualTheme = ref("chamilo")
+<<<<<<< HEAD
   const externalAuthentication = ref([])
+=======
+  const oauth2Providers = ref([])
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
   async function findSettingsRequest() {
     isLoading.value = true
@@ -24,7 +28,11 @@ export const usePlatformConfig = defineStore("platformConfig", () => {
 
       plugins.value = data.plugins
 
+<<<<<<< HEAD
       externalAuthentication.value = data.external_authentication
+=======
+      oauth2Providers.value = data.oauth2_providers
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     } catch (e) {
       console.log(e)
     } finally {
@@ -51,6 +59,10 @@ export const usePlatformConfig = defineStore("platformConfig", () => {
     getSetting,
     isStudentViewActive,
     visualTheme,
+<<<<<<< HEAD
     externalAuthentication,
+=======
+    oauth2Providers,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   }
 })

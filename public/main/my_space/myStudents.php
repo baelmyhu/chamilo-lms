@@ -5,6 +5,13 @@
 use Chamilo\CoreBundle\Entity\Message;
 use Chamilo\CoreBundle\Entity\Usergroup;
 use Chamilo\CoreBundle\Framework\Container;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Event\AbstractEvent;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\MyStudentsLpTrackingEvent;
+use Chamilo\CoreBundle\Event\MyStudentsQuizTrackingEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CourseBundle\Entity\CLpCategory;
 use Chamilo\CourseBundle\Entity\CQuiz;
 use Chamilo\CourseBundle\Entity\CStudentPublication;
@@ -763,7 +770,11 @@ $notebookTeacherEnable = 'true' === api_get_plugin_setting('notebookteacher', 'e
 if ($notebookTeacherEnable && !empty($studentId) && !empty($courseCode)) {
     // link notebookteacher
     $optionsLink = 'student_id='.$studentId.'&origin='.$origin.'&cid='.$courseId.'&id_session='.$sessionId;
+<<<<<<< HEAD
     $actions .= '<a href="'.api_get_path(WEB_PLUGIN_PATH).'notebookteacher/src/index.php?'.$optionsLink.'">'
+=======
+    $actions .= '<a href="'.api_get_path(WEB_PLUGIN_PATH).'NotebookTeacher/src/index.php?'.$optionsLink.'">'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         .Display::getMdiIcon(ToolIcon::NOTEBOOK, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Notebook'))
         .'</a>';
 }
@@ -797,7 +808,11 @@ $isAllow = $permissions['is_allow'];
 if ($isAllow) {
     $actions .= Display::url(
         Display::getMdiIcon(ToolIcon::BLOG, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Blog')),
+<<<<<<< HEAD
         api_get_path(WEB_PLUGIN_PATH).'studentfollowup/posts.php?student_id='.$studentId
+=======
+        api_get_path(WEB_PLUGIN_PATH).'StudentFollowUp/posts.php?student_id='.$studentId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     );
 }
 
@@ -1615,6 +1630,7 @@ if (empty($details)) {
             );
         }
 
+<<<<<<< HEAD
         /*$hookLpTracking = HookMyStudentsLpTracking::create();
         if ($hookLpTracking) {
             $hookHeaders = $hookLpTracking->notifyTrackingHeader();
@@ -1627,6 +1643,17 @@ if (empty($details)) {
             }
 }
         }*/
+=======
+        $lpTrackingEvent = new MyStudentsLpTrackingEvent([], AbstractEvent::TYPE_PRE);
+
+        Container::getEventDispatcher()->dispatch($lpTrackingEvent, Events::MY_STUDENTS_LP_TRACKING);
+
+        foreach ($lpTrackingEvent->getHeaders() as $eventHeader) {
+            $columnHeadersToExport[] = $eventHeader['title'];
+
+            $headers .= Display::tag('th', $eventHeader['title'], $eventHeader['attrs']);
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $csv_content[] = $columnHeadersToExport;
         $columnHeadersKeys = array_keys($columnHeaders);
@@ -1816,6 +1843,24 @@ if (empty($details)) {
                     echo Display::tag('td', $start_time);
                 }
 
+<<<<<<< HEAD
+=======
+                $lpTrackingEvent = new MyStudentsLpTrackingEvent(
+                    ['lp_id' => $lp_id, 'student_id' => $studentId],
+                    AbstractEvent::TYPE_POST
+                );
+
+                Container::getEventDispatcher()->dispatch($lpTrackingEvent, Events::MY_STUDENTS_LP_TRACKING);
+
+                foreach ($lpTrackingEvent->getContents() as $eventContent) {
+                    if (isset($eventContent['value'])) {
+                        $contentToExport[] = strip_tags($eventContent['value']);
+
+                        echo Display::tag('td', $eventContent['value'], $eventContent['attrs']);
+                    }
+                }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $csv_content[] = $contentToExport;
 
                 if (true === $any_result) {
@@ -1875,6 +1920,20 @@ if (empty($details)) {
         echo '<th>'.get_lang('Attempts').'</th>';
         echo '<th>'.get_lang('Latest attempt').'</th>';
         echo '<th>'.get_lang('All attempts').'</th>';
+<<<<<<< HEAD
+=======
+
+        $myStudentsQuizTrackingEvent = new MyStudentsQuizTrackingEvent([], AbstractEvent::TYPE_PRE);
+
+        Container::getEventDispatcher()->dispatch($myStudentsQuizTrackingEvent, Events::MY_STUDENTS_EXERCISE_TRACKING);
+
+        $eventHeaders = array_map(
+            fn(array $eventHeader) => Display::tag('th', $eventHeader['title'], $eventHeader['attrs']),
+            $myStudentsQuizTrackingEvent->getHeaders()
+        );
+
+        echo implode(PHP_EOL, $eventHeaders);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         echo '</tr></thead><tbody>';
 
         $csv_content[] = [];
@@ -1884,6 +1943,18 @@ if (empty($details)) {
             get_lang('Average score in learning paths'),
             get_lang('Attempts'),
         ];
+<<<<<<< HEAD
+=======
+
+        $eventHeaders = array_map(
+            fn(array $eventHeader) => strip_tags($eventHeader['title']),
+            $myStudentsQuizTrackingEvent->getHeaders()
+        );
+
+        $csvContentIndex = count($csv_content) - 1;
+        $csv_content[$csvContentIndex] = array_merge($csv_content[$csvContentIndex], $eventHeaders);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $course = api_get_course_entity($courseId);
         $session = api_get_session_entity($sessionId);
         $repo = Container::getQuizRepository();
@@ -1914,9 +1985,22 @@ if (empty($details)) {
                 );
 
                 $lp_name = '-';
+<<<<<<< HEAD
                 /*$hookContents = $hookQuizTracking
                     ? $hookQuizTracking->notifyTrackingContent($exercise_id, $studentId)
                     : [];*/
+=======
+
+                $myStudentsQuizTrackingEvent = new MyStudentsQuizTrackingEvent(
+                    ['exercise_id' => $exercise_id, 'student_id' => $studentId],
+                    AbstractEvent::TYPE_POST
+                );
+
+                Container::getEventDispatcher()->dispatch($myStudentsQuizTrackingEvent, Events::MY_STUDENTS_EXERCISE_TRACKING);
+
+                $eventContents = $myStudentsQuizTrackingEvent->getContents();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $hookContents = [];
                 if (!isset($score_percentage) && $count_attempts > 0) {
                     $scores_lp = Tracking::get_avg_student_exercise_score(
@@ -2000,6 +2084,7 @@ if (empty($details)) {
                 }
                 echo '</td>';
 
+<<<<<<< HEAD
                 /*if (!empty($hookContents)) {
                     foreach ($hookContents as $hookContent) {
                         if (isset($hookContent['value'])) {
@@ -2007,6 +2092,11 @@ if (empty($details)) {
                         }
                     }
                 }*/
+=======
+                foreach ($eventContents as $eventContent) {
+                    echo Display::tag('td', $eventContent['value'], $eventContent['attrs']);
+                }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
                 echo '</tr>';
                 $data_exercices[$i][] = $exercise->getTitle();
@@ -2023,16 +2113,26 @@ if (empty($details)) {
                 if (!empty($hookContents)) {
                     $csvContentIndex = count($csv_content) - 1;
 
+<<<<<<< HEAD
                     /*foreach ($hookContents as $hookContent) {
                         if (isset($hookContent['value'])) {
                             $csv_content[$csvContentIndex][] = strip_tags($hookContent['value']);
                         }
                     }*/
+=======
+                    foreach ($eventContents as $eventContent) {
+                        $csv_content[$csvContentIndex][] = strip_tags($eventContent['value']);
+                    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 }
                 $i++;
             }
         } else {
+<<<<<<< HEAD
             echo '<tr><td colspan="6">'.get_lang('NoTest').'</td></tr>';
+=======
+            echo '<tr><td colspan="6">'.get_lang('There is no test for the moment').'</td></tr>';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
         echo '</tbody></table></div>';
     }

@@ -60,6 +60,7 @@ class SecuritySettingsSchema extends AbstractSettingsSchema
             ->add('allow_captcha', YesNoType::class)
             ->add('user_reset_password', YesNoType::class)
             ->add('user_reset_password_token_limit')
+<<<<<<< HEAD
             ->add(
                 'captcha_number_mistakes_to_block_account',
                 TextType::class,
@@ -143,6 +144,21 @@ class SecuritySettingsSchema extends AbstractSettingsSchema
                     'help' => 'SecurityReferrerPolicyComment',
                 ]
             )
+=======
+            ->add('captcha_number_mistakes_to_block_account', TextType::class)
+            ->add('captcha_time_to_block')
+            ->add('prevent_multiple_simultaneous_login', YesNoType::class)
+            ->add('check_password', YesNoType::class)
+            ->add('security_strict_transport', TextType::class)
+            ->add('security_content_policy', TextType::class)
+            ->add('security_content_policy_report_only', TextType::class)
+            ->add('security_public_key_pins', TextType::class)
+            ->add('security_public_key_pins_report_only', TextType::class)
+            ->add('security_x_frame_options', TextType::class)
+            ->add('security_xss_protection', TextType::class)
+            ->add('security_x_content_type_options', TextType::class)
+            ->add('security_referrer_policy', TextType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('security_block_inactive_users_immediately', YesNoType::class)
             ->add(
                 'password_requirements',

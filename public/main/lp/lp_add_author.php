@@ -46,14 +46,22 @@ if ($learnPath->get_lp_session_id() != api_get_session_id()) {
 if (api_is_in_gradebook()) {
     $interbreadcrumb[] = [
         'url' => Category::getUrl(),
+<<<<<<< HEAD
         'name' => get_lang('ToolGradebook'),
+=======
+        'name' => get_lang('Assessments'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ];
 }
 
 $htmlHeadXtra[] = api_get_jquery_libraries_js(['jquery-ui', 'jquery-upload']);
 $interbreadcrumb[] = [
     'url' => 'lp_controller.php?action=list&'.api_get_cidreq(),
+<<<<<<< HEAD
     'name' => get_lang('LearningPaths'),
+=======
+    'name' => get_lang('Learning paths'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 ];
 $interbreadcrumb[] = [
     'url' => api_get_self()."?action=build&lp_id=$lpId&".api_get_cidreq(),

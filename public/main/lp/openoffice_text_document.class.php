@@ -319,7 +319,15 @@ class OpenOfficeTextDocument extends OpenofficeDocument
      */
     public function add_command_parameters()
     {
+<<<<<<< HEAD
         return ' -d woogie "'.$this->base_work_dir.'/'.$this->file_path.'"  "'.$this->base_work_dir.$this->created_dir.'/'.$this->file_name.'.html"';
+=======
+        return ' -d woogie "'
+            . Security::sanitizeExecParam($this->base_work_dir . '/' . $this->file_path)
+            . '" "'
+            . Security::sanitizeExecParam($this->base_work_dir . $this->created_dir . '/' . $this->file_name . '.html')
+            . '"';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**

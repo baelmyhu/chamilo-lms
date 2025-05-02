@@ -5,7 +5,11 @@ Feature: User registration
   Scenario: Enter the registration form
     Given I am on the homepage
     Then I should see "Sign up"
+<<<<<<< HEAD
     Then I follow "Sign up!"
+=======
+    Then I follow "Sign up"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     Then I should see "Registration"
     And I fill in the following:
       | firstname     | user registration first name  |

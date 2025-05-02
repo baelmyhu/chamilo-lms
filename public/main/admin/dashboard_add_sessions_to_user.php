@@ -154,12 +154,20 @@ function remove_item(origin) {
 </script>';
 
 $formSent = 0;
+<<<<<<< HEAD
 $firstLetterSession = isset($_POST['firstLetterSession']) ? $_POST['firstLetterSession'] : null;
+=======
+$firstLetterSession = isset($_POST['firstLetterSession']) ? Security::remove_XSS($_POST['firstLetterSession']) : null;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $errorMsg = '';
 $UserList = [];
 
 if (isset($_POST['formSent']) && 1 == (int) ($_POST['formSent'])) {
+<<<<<<< HEAD
     $sessions_list = $_POST['SessionsList'];
+=======
+    $sessions_list = Security::remove_XSS($_POST['SessionsList']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $userInfo = api_get_user_info($user_id);
     $affected_rows = SessionManager::subscribeSessionsToDrh(
         $userInfo,

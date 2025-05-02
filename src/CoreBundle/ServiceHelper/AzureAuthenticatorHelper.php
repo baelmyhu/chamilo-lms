@@ -67,7 +67,14 @@ readonly class AzureAuthenticatorHelper
             ->setUsername($username)
             ->setPlainPassword('azure')
             ->setStatus(STUDENT)
+<<<<<<< HEAD
             ->setAuthSource($authSource)
+=======
+            ->addAuthSourceByAuthentication(
+                $authSource,
+                $this->urlHelper->getCurrent()
+            )
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setPhone($phone)
             ->setActive($active)
             ->setRoleFromStatus(STUDENT)

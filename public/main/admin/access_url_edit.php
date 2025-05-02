@@ -7,7 +7,10 @@
  */
 
 use Chamilo\CoreBundle\Framework\Container;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
 $cidReset = true;
@@ -56,7 +59,11 @@ if ($httpRequest->query->has('url_id')) {
 
 $form->addHidden(
     'parentResourceNodeId',
+<<<<<<< HEAD
     Container::$container->get(AccessUrlHelper::class)->getFirstAccessUrl()->resourceNode->getId()
+=======
+    Container::getAccessUrlHelper()->getFirstAccessUrl()->resourceNode->getId()
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 );
 $form->addButtonCreate($submit_name);
 

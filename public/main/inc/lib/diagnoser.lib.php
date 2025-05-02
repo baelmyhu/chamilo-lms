@@ -223,7 +223,11 @@ class Diagnoser
                 list($size, $none) = explode("\t", $du);
                 unset($none);
 
+<<<<<<< HEAD
                 $limit = get_hosting_limit($access_url_id, 'hosting_limit_disk_space');
+=======
+                $limit = get_hosting_limit($access_url_id, 'disk_space');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 if ($limit === null) {
                     $limit = 0;
                 }

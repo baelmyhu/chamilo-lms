@@ -49,9 +49,12 @@ class CQuizAnswer
     #[ORM\Column(name: 'hotspot_type', type: 'string', length: 40, nullable: true)]
     protected ?string $hotspotType;
 
+<<<<<<< HEAD
     #[ORM\Column(name: 'destination', type: 'text', nullable: true)]
     protected ?string $destination;
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[ORM\Column(name: 'answer_code', type: 'string', length: 10, nullable: true)]
     protected ?string $answerCode;
 
@@ -63,7 +66,10 @@ class CQuizAnswer
         $this->ponderation = 0.0;
         $this->hotspotCoordinates = null;
         $this->hotspotType = null;
+<<<<<<< HEAD
         $this->destination = null;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $this->answerCode = null;
     }
 
@@ -151,6 +157,7 @@ class CQuizAnswer
         return $this->hotspotType;
     }
 
+<<<<<<< HEAD
     public function setDestination(?string $destination): self
     {
         $this->destination = empty($destination) ? null : $destination;
@@ -163,6 +170,8 @@ class CQuizAnswer
         return $this->destination;
     }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function setAnswerCode(string $answerCode): self
     {
         $this->answerCode = $answerCode;

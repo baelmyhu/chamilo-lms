@@ -6,7 +6,10 @@ ignore:
   - "src/CoreBundle/Component/Utils/ChamiloApi.php"
   - "src/CoreBundle/Component/Utils/ScriptHandler.php"
   - "src/CoreBundle/Framework/Container.php"
+<<<<<<< HEAD
   - "src/CoreBundle/Hook"
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   - "src/CoreBundle/ChamiloCoreBundle.php"
   - "src/CourseBundle/ChamiloCourseBundle.php"
   - "src/CourseBundle/DependencyInjection"

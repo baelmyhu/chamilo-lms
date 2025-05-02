@@ -49,7 +49,11 @@
       />
       <h1
         v-else
+<<<<<<< HEAD
         v-t="'Chamilo\'s installation wizard'"
+=======
+        v-t="'Chamilo installation wizard'"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         class="mb-8 text-center"
       />
 

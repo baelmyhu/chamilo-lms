@@ -17,7 +17,11 @@ $courses[] = [
     'title' => 'English for beginners',
     'description' => 'English course',
     'category_code' => 'LANG',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -28,7 +32,11 @@ $courses[] = [
     'title' => 'Español para iniciantes',
     'description' => 'Curso de español',
     'category_code' => 'LANG',
+<<<<<<< HEAD
     'course_language' => 'spanish',
+=======
+    'course_language' => 'es',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -39,7 +47,11 @@ $courses[] = [
     'title' => 'Français pour débutants',
     'description' => 'Cours de français',
     'category_code' => 'LANG',
+<<<<<<< HEAD
     'course_language' => 'french',
+=======
+    'course_language' => 'fr_FR',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -50,7 +62,11 @@ $courses[] = [
     'title' => 'History of litterature',
     'description' => 'History of English litterature from the Middle Ages to our times',
     'category_code' => 'PROJ',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -61,7 +77,11 @@ $courses[] = [
     'title' => 'Our solar system',
     'description' => 'Introduction to our solar system and the interactions between planets',
     'category_code' => 'PROJ',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -72,7 +92,11 @@ $courses[] = [
     'title' => 'Maritime Navigation',
     'description' => 'Preparation course for the International Maritime Navigation exam',
     'category_code' => 'PROJ',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -83,7 +107,11 @@ $courses[] = [
     'title' => 'National Geography',
     'description' => 'Introduction to geography at a national level',
     'category_code' => 'PROJ',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -94,7 +122,11 @@ $courses[] = [
     'title' => '日本語',
     'description' => 'Japanese course for beginners',
     'category_code' => 'LANG',
+<<<<<<< HEAD
     'course_language' => 'japanese',
+=======
+    'course_language' => 'ja',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -105,7 +137,11 @@ $courses[] = [
     'title' => 'Time management',
     'description' => 'Learn to manage your time efficiently',
     'category_code' => 'PROJ',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -116,7 +152,11 @@ $courses[] = [
     'title' => 'SCRUM project management basics',
     'description' => 'Introduction to SCRUM project management for busy people',
     'category_code' => 'PROJ',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,
@@ -127,7 +167,11 @@ $courses[] = [
     'title' => 'Day to day mathematics',
     'description' => 'Mathematics for busy people',
     'category_code' => 'PROJ',
+<<<<<<< HEAD
     'course_language' => 'english',
+=======
+    'course_language' => 'en_US',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'user_id' => 1,
     'expiration_date' => '2020-09-01 00:00:00',
     'exemplary_content' => true,

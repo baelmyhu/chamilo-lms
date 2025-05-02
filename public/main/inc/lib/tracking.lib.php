@@ -20,7 +20,10 @@ use CpChart\Image as pImage;
 use ExtraField as ExtraFieldModel;
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
 use Chamilo\CoreBundle\Component\Utils\StateIcon;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  *  Class Tracking.
@@ -1746,10 +1749,18 @@ class Tracking
         $url_condition = null;
         $tbl_url_rel_user = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_USER);
         $url_table = null;
+<<<<<<< HEAD
         if (AccessUrlHelper::isMultiple()) {
             $access_url_id = api_get_current_access_url_id();
             $url_table = ", $tbl_url_rel_user as url_users";
             $url_condition = " AND u.login_user_id = url_users.user_id AND access_url_id='$access_url_id'";
+=======
+        $accessUrlHelper = Container::getAccessUrlHelper();
+        if ($accessUrlHelper->isMultiple()) {
+            $access_url_id = $accessUrlHelper->getCurrent()->getId();
+            $url_table = ", $tbl_url_rel_user as url_users";
+            $url_condition = " AND u.login_user_id = url_users.user_id AND access_url_id = $access_url_id";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         if (empty($timeFilter)) {
@@ -1828,8 +1839,14 @@ class Tracking
 
         $url_table = null;
         $url_condition = null;
+<<<<<<< HEAD
         if (AccessUrlHelper::isMultiple()) {
             $access_url_id = api_get_current_access_url_id();
+=======
+        $accessUrlHelper = Container::getAccessUrlHelper();
+        if ($accessUrlHelper->isMultiple()) {
+            $access_url_id = $accessUrlHelper->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $url_table = ", ".$tbl_url_rel_user." as url_users";
             $url_condition = " AND u.login_user_id = url_users.user_id AND access_url_id='$access_url_id'";
         }
@@ -3600,9 +3617,17 @@ class Tracking
         $tbl_session_user = Database::get_main_table(TABLE_MAIN_SESSION_USER);
         $tbl_session = Database::get_main_table(TABLE_MAIN_SESSION);
 
+<<<<<<< HEAD
         $accessUrlEnabled = AccessUrlHelper::isMultiple();
         $access_url_id = $accessUrlEnabled ? api_get_current_access_url_id() : -1;
 
+=======
+        $accessUrlHelper = Container::getAccessUrlHelper();
+        $access_url_id = -1;
+        if ($accessUrlHelper->isMultiple()) {
+            $access_url_id = $accessUrlHelper->getCurrent()->getId();
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $students = [];
         // At first, courses where $coach_id is coach of the course //
         $sql = 'SELECT session_id, c_id
@@ -3755,8 +3780,14 @@ class Tracking
                 ON (c.id = sc.c_id)
                 WHERE sc.user_id = '.$coach_id.' AND sc.status = '.SessionEntity::COURSE_COACH;
 
+<<<<<<< HEAD
         if (AccessUrlHelper::isMultiple()) {
             $access_url_id = api_get_current_access_url_id();
+=======
+        $accessUrlHelper = Container::getAccessUrlHelper();
+        if ($accessUrlHelper->isMultiple()) {
+            $access_url_id = $accessUrlHelper->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (-1 != $access_url_id) {
                 $sql = 'SELECT DISTINCT c.code
                         FROM '.$tbl_session_course_user.' scu
@@ -3793,9 +3824,15 @@ class Tracking
                 INNER JOIN $tbl_course as course
                     ON course.id = session_course.c_id";
 
+<<<<<<< HEAD
         if (AccessUrlHelper::isMultiple()) {
             $tbl_course_rel_access_url = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_COURSE);
             $access_url_id = api_get_current_access_url_id();
+=======
+        if ($accessUrlHelper->isMultiple()) {
+            $tbl_course_rel_access_url = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_COURSE);
+            $access_url_id = $accessUrlHelper->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (-1 != $access_url_id) {
                 $sql = "SELECT DISTINCT c.code
                     FROM $tbl_session_course as session_course
@@ -3816,11 +3853,19 @@ class Tracking
 
         if (!empty($sessionId)) {
             $sql .= ' WHERE session_course.session_id='.$sessionId;
+<<<<<<< HEAD
             if (AccessUrlHelper::isMultiple()) {
                 $sql .= ' AND access_url_id = '.$access_url_id;
             }
         } else {
             if (AccessUrlHelper::isMultiple()) {
+=======
+            if ($accessUrlHelper->isMultiple()) {
+                $sql .= ' AND access_url_id = '.$access_url_id;
+            }
+        } else {
+            if ($accessUrlHelper->isMultiple()) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $sql .= ' WHERE access_url_id = '.$access_url_id;
             }
         }
@@ -4556,6 +4601,11 @@ class Tracking
      * @param bool   $returnArray
      *
      * @return string|array
+<<<<<<< HEAD
+=======
+     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function show_user_progress(
         $user_id,
@@ -4595,9 +4645,17 @@ class Tracking
 
         $user_id = (int) $user_id;
         $session_id = (int) $session_id;
+<<<<<<< HEAD
         $urlId = api_get_current_access_url_id();
 
         if (AccessUrlHelper::isMultiple()) {
+=======
+        $urlId = -1;
+
+        $accessUrlHelper = Container::getAccessUrlHelper();
+        if ($accessUrlHelper->isMultiple()) {
+            $urlId = $accessUrlHelper->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $sql = "SELECT c.id, c.code, title
                     FROM $tbl_course_user cu
                     INNER JOIN $tbl_course c
@@ -4644,7 +4702,11 @@ class Tracking
         }
 
         // Get the list of sessions where the user is subscribed as student
+<<<<<<< HEAD
         if (AccessUrlHelper::isMultiple()) {
+=======
+        if ($accessUrlHelper->isMultiple()) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $sql = "SELECT DISTINCT c.code, s.id as session_id, s.title
                     FROM $tbl_session_course_user cu
                     INNER JOIN $tbl_access_rel_session a
@@ -4656,7 +4718,11 @@ class Tracking
                     $extraInnerJoin
                     WHERE
                         cu.user_id = $user_id AND
+<<<<<<< HEAD
                         access_url_id = ".$urlId."
+=======
+                        access_url_id = $urlId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         $sessionCondition
                     $orderBy ";
         } else {
@@ -6560,6 +6626,7 @@ class Tracking
      * Get the HTML code for show a block with the achieved user skill on course/session.
      *
      * @param int  $userId
+<<<<<<< HEAD
      * @param int  $courseId
      * @param int  $sessionId
      * @param bool $forceView forces the view of the skills, not checking for deeper access
@@ -6569,6 +6636,17 @@ class Tracking
     public static function displayUserSkills($userId, $courseId = 0, $sessionId = 0, $forceView = false)
     {
         if (false === SkillModel::isAllowed($userId, false) && false == $forceView) {
+=======
+     * @param ?int  $courseId
+     * @param ?int  $sessionId
+     * @param ?bool $forceView forces the view of the skills, not checking for deeper access
+     *
+     * @return string
+     */
+    public static function displayUserSkills(int $userId, ?int $courseId = 0, ?int $sessionId = 0, ?bool $forceView = false): string
+    {
+        if (false === SkillModel::isAllowed($userId, false) && !$forceView) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             return '';
         }
         $skillManager = new SkillModel();
@@ -6577,11 +6655,17 @@ class Tracking
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Return time spent by the given user in the given course/session, from the track_e_access_complete table, and
+     * breakdown time items in different array elements
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      * @param int $userId
      * @param int $courseId
      * @param int $sessionId
      *
      * @return array
+<<<<<<< HEAD
      */
     public static function getCalculateTime($userId, $courseId, $sessionId)
     {
@@ -6589,6 +6673,12 @@ class Tracking
         $courseId = (int) $courseId;
         $sessionId = (int) $sessionId;
 
+=======
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public static function getCalculateTime(int $userId, int $courseId, int $sessionId): array
+    {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (empty($userId) || empty($courseId)) {
             return [];
         }
@@ -6749,6 +6839,7 @@ class Tracking
      *
      * @param int User ID
      * @param string Datetime
+<<<<<<< HEAD
      * @param bool Whether to return the IP as a link or just as an IP
      * @param string If defined and return_as_link if true, will be used as the text to be shown as the link
      *
@@ -6761,6 +6852,21 @@ class Tracking
         $return_as_link = false,
         $body_replace = null
     ) {
+=======
+     * @param ?bool Whether to return the IP as a link or just as an IP
+     * @param ?string If defined and return_as_link if true, will be used as the text to be shown as the link
+     *
+     * @return string IP address (or false on error)
+     * @assert (0,0) === false
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public static function get_ip_from_user_event(
+        int $user_id,
+        string $event_date,
+        ?bool $return_as_link = false,
+        ?string $body_replace = null
+    ): mixed {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (empty($user_id) || empty($event_date)) {
             return false;
         }
@@ -6792,15 +6898,26 @@ class Tracking
     /**
      * @param int   $userId
      * @param array $courseInfo
+<<<<<<< HEAD
      * @param int   $sessionId
+=======
+     * @param ?int   $sessionId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      *
      * @return array
      */
     public static function getToolInformation(
+<<<<<<< HEAD
         $userId,
         $courseInfo,
         $sessionId = 0
     ) {
+=======
+        int $userId,
+        array $courseInfo,
+        ?int $sessionId = 0
+    ): array {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $csvContent = [];
         $courseToolInformation = '';
         $headerTool = [
@@ -8140,6 +8257,10 @@ class Tracking
      *
      * @return int
      * @throws \Doctrine\DBAL\Exception
+<<<<<<< HEAD
+=======
+     * @throws Exception
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function getTotalTimeSpentInCourses(
         string $dateFrom = '',
@@ -8150,8 +8271,14 @@ class Tracking
         $tableUrl = null;
         $urlCondition = null;
         $conditionTime = null;
+<<<<<<< HEAD
         if (AccessUrlHelper::isMultiple()) {
             $accessUrlId = api_get_current_access_url_id();
+=======
+        $accessUrlHelper = Container::getAccessUrlHelper();
+        if ($accessUrlHelper->isMultiple()) {
+            $accessUrlId = $accessUrlHelper->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $tableUrl = ", ".$tableUrlRelUser." as url_users";
             $urlCondition = " AND u.user_id = url_users.user_id AND access_url_id = $accessUrlId";
         }

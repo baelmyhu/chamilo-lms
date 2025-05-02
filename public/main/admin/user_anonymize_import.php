@@ -5,6 +5,10 @@
  * This tool allows platform admins to anonymize users by uploading a text file, with one username per line.
  */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\User;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\Common\Collections\Criteria;
 
 $cidReset = true;
@@ -38,7 +42,13 @@ $anonymizedSessions = $step2Form->addCheckBox('anonymize_sessions', null, get_la
 $step2Form->addButtonUpdate(get_lang('Anonymize'));
 
 if ($step1Form->validate() && $usernameListFile->isUploadedFile()) {
+<<<<<<< HEAD
     $filePath = $usernameListFile->getValue()['tmp_name'];
+=======
+    $usernameListFileUploaded = $usernameListFile->getValue();
+    $usernameListFileUploaded['name'] = api_htmlentities($usernameListFileUploaded['name']);
+    $filePath = $usernameListFileUploaded['tmp_name'];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     if (!file_exists($filePath)) {
         throw new Exception(get_lang('CouldNotReadFile').' '.$filePath);
     }
@@ -46,15 +56,30 @@ if ($step1Form->validate() && $usernameListFile->isUploadedFile()) {
     if (false === $submittedUsernames) {
         throw new Exception(get_lang('CouldNotReadFileLines').' '.$filePath);
     }
+<<<<<<< HEAD
     if (empty($submittedUsernames)) {
         printf(
             '<p>'.get_lang('FileXHasNoData').'</p>',
             '<em>'.$usernameListFile->getValue()['name'].'</em>'
+=======
+
+    $submittedUsernames = array_map('api_htmlentities', $submittedUsernames);
+    $submittedUsernames = array_filter($submittedUsernames);
+
+    if (empty($submittedUsernames)) {
+        printf(
+            '<p>'.get_lang('FileXHasNoData').'</p>',
+            '<em>'.$usernameListFileUploaded['name'].'</em>'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
     } else {
         printf(
             '<p>'.get_lang('FileXHasYNonEmptyLines').'</p>',
+<<<<<<< HEAD
             '<em>'.$usernameListFile->getValue()['name'].'</em>',
+=======
+            '<em>'.$usernameListFileUploaded['name'].'</em>',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             count($submittedUsernames)
         );
         $uniqueSubmittedUsernames = array_values(array_unique($submittedUsernames));
@@ -78,6 +103,10 @@ if ($step1Form->validate() && $usernameListFile->isUploadedFile()) {
             echo '<p>'.get_lang('NoLineMatchedAnyActualUserName').'</p>';
         } else {
             $foundUsernames = [];
+<<<<<<< HEAD
+=======
+            /** @var User $user */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             foreach ($users as $user) {
                 $foundUsernames[] = $user->getUsername();
             }
@@ -112,6 +141,10 @@ if ($step1Form->validate() && $usernameListFile->isUploadedFile()) {
         $anonymized = [];
         $errors = [];
         $tableSession = Database::get_main_table(TABLE_MAIN_SESSION);
+<<<<<<< HEAD
+=======
+        /** @var User $user */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         foreach ($users as $user) {
             $username = $user->getUsername();
             $userId = $user->getId();

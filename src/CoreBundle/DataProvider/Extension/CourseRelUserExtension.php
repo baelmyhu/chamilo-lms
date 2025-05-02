@@ -51,8 +51,13 @@ final class CourseRelUserExtension implements QueryCollectionExtensionInterface
                 $metaData = $this->entityManager->getClassMetadata($resourceClass);
                 if ($metaData->hasAssociation('course')) {
                     $queryBuilder
+<<<<<<< HEAD
                         ->innerJoin("$rootAlias.course", 'c')
                         ->innerJoin('c.urls', 'url_rel')
+=======
+                        ->innerJoin("$rootAlias.course", 'co')
+                        ->innerJoin('co.urls', 'url_rel')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         ->andWhere('url_rel.url = :access_url_id')
                         ->setParameter('access_url_id', $accessUrl->getId())
                     ;
@@ -60,6 +65,7 @@ final class CourseRelUserExtension implements QueryCollectionExtensionInterface
             }
         }
 
+<<<<<<< HEAD
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return;
         }
@@ -74,6 +80,27 @@ final class CourseRelUserExtension implements QueryCollectionExtensionInterface
                 $rootAlias = $queryBuilder->getRootAliases()[0];
                 $queryBuilder->andWhere(\sprintf('%s.user = :current_user', $rootAlias));
                 $queryBuilder->setParameter('current_user', $user->getId());
+=======
+        if (CourseRelUser::class === $resourceClass) {
+            if ('collection_query' === $operation?->getName()) {
+                $rootAlias = $queryBuilder->getRootAliases()[0];
+                $queryBuilder->leftJoin("$rootAlias.course", 'c');
+                $queryBuilder
+                    ->orderBy('c.title', 'ASC')
+                    ->addOrderBy("$rootAlias.sort", 'ASC')
+                    ->addOrderBy("$rootAlias.userCourseCat", 'ASC')
+                ;
+
+                if (!$this->security->isGranted('ROLE_ADMIN')) {
+                    /** @var User|null $user */
+                    if (null === $user = $this->security->getUser()) {
+                        throw new AccessDeniedException('Access Denied.');
+                    }
+
+                    $queryBuilder->andWhere(\sprintf('%s.user = :current_user', $rootAlias));
+                    $queryBuilder->setParameter('current_user', $user->getId());
+                }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
         }
 

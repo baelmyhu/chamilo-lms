@@ -45,12 +45,21 @@ class AccessUrlHelper
             return $accessUrl;
         }
 
+<<<<<<< HEAD
         if ('cli' === PHP_SAPI) {
             return $this->getFirstAccessUrl();
         }
 
         $accessUrl = $this->getFirstAccessUrl();
 
+=======
+        $accessUrl = $this->getFirstAccessUrl();
+
+        if ('cli' === PHP_SAPI) {
+            return $accessUrl;
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if ($this->isMultiple()) {
             $request = $this->requestStack->getMainRequest();
 

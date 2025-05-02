@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
   <div>
+=======
+  <div class="relative min-h-[300px]">
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     <SocialWallPost
       v-for="socialPost in postList"
       :key="socialPost.id"

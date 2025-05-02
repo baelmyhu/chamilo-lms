@@ -36,10 +36,13 @@ class DisplaySettingsSchema extends AbstractSettingsSchema
                     'accessibility_font_resize' => 'false',
                     'show_admin_toolbar' => 'do_not_show',
                     'show_hot_courses' => 'true',
+<<<<<<< HEAD
                     'user_name_order' => '',
                     // ?
                     'user_name_sort_by' => '',
                     // ?
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'use_virtual_keyboard' => '',
                     // ?
                     'disable_copy_paste' => '',

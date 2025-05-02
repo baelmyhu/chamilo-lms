@@ -11,7 +11,11 @@ final class Version20211005065400 extends AbstractMigrationChamilo
 {
     public function getDescription(): string
     {
+<<<<<<< HEAD
         return 'Plugins - bbb';
+=======
+        return 'Plugins - Bbb';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public function up(Schema $schema): void

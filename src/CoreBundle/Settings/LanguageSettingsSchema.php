@@ -29,8 +29,11 @@ class LanguageSettingsSchema extends AbstractSettingsSchema
                     'language_priority_4' => 'platform_lang',
                     'hide_dltt_markup' => 'false',
                     'show_language_selector_in_menu' => 'true',
+<<<<<<< HEAD
                     'user_name_order' => '',
                     'user_name_sort' => '',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'language_flags_by_country' => 'false',
                     'allow_course_multiple_languages' => 'false',
                     'template_activate_language_filter' => 'false',
@@ -43,8 +46,11 @@ class LanguageSettingsSchema extends AbstractSettingsSchema
             'allow_use_sub_language' => ['string'],
             'auto_detect_language_custom_pages' => ['string'],
             'show_different_course_language' => ['string'],
+<<<<<<< HEAD
             'user_name_order' => ['string'],
             'user_name_sort' => ['string'],
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ];
         $this->setMultipleAllowedTypes($allowedTypes, $builder);
     }
@@ -98,6 +104,7 @@ class LanguageSettingsSchema extends AbstractSettingsSchema
             ->add('template_activate_language_filter', YesNoType::class)
         ;
 
+<<<<<<< HEAD
         $choices = [
             'last_name, first_name' => 'last_name-first_name',
             'first_name, last_name' => 'first_name-last_name',
@@ -121,6 +128,8 @@ class LanguageSettingsSchema extends AbstractSettingsSchema
             ]
         );
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $this->updateFormFieldsFromSettingsInfo($builder);
     }
 }

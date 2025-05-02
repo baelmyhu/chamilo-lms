@@ -45,6 +45,10 @@
     "Settings": "Cursuseigenschappen",
     "Sign out": "Sign out",
     "My sessions": "Mijn sessies",
+<<<<<<< HEAD
+=======
+    "Events": "Evenementen",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "My progress": "Mijn status",
     "Users": "Gebruikers",
     "Courses": "Leerpaden",
@@ -112,6 +116,10 @@
     "Cc": "Cc",
     "User": "Gebruikers",
     "Sent date": "Datum van verzending",
+<<<<<<< HEAD
+=======
+    "Sent": "Verzonden",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Attachments": "Bijlagen",
     "You don't have any course content yet.": "You don't have any course content yet.",
     "You don't have any course yet.": "You don't have any course yet.",
@@ -151,7 +159,11 @@
     "Start Date": "Startdatum",
     "No course available": "geen cursus",
     "There are no sessions available": "Er zijn geen sessies beschikbaar",
+<<<<<<< HEAD
     "Loading courses. Please wait.": "Loading courses. Please wait.",
+=======
+    "Loading courses. Please wait.": "Cursussen laden. Even geduld a.u.b.",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Loading sessions. Please wait.": "Loading sessions. Please wait.",
     "There is no terms that matches the search: {searchTerm}": "There is no terms that matches the search: {searchTerm}",
     "Send diagnostic finalization message": "Send diagnostic finalization message",
@@ -180,7 +192,11 @@
     "Show Overview": "Overzicht weergeven",
     "Install": "Installeer",
     "New installation": "Nieuwe installatie",
+<<<<<<< HEAD
     "Chamilo\\'s installation wizard": "Chamilo\\'s installation wizard",
+=======
+    "Chamilo installation wizard": "Chamilo installation wizard",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Keyword": "Trefwoord",
     "Assignment name": "Titel van de opdracht",
     "Description": "Cursusbeschrijving",
@@ -240,8 +256,12 @@
     "Next": "Volgende",
     "Please select installation language": "Please select installation language",
     "Server requirements": "Server vereisten",
+<<<<<<< HEAD
     "Server requirements information": "Server requirements information",
     "PHP version ": "PHP version ",
+=======
+    "PHP version": "PHP versie",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Your PHP version matches the minimum requirement:": "PHP versie is ok\u00e9",
     "Recommended settings": "Aanbevolen instellingen",
     "Setting": "Instelling",
@@ -255,7 +275,11 @@
     "installation guide": "installation guide",
     "Previous": "Vorige",
     "Upgrade Chamilo LMS version": "Upgrade Chamilo LMS version",
+<<<<<<< HEAD
     "For more details {0}": "For more details {0}",
+=======
+    "For more details %s": "For more details {0}",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Step 2 - Requirements": "Step 2 - Requirements",
     "read the installation guide": "read the installation guide",
     "Warning!": "Warning!",
@@ -270,9 +294,15 @@
     "CC website": "CC website",
     "Dear user": "Beste gebruiker",
     "Your company's name": "Naam van de onderneming",
+<<<<<<< HEAD
     "Your company\\'s activity": "Your company\\'s activity",
     "Your job\\'s description": "Your job\\'s description",
     "Your company\\'s home country": "Your company\\'s home country",
+=======
+    "Your company's activity": "Bedrijfsactiviteit",
+    "Your job\\'s description": "Your job\\'s description",
+    "Your company's home country": "Thuisland van het bedrijf",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Company city": "Thuisstad onderneming",
     "Preferred contact language": "Voorkeurtaal",
     "Do you have the power to take financial decisions on behalf of your company?": "Ben je bevoegd financi\u00eble beslissingen te maken in naam van je bedrijf?",
@@ -280,8 +310,11 @@
     "Step 4 - Database settings": "Step 4 - Database settings",
     "Database host": "Database host",
     "Port": "Poort",
+<<<<<<< HEAD
     "Database login": "Database login",
     "Database password": "Database password",
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Database name": "Database name",
     "Database port": "Database port",
     "Database driver": "Database driver",
@@ -317,7 +350,11 @@
     "Main language": "Standaardtaal",
     "Database": "Databank",
     "Database Host": "Databankserver",
+<<<<<<< HEAD
     "Database Login": "Gebruikersnaam voor de databank",
+=======
+    "Database user": "Gebruikersnaam voor de databank",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Database Password": "Wachtwoord voor de databank",
     "Step 7 - Installation process execution": "Step 7 - Installation process execution",
     "Step 7 - Update process execution": "Step 7 - Update process execution",
@@ -328,6 +365,10 @@
     "Demo": "Demo",
     "Category name": "Categorietitel",
     "Save category": "Save category",
+<<<<<<< HEAD
+=======
+    "Category saved": "Categorie opgeslagen",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "URL": "URL",
     "Link name": "Naam",
     "Show link on course homepage": "Toon link op cursushoofdpagina",
@@ -389,6 +430,10 @@
     "You can see examples of how chamilo will look here": "You can see examples of how chamilo will look here",
     "Buttons": "Buttons",
     "Button": "Button",
+<<<<<<< HEAD
+=======
+    "Disabled": "Uitgeschakeld",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Secondary": "secundair",
     "Tertiary": "Tertiary",
     "Success": "Succes",
@@ -420,6 +465,10 @@
     "Learn more about Chamilo and its use, official references links": "Learn more about Chamilo and its use, official references links",
     "Version check enabled": "Versieverificatie ingeschakeld",
     "Version check": "Versiecontrole",
+<<<<<<< HEAD
+=======
+    "Hide campus from public platforms list": "Verberg campus van openbare platformlijst",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Assignment created": "Assignment created",
     "Create assignment": "Opdracht aanmaken",
     "Assignment updated": "Assignment updated",
@@ -501,6 +550,10 @@
     "Personal Data: Introduction": "Personal Data: Introduction",
     "Terms and Conditions": "Algemene voorwaarden",
     "Read the Terms and Conditions": "Lees de algemene voorwaarden",
+<<<<<<< HEAD
+=======
+    "Legal agreement accepted": "Juridische overeenkomst geaccepteerd",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     "Date": "Datum",
     "Why you want to delete your Legal Agreement": "Why you want to delete your Legal Agreement",
     "Please tell us why you want to withdraw the rights you previously gave us, to let us make it in the smoothest way possible": "Please tell us why you want to withdraw the rights you previously gave us, to let us make it in the smoothest way possible",
@@ -547,5 +600,40 @@
     "Move": "Verplaatsen",
     "Select the destination folder": "Select the destination folder",
     "Select a folder": "Select a folder",
+<<<<<<< HEAD
     "Move document": "Verplaats document"
+=======
+    "Move document": "Verplaats document",
+    "Reminders": "Herinneringen",
+    "Add reminder": "Herinnering toevoegen",
+    "Update introduction links": "Introductielinks bijwerken",
+    "Conference Room": "Vergaderzaal",
+    "Please wait, this could take a while...": "Please wait, this could take a while...",
+    "Replace (files only)": "Replace (files only)",
+    "Select replacement file": "Select replacement file",
+    "No file selected.": "No file selected.",
+    "Only files can be replaced.": "Only files can be replaced.",
+    "Error replacing file.": "Error replacing file.",
+    "Download selected items as ZIP": "Download selected items as ZIP",
+    "No items selected.": "No items selected.",
+    "Download started": "Download started",
+    "Error downloading selected items.": "Error downloading selected items.",
+    "Remove current icon": "Remove current icon",
+    "This icon will show for the link displayed as a tool on the course homepage.": "This icon will show for the link displayed as a tool on the course homepage.",
+    "The icon must be 120x120 pixels.": "The icon must be 120x120 pixels.",
+    "Error saving the link": "Error saving the link",
+    "Enter 2FA code": "Voer 2FA-code in",
+    "Submit code": "Submit code",
+    "Sign up": "Sign up",
+    "2FA disabled successfully.": "2FA disabled successfully.",
+    "Passwords do not match": "Passwords do not match",
+    "Password updated successfully": "Password updated successfully",
+    "Update settings": "Update settings",
+    "Scan the QR code to enable 2FA": "Scan the QR code to enable 2FA",
+    "QR code for 2FA": "QR code for 2FA",
+    "Private course": "Priv\u00e9cursus",
+    "Not subscribed": "Not subscribed",
+    "The database connection has failed. This is generally due to the wrong user, the wrong password or the wrong database prefix being set above. Please review these settings and try again.": "De verbinding met de databank is mislukt. Meestal is dit te wijten aan een foute gebruik, een fout wahctwoord of een foutief databasevoorvoegsel. Verifieer deze instelling en probeer het dan opnieuw.",
+    "Go to your newly created portal.": "Ga naar uw ge\u00efnstalleerde portaal."
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

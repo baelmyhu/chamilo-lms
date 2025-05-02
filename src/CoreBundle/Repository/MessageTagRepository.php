@@ -1,15 +1,28 @@
 <?php
 
+<<<<<<< HEAD
 declare(strict_types=1);
 
 /* For licensing terms, see /license.txt */
 
+=======
+/* For licensing terms, see /license.txt */
+
+declare(strict_types=1);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 namespace Chamilo\CoreBundle\Repository;
 
 use Chamilo\CoreBundle\Entity\MessageTag;
 use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
+<<<<<<< HEAD
+=======
+/**
+ * @template-extends SortableRepository<MessageTag>
+ */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 class MessageTagRepository extends SortableRepository
 {
     public function __construct(EntityManagerInterface $em)

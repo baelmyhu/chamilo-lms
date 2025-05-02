@@ -17,6 +17,10 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use MessageManager;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+<<<<<<< HEAD
+=======
+use Symfony\Component\Console\Attribute\AsCommand;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,6 +30,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use UserManager;
 
+<<<<<<< HEAD
 class ProcessUserDataRequestsCommand extends Command
 {
     /**
@@ -33,6 +38,14 @@ class ProcessUserDataRequestsCommand extends Command
      */
     protected static $defaultName = 'app:process-user-data-requests';
 
+=======
+#[AsCommand(
+    name: 'app:process-user-data-requests',
+    description: 'Process user data requests for personal data actions.',
+)]
+class ProcessUserDataRequestsCommand extends Command
+{
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct(
         private readonly Connection $connection,
         private readonly AccessUrlHelper $accessUrlHelper,
@@ -47,7 +60,10 @@ class ProcessUserDataRequestsCommand extends Command
     protected function configure(): void
     {
         $this
+<<<<<<< HEAD
             ->setDescription('Process user data requests for personal data actions.')
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->addOption('debug', null, InputOption::VALUE_NONE, 'Enable debug mode')
             ->setHelp('This command processes user data requests that require administrative action.')
         ;

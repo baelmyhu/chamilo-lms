@@ -69,7 +69,11 @@ $interbreadcrumb[] = [
 ];
 $interbreadcrumb[] = [
     'url' => api_get_path(WEB_CODE_PATH).'gradebook/gradebook_display_summary.php?'.api_get_cidreq().'&selectcat='.$categoryId,
+<<<<<<< HEAD
     'name' => get_lang('AssessmentsListOfStudentsReports'),
+=======
+    'name' => get_lang('Student reports'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 ];
 
 $url = api_get_path(WEB_AJAX_PATH).'skill.ajax.php?a=assign_user_to_skill';

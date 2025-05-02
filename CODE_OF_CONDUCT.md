@@ -3,7 +3,11 @@
 ## Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as
+<<<<<<< HEAD
 contributors and maintainers pledge to making participation in our project and
+=======
+contributors and maintainers pledge to make participation in our project and
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 our community a harassment-free experience for everyone, regardless of age, body
 size, disability, ethnicity, sex characteristics, gender identity and expression,
 level of experience, education, socio-economic status, nationality, personal
@@ -28,8 +32,12 @@ Examples of unacceptable behavior by participants include:
 * Public or private harassment
 * Publishing others' private information, such as a physical or electronic
  address, without explicit permission
+<<<<<<< HEAD
 * Other conduct which could reasonably be considered inappropriate in a
  professional setting
+=======
+* Other conduct that could reasonably be considered inappropriate in a professional setting, such as repeated personal attacks, spreading false information, or disruptive behavior.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 ## Our Responsibilities
 

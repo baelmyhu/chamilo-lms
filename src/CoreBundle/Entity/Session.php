@@ -6,7 +6,10 @@ declare(strict_types=1);
 
 namespace Chamilo\CoreBundle\Entity;
 
+<<<<<<< HEAD
 use ApiPlatform\Core\Serializer\Filter\GroupFilter;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -17,7 +20,14 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+<<<<<<< HEAD
 use ApiPlatform\Serializer\Filter\PropertyFilter;
+=======
+use ApiPlatform\Serializer\Filter\GroupFilter;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
+use Chamilo\CoreBundle\Controller\Api\CreateSessionWithUsersAndCoursesAction;
+use Chamilo\CoreBundle\Dto\CreateSessionWithUsersAndCoursesInput;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\Listener\SessionListener;
 use Chamilo\CoreBundle\Repository\SessionRepository;
 use Chamilo\CoreBundle\State\UserSessionSubscriptionsStateProvider;
@@ -96,6 +106,19 @@ use Symfony\Component\Validator\Constraints as Assert;
             provider: UserSessionSubscriptionsStateProvider::class,
         ),
         new Post(security: "is_granted('ROLE_ADMIN')"),
+<<<<<<< HEAD
+=======
+        new Post(
+            uriTemplate: '/advanced/create-session-with-courses-and-users',
+            controller: CreateSessionWithUsersAndCoursesAction::class,
+            denormalizationContext: ['groups' => ['write']],
+            security: "is_granted('ROLE_ADMIN')",
+            input: CreateSessionWithUsersAndCoursesInput::class,
+            output: Session::class,
+            deserialize: true,
+            name: 'create_session_with_courses_and_assign_users'
+        ),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         new Delete(security: "is_granted('DELETE', object)"),
     ],
     normalizationContext: ['groups' => ['session:basic']],
@@ -370,7 +393,11 @@ class Session implements ResourceWithAccessUrlInterface, Stringable
      * Image illustrating the session (was extra field 'image' in 1.11).
      */
     #[Groups(['user_subscriptions:sessions'])]
+<<<<<<< HEAD
     #[ORM\ManyToOne(targetEntity: Asset::class, cascade: ['remove'])]
+=======
+    #[ORM\ManyToOne(targetEntity: Asset::class, cascade: ['persist', 'remove'])]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[ORM\JoinColumn(name: 'image_id', referencedColumnName: 'id', onDelete: 'SET NULL')]
     protected ?Asset $image = null;
 
@@ -380,9 +407,31 @@ class Session implements ResourceWithAccessUrlInterface, Stringable
     #[Groups(['user_subscriptions:sessions', 'session:read', 'session:item:read'])]
     private int $accessVisibility = 0;
 
+<<<<<<< HEAD
     #[ORM\Column(name: 'notify_boss', type: 'boolean', options: ['default' => false])]
     protected bool $notifyBoss = false;
 
+=======
+    #[ORM\Column(name: 'parent_id', type: 'integer', nullable: true)]
+    protected ?int $parentId = null;
+
+    #[ORM\Column(name: 'days_to_reinscription', type: 'integer', nullable: true)]
+    protected ?int $daysToReinscription = null;
+
+    #[ORM\Column(name: 'last_repetition', type: 'boolean', nullable: false, options: ['default' => false])]
+    protected bool $lastRepetition = false;
+
+    #[ORM\Column(name: 'days_to_new_repetition', type: 'integer', nullable: true)]
+    protected ?int $daysToNewRepetition = null;
+
+    #[ORM\Column(name: 'notify_boss', type: 'boolean', options: ['default' => false])]
+    protected bool $notifyBoss = false;
+
+    #[Groups(['session:basic', 'session:read', 'session:write'])]
+    #[ORM\Column(name: 'validity_in_days', type: 'integer', nullable: true)]
+    protected ?int $validityInDays = null;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct()
     {
         $this->skills = new ArrayCollection();
@@ -803,6 +852,19 @@ class Session implements ResourceWithAccessUrlInterface, Stringable
         return $this->users->matching($criteria)->count() > 0;
     }
 
+<<<<<<< HEAD
+=======
+    public function hasUserInSession(User $user, int $relationType): bool
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('user', $user))
+            ->andWhere(Criteria::expr()->eq('relationType', $relationType))
+        ;
+
+        return $this->users->matching($criteria)->count() > 0;
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function addGeneralCoach(User $coach): self
     {
         return $this->addUserInSession(self::GENERAL_COACH, $coach);
@@ -1492,6 +1554,57 @@ class Session implements ResourceWithAccessUrlInterface, Stringable
         ));
     }
 
+<<<<<<< HEAD
+=======
+    public function getParentId(): ?int
+    {
+        return $this->parentId;
+    }
+
+    public function setParentId(?int $parentId): self
+    {
+        $this->parentId = $parentId;
+
+        return $this;
+    }
+
+    public function getDaysToReinscription(): ?int
+    {
+        return $this->daysToReinscription;
+    }
+
+    public function setDaysToReinscription(?int $daysToReinscription): self
+    {
+        $this->daysToReinscription = $daysToReinscription ?: null;
+
+        return $this;
+    }
+
+    public function getLastRepetition(): bool
+    {
+        return $this->lastRepetition;
+    }
+
+    public function setLastRepetition(bool $lastRepetition): self
+    {
+        $this->lastRepetition = $lastRepetition;
+
+        return $this;
+    }
+
+    public function getDaysToNewRepetition(): ?int
+    {
+        return $this->daysToNewRepetition;
+    }
+
+    public function setDaysToNewRepetition(?int $daysToNewRepetition): self
+    {
+        $this->daysToNewRepetition = $daysToNewRepetition ?: null;
+
+        return $this;
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function getNotifyBoss(): bool
     {
         return $this->notifyBoss;
@@ -1503,4 +1616,19 @@ class Session implements ResourceWithAccessUrlInterface, Stringable
 
         return $this;
     }
+<<<<<<< HEAD
+=======
+
+    public function getValidityInDays(): ?int
+    {
+        return $this->validityInDays;
+    }
+
+    public function setValidityInDays(?int $validityInDays): self
+    {
+        $this->validityInDays = $validityInDays ?: null;
+
+        return $this;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

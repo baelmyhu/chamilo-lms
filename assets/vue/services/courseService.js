@@ -6,9 +6,24 @@ export default {
 
   /**
    * @param {Object} searchParams
+<<<<<<< HEAD
    * @returns {Promise<{totalItems, items}>}
    */
   listAll: async (searchParams = {}) => await baseService.getCollection("/api/courses", searchParams),
+=======
+   * @param {boolean} disablePagination
+   * @returns {Promise<{totalItems, items}>}
+   */
+  listAll: async (searchParams = {}, disablePagination = false) => {
+    const params = { ...searchParams }
+
+    if (disablePagination) {
+      params.pagination = false
+    }
+
+    return await baseService.getCollection("/api/courses", params)
+  },
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
   /**
    * @param {number} cid
@@ -170,4 +185,15 @@ export default {
       return null
     }
   },
+<<<<<<< HEAD
+=======
+  /**
+   * Loads public catalogue courses filtered by access_url and usergroup rules.
+   * @returns {Promise<{items: Array}>}
+   */
+  listCatalogueCourses: async () => {
+    const response = await api.get("/catalogue/courses-list")
+    return response.data
+  },
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

@@ -2933,8 +2933,12 @@ class MySpace
                     $user['Password'],
                     $user['OfficialCode'],
                     api_get_setting('PlatformLanguage'),
+<<<<<<< HEAD
                     $user['PhoneNumber'],
                     ''
+=======
+                    $user['PhoneNumber']
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 );
                 $user['added_at_platform'] = 1;
             } else {

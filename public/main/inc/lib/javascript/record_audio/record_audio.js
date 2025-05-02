@@ -87,6 +87,11 @@ window.RecordAudio = (function () {
                     if (btnSave) {
                         btnSave.prop('disabled', true).text(btnSave.data('loadingtext'));
                     }
+<<<<<<< HEAD
+=======
+
+                    $('.exercise_save_now_button button, .exercise_actions button').prop('disabled', true);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 }
             }).done(function (response) {
                 $(response.message).insertAfter($(rtcInfo.blockId).find('.well'));
@@ -97,6 +102,11 @@ window.RecordAudio = (function () {
                 btnStop.prop('disabled', true).addClass('hidden');
                 btnPause.prop('disabled', true).addClass('hidden');
                 btnStart.prop('disabled', false).removeClass('hidden');
+<<<<<<< HEAD
+=======
+
+                $('.exercise_save_now_button button, .exercise_actions button').prop('disabled', false);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             });
         }
 
@@ -127,7 +137,11 @@ window.RecordAudio = (function () {
                 alert(error);
             }
 
+<<<<<<< HEAD
             if(!!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia)) {
+=======
+            if(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
                 navigator.getUserMedia(mediaConstraints, successCallback, errorCallback);
                 return;

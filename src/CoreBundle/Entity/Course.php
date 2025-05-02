@@ -47,7 +47,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     filters: [
         'course.sticky_boolean_filter',
     ],
+<<<<<<< HEAD
     security: "is_granted('ROLE_USER')"
+=======
+    paginationClientEnabled: true,
+    security: "is_granted('ROLE_USER')",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 )]
 #[ORM\Table(name: 'course')]
 #[ORM\Index(columns: ['sticky'], name: 'idx_course_sticky')]
@@ -166,6 +171,7 @@ class Course extends AbstractResource implements ResourceInterface, ResourceWith
     )]
     protected Collection $tools;
 
+<<<<<<< HEAD
     #[Groups(['course:read'])]
     #[ORM\OneToOne(
         mappedBy: 'course',
@@ -178,6 +184,8 @@ class Course extends AbstractResource implements ResourceInterface, ResourceWith
     )]
     protected ?TrackCourseRanking $trackCourseRanking = null;
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     protected Session $currentSession;
 
     protected AccessUrl $currentUrl;
@@ -312,10 +320,18 @@ class Course extends AbstractResource implements ResourceInterface, ResourceWith
     protected ?DateTime $expirationDate = null;
 
     #[Assert\NotNull]
+<<<<<<< HEAD
+=======
+    #[Groups(['course:read'])]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[ORM\Column(name: 'subscribe', type: 'boolean', unique: false, nullable: false)]
     protected bool $subscribe;
 
     #[Assert\NotNull]
+<<<<<<< HEAD
+=======
+    #[Groups(['course:read'])]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[ORM\Column(name: 'unsubscribe', type: 'boolean', unique: false, nullable: false)]
     protected bool $unsubscribe;
 
@@ -347,6 +363,13 @@ class Course extends AbstractResource implements ResourceInterface, ResourceWith
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $duration = null;
 
+<<<<<<< HEAD
+=======
+    #[Groups(['course:read', 'course:write'])]
+    #[ORM\Column(name: 'popularity', type: 'integer', nullable: false, options: ['default' => 0])]
+    protected int $popularity = 0;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct()
     {
         $this->visibility = self::OPEN_PLATFORM;
@@ -442,6 +465,7 @@ class Course extends AbstractResource implements ResourceInterface, ResourceWith
         return $this;
     }
 
+<<<<<<< HEAD
     public function getTrackCourseRanking(): ?TrackCourseRanking
     {
         return $this->trackCourseRanking;
@@ -454,6 +478,8 @@ class Course extends AbstractResource implements ResourceInterface, ResourceWith
         return $this;
     }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function hasSubscriptionByUser(User $user): bool
     {
         return (bool) $this->getSubscriptionByUser($user);
@@ -1191,6 +1217,21 @@ class Course extends AbstractResource implements ResourceInterface, ResourceWith
         return $this;
     }
 
+<<<<<<< HEAD
+=======
+    public function getPopularity(): int
+    {
+        return $this->popularity;
+    }
+
+    public function setPopularity(int $popularity): self
+    {
+        $this->popularity = $popularity;
+
+        return $this;
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function getResourceIdentifier(): int
     {
         return $this->getId();

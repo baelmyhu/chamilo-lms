@@ -2,9 +2,19 @@
 /* For licensing terms, see /license.txt */
 
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
+<<<<<<< HEAD
 
 $categories = $em
     ->getRepository('ChamiloCoreBundle:PortfolioCategory')
+=======
+use Chamilo\CoreBundle\Entity\PortfolioCategory;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\PortfolioItemEditedEvent;
+
+$categories = $em
+    ->getRepository(PortfolioCategory::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ->findBy([
         'user' => $user,
     ]);
@@ -34,12 +44,24 @@ if ($form->validate()) {
         ->setContent($values['content'])
         ->setUpdateDate($currentTime)
         ->setCategory(
+<<<<<<< HEAD
             $em->find('ChamiloCoreBundle:PortfolioCategory', $values['category'])
+=======
+            $em->find(PortfolioCategory::class, $values['category'])
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
 
     $em->persist($item);
     $em->flush();
 
+<<<<<<< HEAD
+=======
+    Container::getEventDispatcher()->dispatch(
+        new PortfolioItemEditedEvent(['portfolio' => $item]),
+        Events::PORTFOLIO_ITEM_EDITED
+    );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     Display::addFlash(
         Display::return_message(get_lang('Item updated'), 'success')
     );

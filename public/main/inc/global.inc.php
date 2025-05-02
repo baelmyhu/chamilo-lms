@@ -68,6 +68,16 @@ if ($isCli) {
     $kernel = new Chamilo\Kernel($env, $debug);
     // Loading Request from Sonata. In order to use Sonata Pages Bundle.
     $request = Request::createFromGlobals();
+<<<<<<< HEAD
+=======
+    if (!empty($_SERVER['TRUSTED_PROXIES'])) {
+        $request->setTrustedProxies(
+            preg_split('#,#', $_SERVER['TRUSTED_PROXIES']),
+            Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT
+        );
+        // TRUSTED_PROXIES must be defined in .env. For non-legacy code, check config/packages/framework.yaml
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     // This 'load_legacy' variable is needed to know that symfony is loaded using old style legacy mode,
     // and not called from a symfony controller from public/
     $request->request->set('load_legacy', true);
@@ -84,6 +94,7 @@ if ($isCli) {
     $context = $router->getContext();
     $router->setContext($context);
 
+<<<<<<< HEAD
     set_exception_handler(function ($exception) use ($kernel, $container) {
         $request = Request::createFromGlobals();
         $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
@@ -102,6 +113,23 @@ if ($isCli) {
             $response = new Response('An error occurred', Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->send();
         }
+=======
+    set_exception_handler(function ($exception) use ($kernel, $container, $request) {
+        if (\in_array($kernel->getEnvironment(), ['dev', 'test'], true)) {
+            throw $exception;
+        }
+
+        $event = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, $exception);
+        $listener = $container->get(ExceptionListener::class);
+        if (is_callable($listener)) {
+            $listener($event);
+        }
+        $response = $event->getResponse();
+        if (!$response) {
+            $response = new Response('An error occurred', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        $response->send();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     });
 
     $context = Container::getRouter()->getContext();

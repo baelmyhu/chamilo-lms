@@ -21,6 +21,10 @@ import documents from "./documents"
 import assignments from "./assignments"
 import links from "./links"
 import glossary from "./glossary"
+<<<<<<< HEAD
+=======
+import attendance from "./attendance"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 import catalogue from "./catalogue"
 import { useSecurityStore } from "../store/securityStore"
 import MyCourseList from "../views/user/courses/List.vue"
@@ -234,6 +238,10 @@ const router = createRouter({
     assignments,
     links,
     glossary,
+<<<<<<< HEAD
+=======
+    attendance,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     accountRoutes,
     personalFileRoutes,
     messageRoutes,

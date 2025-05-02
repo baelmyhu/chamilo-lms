@@ -157,7 +157,11 @@ switch ($action) {
         // for global recent logins
         header('Content-type: application/json');
         $list = [];
+<<<<<<< HEAD
         $all = Statistics::getRecentLoginStats(false, $sessionDuration, [31]);
+=======
+        $all = Statistics::getRecentLoginStats(false, $sessionDuration);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         foreach ($all as $tick => $tock) {
             $list['labels'][] = $tick;
         }
@@ -205,7 +209,11 @@ switch ($action) {
         } elseif ('courses' == $action) {
             $courseCategoryRepo = Container::getCourseCategoryRepository();
             $categories = $courseCategoryRepo->findAll();
+<<<<<<< HEAD
             $statsName = 'CountCours';
+=======
+            $statsName = 'Total number of courses';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             // total amount of courses
             $all = [];
             foreach ($categories as $category) {
@@ -213,7 +221,11 @@ switch ($action) {
                 $all[$category->getTitle()] = $category->getCourses()->count();
             }
         } elseif ('courses_by_language' == $action) {
+<<<<<<< HEAD
             $statsName = 'CountCourseByLanguage';
+=======
+            $statsName = 'Count course by language';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $all = Statistics::printCourseByLanguageStats();
             // use slightly different colors than previous chart
             for ($k = 0; $k < 3; $k++) {
@@ -221,7 +233,11 @@ switch ($action) {
                 array_push($palette, $item);
             }
         } elseif ('users' == $action) {
+<<<<<<< HEAD
             $statsName = 'NumberOfUsers';
+=======
+            $statsName = 'Number of users';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $countInvisible = isset($_GET['count_invisible']) ? (int) $_GET['count_invisible'] : null;
             $all = [
                 get_lang('Trainers') => Statistics::countUsers(COURSEMANAGER, null, $countInvisible),
@@ -286,7 +302,11 @@ switch ($action) {
         $list = [];
         $palette = ChamiloApi::getColorPalette(true, true);
 
+<<<<<<< HEAD
         $statsName = 'NumberOfUsers';
+=======
+        $statsName = 'Number of users';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $filter = $_REQUEST['filter'];
 
         $startDate = $_REQUEST['date_start'];
@@ -294,7 +314,11 @@ switch ($action) {
 
         $extraConditions = '';
         if (!empty($startDate) && !empty($endDate)) {
+<<<<<<< HEAD
             $extraConditions .= " AND registration_date BETWEEN '$startDate' AND '$endDate' ";
+=======
+            $extraConditions .= " AND created_at BETWEEN '$startDate' AND '$endDate' ";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         switch ($filter) {
@@ -366,7 +390,11 @@ switch ($action) {
                     $item['display_text'] = $option['display_text'];
                     $all[$item['display_text']] = $count;
                 }
+<<<<<<< HEAD
                 $all[get_lang('N/A')] = $total - $usersFound;
+=======
+                $all[get_lang('Not available')] = $total - $usersFound;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
                 break;
             case 'language':
@@ -430,7 +458,11 @@ switch ($action) {
                     $item['display_text'] = get_lang(str_replace('2', '', $item['display_text']));
                     $all[$item['display_text']] = $count;
                 }
+<<<<<<< HEAD
                 $all[get_lang('N/A')] = $total - $usersFound;
+=======
+                $all[get_lang('Not available')] = $total - $usersFound;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 break;
 
             case 'age':
@@ -462,7 +494,11 @@ switch ($action) {
                 $usersFound = 0;
                 $now = new DateTime();
                 $all = [
+<<<<<<< HEAD
                     //get_lang('N/A') => 0,
+=======
+                    //get_lang('Not available') => 0,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     '16-17' => 0,
                     '18-25' => 0,
                     '26-30' => 0,
@@ -526,7 +562,11 @@ switch ($action) {
                     $usersFound += $count;
                 }
 
+<<<<<<< HEAD
                 $all[get_lang('N/A')] = $total - $usersFound;
+=======
+                $all[get_lang('Not available')] = $total - $usersFound;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 break;
 
             case 'contract':
@@ -617,7 +657,11 @@ switch ($action) {
         $list = [];
         $palette = ChamiloApi::getColorPalette(true, true);
 
+<<<<<<< HEAD
         $statsName = 'NumberOfUsers';
+=======
+        $statsName = 'Number of users';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $filter = $_REQUEST['filter'];
 
         $startDate = Database::escape_string($_REQUEST['date_start']);

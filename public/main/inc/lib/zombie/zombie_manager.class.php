@@ -1,6 +1,11 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Framework\Container;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 /**
  * ZombieQuery.
  *
@@ -26,7 +31,11 @@ class ZombieManager
      * @param int|string $ceiling     last login date
      * @param bool       $active_only if true returns only active users. Otherwise returns all users.
      *
+<<<<<<< HEAD
      * @return ResultSet
+=======
+     * @return array
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function listZombies(
         $ceiling,
@@ -41,7 +50,11 @@ class ZombieManager
             $column = 'firstname';
         }
 
+<<<<<<< HEAD
         $validColumns = ['id', 'official_code', 'firstname', 'lastname', 'username', 'auth_source', 'email', 'status', 'registration_date', 'active', 'login_date'];
+=======
+        $validColumns = ['id', 'official_code', 'firstname', 'lastname', 'username', 'email', 'status', 'created_at', 'active', 'login_date'];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (!in_array($column, $validColumns)) {
             $column = 'firstname';
         }
@@ -51,12 +64,19 @@ class ZombieManager
         $user_table = Database::get_main_table(TABLE_MAIN_USER);
         $login_table = Database::get_main_table(TABLE_STATISTIC_TRACK_E_LOGIN);
 
+<<<<<<< HEAD
+=======
+        $accessUrlHelper = Container::getAccessUrlHelper();
+        $accessUrl = $accessUrlHelper->getCurrent();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $sql = 'SELECT
                     user.id,
                     user.official_code,
                     user.firstname,
                     user.lastname,
                     user.username,
+<<<<<<< HEAD
                     user.auth_source,
                     user.email,
                     user.status,
@@ -67,6 +87,17 @@ class ZombieManager
         if (api_is_multiple_url_enabled()) {
             $access_url_rel_user_table = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_USER);
             $current_url_id = api_get_current_access_url_id();
+=======
+                    user.email,
+                    user.status,
+                    user.created_at,
+                    user.active,
+                    access.login_date';
+
+        if ($accessUrlHelper->isMultiple()) {
+            $access_url_rel_user_table = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_USER);
+            $current_url_id = $accessUrl->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
             $sql .= " FROM $user_table as user, $login_table as access, $access_url_rel_user_table as url
                       WHERE
@@ -103,7 +134,17 @@ class ZombieManager
 
         $result = Database::query($sql);
 
+<<<<<<< HEAD
         return Database::store_result($result, 'ASSOC');
+=======
+        if (Database::num_rows($result) === 0) {
+            return [];
+        }
+        $userInfo = Database::store_result($result, 'ASSOC');
+        $userInfo['auth_sources'] = api_get_user_entity($userInfo['id'])->getAuthSourcesAuthentications($accessUrl);
+
+        return $userInfo;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**

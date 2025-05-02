@@ -303,6 +303,7 @@ if (!empty($_GET['category'])) {
             handleRegions();
             break;
         case 'Plugins':
+<<<<<<< HEAD
             // Displaying the extensions: Plugins.
             // This will be available to all the sites (access_urls).
             $securityToken = isset($_GET['sec_token']) ? Security::remove_XSS($_GET['sec_token']) : null;
@@ -329,12 +330,18 @@ if (!empty($_GET['category'])) {
             echo '<li class="nav-item"><a id="plugin-tab-1" class="nav-link active" href="#tab1" aria-controls="tab1" aria-selected="true">'.get_lang('Plugins').'</a></li>';
             echo '<li class="nav-item"><a id="plugin-tab-2" class="nav-link" href="#tab2" aria-controls="tab2" aria-selected="false">'.get_lang('Dashboard plugins').'</a></li>';
             echo '<li class="nav-item"><a id="plugin-tab-3" class="nav-link" href="#tab3" aria-controls="tab3" aria-selected="false">'.get_lang('Configure extensions').'</a></li>';
+=======
+            echo '<div class="tab_wrapper">';
+            echo '<ul class="nav nav-tabs" id="tabs" role="tablist">';
+            echo '<li class="nav-item"><a id="plugin-tab-1" class="nav-link active" href="#tab1" aria-controls="tab1" aria-selected="true">'.get_lang('Plugins').'</a></li>';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             echo '</ul>';
 
             echo '<div class="tab-content" id="tabs-content">';
             echo '<div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="plugin-tab-1">';
             handlePlugins();
             echo '</div>';
+<<<<<<< HEAD
 
             //echo '<div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="plugin-tab-2">';
             //DashboardManager::handle_dashboard_plugins();
@@ -343,6 +350,8 @@ if (!empty($_GET['category'])) {
             echo '<div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="plugin-tab-3">';
             handleExtensions();
             echo '</div>';
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             echo '</div>';
             echo '</div>';
             break;

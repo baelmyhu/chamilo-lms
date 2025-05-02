@@ -2,6 +2,13 @@
 /* For licensing terms, see /license.txt */
 
 use Chamilo\CoreBundle\Framework\Container;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Event\AbstractEvent;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\NotificationContentFormattedEvent;
+use Chamilo\CoreBundle\Event\NotificationTitleFormattedEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  * Notification class
@@ -155,6 +162,15 @@ class Notification extends Model
      */
     public function formatTitle(string $title, array $senderInfo, bool $forceTitleWhenSendingEmail = false, $recipientLanguage = null): string
     {
+<<<<<<< HEAD
+=======
+        $notificationTitleEvent = new NotificationTitleFormattedEvent(['title' => $title], AbstractEvent::TYPE_PRE);
+
+        Container::getEventDispatcher()->dispatch($notificationTitleEvent, Events::NOTIFICATION_TITLE_FORMATTED);
+
+        $title = $notificationTitleEvent->getTitle();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $newTitle = $this->getTitlePrefix();
 
         switch ($this->type) {
@@ -202,7 +218,15 @@ class Notification extends Model
             $newTitle = $title;
         }
 
+<<<<<<< HEAD
         return $newTitle;
+=======
+        $notificationTitleEvent = new NotificationTitleFormattedEvent(['title' => $newTitle], AbstractEvent::TYPE_POST);
+
+        Container::getEventDispatcher()->dispatch($notificationTitleEvent, Events::NOTIFICATION_TITLE_FORMATTED);
+
+        return $notificationTitleEvent->getTitle();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -356,6 +380,15 @@ class Notification extends Model
      * */
     public function formatContent($messageId, $content, $senderInfo, $recipientLanguage = null, $baseUrl = null)
     {
+<<<<<<< HEAD
+=======
+        $notificationContentEvent = new NotificationContentFormattedEvent(['content' => $content], AbstractEvent::TYPE_PRE);
+
+        Container::getEventDispatcher()->dispatch($notificationContentEvent, Events::NOTIFICATION_CONTENT_FORMATTED);
+
+        $content = $notificationContentEvent->getContent();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $newMessageText = $linkToNewMessage = '';
         $showEmail = ('true' === api_get_setting('mail.show_user_email_in_notification'));
         $senderInfoName = '';
@@ -438,7 +471,15 @@ class Notification extends Model
                 Display::url($preferenceUrl, $preferenceUrl)
             ).'</i>';
 
+<<<<<<< HEAD
         return $content;
+=======
+        $notificationContentEvent = new NotificationContentFormattedEvent(['content' => $content], AbstractEvent::TYPE_POST);
+
+        Container::getEventDispatcher()->dispatch($notificationContentEvent, Events::NOTIFICATION_CONTENT_FORMATTED);
+
+        return $notificationContentEvent->getContent();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**

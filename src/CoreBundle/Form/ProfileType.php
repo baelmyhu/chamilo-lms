@@ -11,8 +11,14 @@ use Chamilo\CoreBundle\Form\Type\IllustrationType;
 use Chamilo\CoreBundle\Repository\LanguageRepository;
 use Chamilo\CoreBundle\Settings\SettingsManager;
 use Symfony\Component\Form\AbstractType;
+<<<<<<< HEAD
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\LocaleType;
+=======
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,6 +29,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ProfileType extends AbstractType
 {
+<<<<<<< HEAD
     private LanguageRepository $languageRepository;
 
     public function __construct(
@@ -37,6 +44,18 @@ class ProfileType extends AbstractType
         $changeableOptions = $this->settingsManager->getSetting('profile.changeable_options') ?? [];
         $visibleOptions = $this->settingsManager->getSetting('profile.visible_options') ?? [];
         $languages = array_flip($this->languageRepository->getAllAvailableToArray());
+=======
+    public function __construct(
+        private readonly LanguageRepository $languageRepository,
+        private readonly SettingsManager $settingsManager,
+    ) {}
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $changeableOptions = $this->settingsManager->getSetting('profile.changeable_options', true) ?? [];
+        $visibleOptions = $this->settingsManager->getSetting('profile.visible_options', true) ?? [];
+        $languages = array_flip($this->languageRepository->getAllAvailableToArray(true));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $fieldsMap = [
             'name' => ['field' => 'firstname', 'type' => TextType::class, 'label' => 'Firstname'],
@@ -49,10 +68,23 @@ class ProfileType extends AbstractType
                 'mapped' => false,
             ],
             'login' => ['field' => 'login', 'type' => TextType::class, 'label' => 'Login'],
+<<<<<<< HEAD
             'password' => ['field' => 'password', 'type' => TextType::class, 'label' => 'Password'],
             'language' => [
                 'field' => 'locale',
                 'type' => LocaleType::class,
+=======
+            'password' => [
+                'field' => 'password',
+                'type' => PasswordType::class,
+                'label' => 'Password',
+                'mapped' => false,
+                'required' => false,
+            ],
+            'language' => [
+                'field' => 'locale',
+                'type' => ChoiceType::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'label' => 'Language',
                 'choices' => $languages,
             ],
@@ -69,7 +101,12 @@ class ProfileType extends AbstractType
                     array_merge(
                         [
                             'label' => $fieldConfig['label'],
+<<<<<<< HEAD
                             'required' => false,
+=======
+                            'required' => $fieldConfig['required'] ?? false,
+                            'mapped' => $fieldConfig['mapped'] ?? true,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                             'attr' => !$isEditable ? ['readonly' => true] : [],
                         ],
                         isset($fieldConfig['choices']) ? ['choices' => $fieldConfig['choices']] : []

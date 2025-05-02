@@ -4,7 +4,11 @@
 /**
  * Class Block
  * This file contains class used parent class for blocks plugins
+<<<<<<< HEAD
  * Parent class for controller Blocks from dashboard plugin.
+=======
+ * Parent class for controller Blocks from Dashboard plugin.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
  *
  * @author Christian Fasanando <christian1827@gmail.com>
  */

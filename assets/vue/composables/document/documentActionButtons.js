@@ -29,7 +29,11 @@ export function useDocumentActionButtons() {
     if (isAllowedToEdit) {
       if (!isCertificateMode.value) {
         showNewDocumentButton.value = true
+<<<<<<< HEAD
         showRecordAudioButton.value = "true" === platformConfigStore.getSetting("course.enable_record_audio")
+=======
+        showRecordAudioButton.value = true
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         showUploadButton.value = true
         showNewFolderButton.value = true
         showNewCloudFileButton.value = true // enable_add_file_link ?

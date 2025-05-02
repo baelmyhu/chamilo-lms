@@ -504,7 +504,11 @@ switch ($action) {
         break;
     case 'copy_survey':
         if (!empty($surveyId) && api_is_allowed_to_edit()) {
+<<<<<<< HEAD
             SurveyManager::copy_survey($surveyId);
+=======
+            SurveyManager::copySurvey($surveyId);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             Display::addFlash(Display::return_message(get_lang('SurveyCopied'), 'confirmation', false));
             header('Location: '.$listUrl);
             exit;

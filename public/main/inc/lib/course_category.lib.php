@@ -87,14 +87,21 @@ class CourseCategory
     public static function getAllCategories()
     {
         $tbl_category = Database::get_main_table(TABLE_MAIN_CATEGORY);
+<<<<<<< HEAD
         $tbl_course = Database::get_main_table(TABLE_MAIN_COURSE);
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $table = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_COURSE_CATEGORY);
         $conditions = " INNER JOIN $table a ON (t1.id = a.course_category_id)";
         $whereCondition = " AND a.access_url_id = ".api_get_current_access_url_id();
         $allowBaseCategories = ('true' === api_get_setting('course.allow_base_course_category'));
         if ($allowBaseCategories) {
+<<<<<<< HEAD
             $whereCondition = " AND (a.access_url_id = ".api_get_current_access_url_id()." OR a.access_url_id = 1) ";
+=======
+            $whereCondition = " AND (a.access_url_id = ".api_get_current_access_url_id()." OR a.access_url_id = 1)";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         $sql = "SELECT
@@ -103,6 +110,7 @@ class CourseCategory
                 t1.code,
                 t1.parent_id,
                 t1.tree_pos,
+<<<<<<< HEAD
                 t1.children_count,
                 COUNT(DISTINCT t3.code) AS number_courses
                 FROM $tbl_category t1
@@ -118,6 +126,21 @@ class CourseCategory
                     t1.tree_pos,
                     t1.children_count
                 ORDER BY t1.parent_id, t1.tree_pos";
+=======
+                t1.children_count
+            FROM $tbl_category t1
+            $conditions
+            WHERE 1=1
+                $whereCondition
+            GROUP BY
+                t1.id,
+                t1.title,
+                t1.code,
+                t1.parent_id,
+                t1.tree_pos,
+                t1.children_count
+            ORDER BY t1.parent_id, t1.tree_pos";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $result = Database::query($sql);
 
@@ -205,7 +228,11 @@ class CourseCategory
         Database::query($sql);
     }
 
+<<<<<<< HEAD
     public static function edit($categoryId, $name, $canHaveCourses, $code, $description): ?CourseCategoryEntity
+=======
+    public static function edit($categoryId, $name, $canHaveCourses, $code, $description, $parentId = null): ?CourseCategoryEntity
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $repo = Container::getCourseCategoryRepository();
         $category = $repo->find($categoryId);
@@ -221,6 +248,13 @@ class CourseCategory
             ->setAuthCourseChild($canHaveCourses)
         ;
 
+<<<<<<< HEAD
+=======
+        if (!empty($parentId)) {
+            $category->setParent(Container::getCourseCategoryRepository()->find($parentId));
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $repo->save($category);
 
         // Updating children
@@ -272,6 +306,41 @@ class CourseCategory
         return true;
     }
 
+<<<<<<< HEAD
+=======
+    public static function moveNodeDown($categoryId, $treePos, $parentId): bool
+    {
+        $table = Database::get_main_table(TABLE_MAIN_CATEGORY);
+        $categoryId = (int) $categoryId;
+        $treePos = (int) $treePos;
+
+        $parentIdCondition = "parent_id IS NULL";
+        if (!empty($parentId)) {
+            $parentIdCondition = "parent_id = '".Database::escape_string($parentId)."'";
+        }
+
+        self::reorganizeTreePos($parentId);
+
+        $sql = "SELECT id, tree_pos
+            FROM $table
+            WHERE $parentIdCondition AND tree_pos > $treePos
+            ORDER BY tree_pos ASC
+            LIMIT 1";
+
+        $result = Database::query($sql);
+        $nextCategory = Database::fetch_array($result);
+
+        if (!$nextCategory) {
+            return false;
+        }
+
+        Database::query("UPDATE $table SET tree_pos = {$nextCategory['tree_pos']} WHERE id = $categoryId");
+        Database::query("UPDATE $table SET tree_pos = $treePos WHERE id = {$nextCategory['id']}");
+
+        return true;
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public static function reorganizeTreePos($parentId): void
     {
         $table = Database::get_main_table(TABLE_MAIN_CATEGORY);
@@ -384,11 +453,20 @@ class CourseCategory
                 $column++;
             }
             $row++;
+<<<<<<< HEAD
             $mainUrl = api_get_path(WEB_CODE_PATH).'admin/course_category.php?category='.$categoryCode;
+=======
+            $baseUrl = api_get_path(WEB_CODE_PATH).'admin/course_category.php';
+            $baseParams = [];
+            if (!empty($categorySource['id'])) {
+                $baseParams['id'] = (int) $categorySource['id'];
+            }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
             $editIcon = Display::getMdiIcon(ActionIcon::EDIT, 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Edit'));
             $exportIcon = Display::getMdiIcon(ActionIcon::EXPORT_CSV, 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('ExportAsCSV'));
             $deleteIcon = Display::getMdiIcon(ActionIcon::DELETE, 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Delete'));
+<<<<<<< HEAD
             $moveIcon = Display::getMdiIcon(ActionIcon::UP, 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Up in same level'));
 
             $urlId = api_get_current_access_url_id();
@@ -399,6 +477,44 @@ class CourseCategory
                 $moveUrl = $mainUrl.'&id='.$categoryId.'&action=moveUp&tree_pos='.$category->getTreePos();
                 $deleteUrl = $mainUrl.'&id='.$categoryId.'&action=delete';
                 $exportUrl = $mainUrl.'&id='.$categoryId.'&action=export';
+=======
+            $urlId = api_get_current_access_url_id();
+
+            $positions = array_map(fn($c) => $c->getTreePos(), $categories);
+            $minTreePos = min($positions);
+            $maxTreePos = max($positions);
+
+            foreach ($categories as $category) {
+                $categoryId = $category->getId();
+                $code = $category->getCode();
+                $treePos = $category->getTreePos();
+                $editUrl = $baseUrl.'?'.http_build_query(array_merge($baseParams, [
+                        'action' => 'edit',
+                        'id' => $categoryId,
+                    ]));
+
+                $moveUpUrl = $baseUrl.'?'.http_build_query(array_merge($baseParams, [
+                        'action' => 'moveUp',
+                        'id' => $categoryId,
+                        'tree_pos' => $treePos,
+                    ]));
+
+                $moveDownUrl = $baseUrl.'?'.http_build_query(array_merge($baseParams, [
+                        'action' => 'moveDown',
+                        'id' => $categoryId,
+                        'tree_pos' => $treePos,
+                    ]));
+
+                $deleteUrl = $baseUrl.'?'.http_build_query(array_merge($baseParams, [
+                        'action' => 'delete',
+                        'id' => $categoryId,
+                    ]));
+
+                $exportUrl = $baseUrl.'?'.http_build_query(array_merge($baseParams, [
+                        'action' => 'export',
+                        'id' => $categoryId,
+                    ]));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
                 $actions = [];
 
@@ -410,7 +526,29 @@ class CourseCategory
 
                 if ($inUrl->count() > 0) {
                     $actions[] = Display::url($editIcon, $editUrl);
+<<<<<<< HEAD
                     $actions[] = Display::url($moveIcon, $moveUrl);
+=======
+
+                    if ($treePos > $minTreePos) {
+                        $actions[] = Display::url(
+                            Display::getMdiIcon(ActionIcon::UP, 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Move up')),
+                            $moveUpUrl
+                        );
+                    } else {
+                        $actions[] = Display::getMdiIcon(ActionIcon::UP, 'ch-tool-icon-disabled', null, ICON_SIZE_SMALL, get_lang('Move up'));
+                    }
+
+                    if ($treePos < $maxTreePos) {
+                        $actions[] = Display::url(
+                            Display::getMdiIcon(ActionIcon::DOWN, 'ch-tool-icon', null, ICON_SIZE_SMALL, get_lang('Move down')),
+                            $moveDownUrl
+                        );
+                    } else {
+                        $actions[] = Display::getMdiIcon(ActionIcon::DOWN, 'ch-tool-icon-disabled', null, ICON_SIZE_SMALL, get_lang('Move down'));
+                    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     $actions[] = Display::url($exportIcon, $exportUrl);
                     $actions[] = Display::url(
                         $deleteIcon,

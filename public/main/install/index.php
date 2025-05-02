@@ -79,9 +79,18 @@ if ($httpRequest->request->get('language_list')) {
     $installationLanguage = str_replace($search, '', urldecode($httpRequest->request->get('language_list')));
     ChamiloSession::write('install_language', $installationLanguage);
 } elseif (ChamiloSession::has('install_language')) {
+<<<<<<< HEAD
   $installationLanguage = ChamiloSession::read('install_language');
 } else {
   $installationLanguage = $httpRequest->getPreferredLanguage();
+=======
+    $installationLanguage = ChamiloSession::read('install_language');
+} else {
+    $tempLanguage = $httpRequest->getPreferredLanguage();
+    if ($tempLanguage) {
+        $installationLanguage = $tempLanguage;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 
 // Set translation
@@ -679,6 +688,28 @@ $installerData = [
     'logUrl' => '/main/install/get_migration_status.php',
     'stepData' => $stepData,
 ];
+<<<<<<< HEAD
+=======
+
+function getEncoreAssetFromManifest(string $assetName): ?string
+{
+    $manifestFilePath = __DIR__.'/../../../public/build/manifest.json';
+
+    if (!file_exists($manifestFilePath)) {
+        return null;
+    }
+
+
+    $manifestPlain = file_get_contents($manifestFilePath);
+    $manifestJson = json_decode($manifestPlain, true);
+
+    if (isset($manifestJson[$assetName])) {
+        return $manifestJson[$assetName];
+    }
+
+    return null;
+}
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $installationLanguage ?>" class="no-js h-100">
@@ -688,7 +719,11 @@ $installerData = [
     </title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<<<<<<< HEAD
     <link rel="stylesheet" href="../../build/legacy_app.css">
+=======
+    <link rel="stylesheet" href="<?php echo getEncoreAssetFromManifest('public/build/app.css'); ?>">
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     <style>
         :root {
             --color-primary-base: 46 117 163;
@@ -723,16 +758,27 @@ $installerData = [
             --color-form-base: 46 117 163;
         }
     </style>
+<<<<<<< HEAD
     <link rel="stylesheet" href="../../build/app.css">
     <link rel="stylesheet" href="../../build/vue.css">
     <script type="text/javascript" src="../../build/legacy_app.js"></script>
+=======
+    <link rel="stylesheet" href="<?php echo getEncoreAssetFromManifest('public/build/app.css'); ?>">
+    <link rel="stylesheet" href="<?php echo getEncoreAssetFromManifest('public/build/vue.css'); ?>">
+    <script type="text/javascript" src="<?php echo getEncoreAssetFromManifest('public/build/legacy_app.js'); ?>"></script>
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 </head>
 <body class="flex min-h-screen p-2 md:px-16 md:py-8 xl:px-32 xl:py-16 bg-gradient-to-br from-primary to-primary-gradient">
 <div id="app" class="m-auto"></div>
 <script>
   var installerData = <?php echo json_encode($installerData) ?>;
 </script>
+<<<<<<< HEAD
 <script type="text/javascript" src="../../build/runtime.js"></script>
 <script type="text/javascript" src="../../build/vue_installer.js"></script>
+=======
+<script type="text/javascript" src="<?php echo getEncoreAssetFromManifest('public/build/runtime.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo getEncoreAssetFromManifest('public/build/vue_installer.js'); ?>"></script>
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 </body>
 </html>

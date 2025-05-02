@@ -93,10 +93,13 @@ class SkillRelUser
     protected int $validationStatus;
 
     #[Assert\NotBlank]
+<<<<<<< HEAD
     #[ORM\Column(name: 'assigned_by', type: 'integer', nullable: false)]
     protected int $assignedBy;
 
     #[Assert\NotBlank]
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[ORM\Column(name: 'argumentation', type: 'text')]
     protected string $argumentation;
 
@@ -159,6 +162,7 @@ class SkillRelUser
         return $this->acquiredSkillAt;
     }
 
+<<<<<<< HEAD
     public function setAssignedBy(int $assignedBy): self
     {
         $this->assignedBy = $assignedBy;
@@ -171,6 +175,8 @@ class SkillRelUser
         return $this->assignedBy;
     }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function getId(): ?int
     {
         return $this->id;

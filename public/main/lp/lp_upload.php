@@ -171,6 +171,11 @@ if (isset($_POST) && $is_error) {
             $oScorm = new scorm();
             $entity = $oScorm->getEntity();
             $manifest = $oScorm->import_local_package($s, $current_dir);
+<<<<<<< HEAD
+=======
+            // The file was treated, it can now be cleaned from the temp dir
+            unlink($s);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (!empty($manifest)) {
                 $oScorm->parse_manifest();
                 $oScorm->import_manifest(api_get_course_int_id(), $_REQUEST['use_max_score']);
@@ -198,6 +203,11 @@ if (isset($_POST) && $is_error) {
             $oAICC = new aicc();
             $entity = $oAICC->getEntity();
             $config_dir = $oAICC->import_local_package($s, $current_dir);
+<<<<<<< HEAD
+=======
+            // The file was treated, it can now be cleaned from the temp dir
+            unlink($s);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (!empty($config_dir)) {
                 $oAICC->parse_config_files($config_dir);
                 $oAICC->import_aicc(api_get_course_id());
@@ -222,6 +232,13 @@ if (isset($_POST) && $is_error) {
             break;
         case '':
         default:
+<<<<<<< HEAD
+=======
+            // There was an error, clean the file from the temp dir
+            if (is_file($s)) {
+                unlink($s);
+            }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             Display::addFlash(
                 Display::return_message(get_lang('Unknown package format'), 'warning')
             );

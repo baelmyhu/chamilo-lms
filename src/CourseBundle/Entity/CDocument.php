@@ -18,6 +18,11 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use Chamilo\CoreBundle\Controller\Api\CreateDocumentFileAction;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Controller\Api\DownloadSelectedDocumentsAction;
+use Chamilo\CoreBundle\Controller\Api\ReplaceDocumentFileAction;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Controller\Api\UpdateDocumentFileAction;
 use Chamilo\CoreBundle\Controller\Api\UpdateVisibilityDocument;
 use Chamilo\CoreBundle\Entity\AbstractResource;
@@ -60,6 +65,34 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('EDIT', object.resourceNode)",
             deserialize: true
         ),
+<<<<<<< HEAD
+=======
+        new Post(
+            uriTemplate: '/documents/{iid}/replace',
+            controller: ReplaceDocumentFileAction::class,
+            openapiContext: [
+                'summary' => 'Replace a document file, maintaining the same IDs.',
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            security: "is_granted('ROLE_CURRENT_COURSE_TEACHER') or is_granted('ROLE_CURRENT_COURSE_SESSION_TEACHER') or is_granted('ROLE_TEACHER')",
+            validationContext: ['groups' => ['Default', 'media_object_create', 'document:write']],
+            deserialize: false
+        ),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         new Get(security: "is_granted('VIEW', object.resourceNode)"),
         new Delete(security: "is_granted('DELETE', object.resourceNode)"),
         new Post(
@@ -110,6 +143,32 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: ['groups' => ['Default', 'media_object_create', 'document:write']],
             deserialize: false
         ),
+<<<<<<< HEAD
+=======
+        new Post(
+            uriTemplate: '/documents/download-selected',
+            controller: DownloadSelectedDocumentsAction::class,
+            openapiContext: [
+                'summary' => 'Download selected documents as a ZIP file.',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'ids' => [
+                                        'type' => 'array',
+                                        'items' => ['type' => 'integer'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            security: "is_granted('ROLE_USER')",
+        ),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         new GetCollection(
             openapiContext: [
                 'parameters' => [

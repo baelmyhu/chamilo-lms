@@ -6,6 +6,10 @@ declare(strict_types=1);
 
 namespace Chamilo\CoreBundle\Repository;
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\AccessUrlRelCourseCategory;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\Course;
 use Chamilo\CoreBundle\Entity\CourseCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -37,7 +41,11 @@ class CourseCategoryRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
         $qb
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:AccessUrlRelCourseCategory',
+=======
+                AccessUrlRelCourseCategory::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'a',
                 Join::WITH,
                 'c = a.courseCategory'
@@ -95,7 +103,11 @@ class CourseCategoryRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
         $qb->select('COUNT(c)')
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:AccessUrlRelCourseCategory',
+=======
+                AccessUrlRelCourseCategory::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'a',
                 Join::WITH,
                 'c = a.courseCategory'

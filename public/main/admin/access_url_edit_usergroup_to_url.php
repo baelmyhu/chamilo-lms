@@ -217,7 +217,11 @@ $url_list = UrlManager::get_url_data();
                         <select id="origin_users" name="no_course_list[]" multiple="multiple" size="15" class="form-control">
                             <?php foreach ($noUserGroupList as $noItem) {
                 ?>
+<<<<<<< HEAD
                                 <option value="<?php echo $noItem['id']; ?>"><?php echo $noItem['name']; ?></option>
+=======
+                                <option value="<?php echo $noItem['id']; ?>"><?php echo $noItem['title']; ?></option>
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                             <?php
             } ?>
                         </select>
@@ -254,7 +258,11 @@ $url_list = UrlManager::get_url_data();
                     <?php foreach ($userGroupList as $item) {
             ?>
                         <option value="<?php echo $item['id']; ?>">
+<<<<<<< HEAD
                             <?php echo $item['name']; ?>
+=======
+			    <?php echo $item['title']; ?>
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         </option>
                     <?php
         } ?>

@@ -145,7 +145,10 @@ class Answer
             $this->position[$i] = $object->position;
             $this->hotspot_coordinates[$i] = $object->hotspot_coordinates;
             $this->hotspot_type[$i] = $object->hotspot_type;
+<<<<<<< HEAD
             $this->destination[$i] = $object->destination;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $i++;
         }
         $this->nbrAnswers = $i - 1;
@@ -268,7 +271,10 @@ class Answer
             $this->position[$i] = $object->position;
             $this->hotspot_coordinates[$i] = $object->hotspot_coordinates;
             $this->hotspot_type[$i] = $object->hotspot_type;
+<<<<<<< HEAD
             $this->destination[$i] = $object->destination;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $this->autoId[$i] = $object->iid;
             $this->iid[$i] = $object->iid;
             $i++;
@@ -437,7 +443,10 @@ class Answer
                     'hotspot_coord' => $this->hotspot_coordinates[$i],
                     'hotspot_type' => $this->hotspot_type[$i],
                     'correct' => $this->correct[$i],
+<<<<<<< HEAD
                     'destination' => $this->destination[$i],
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ];
             }
         }
@@ -604,7 +613,10 @@ class Answer
         $this->new_position[$id] = $position;
         $this->new_hotspot_coordinates[$id] = $new_hotspot_coordinates;
         $this->new_hotspot_type[$id] = $new_hotspot_type;
+<<<<<<< HEAD
         $this->new_destination[$id] = $destination;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -646,7 +658,10 @@ class Answer
                 ->setCorrect((int) $correct)
                 ->setPonderation($weighting)
                 ->setPosition($position)
+<<<<<<< HEAD
                 ->setDestination($destination)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ->setHotspotCoordinates($hotSpotCoordinates)
                 ->setHotspotType($hotSpotType)
             ;
@@ -686,8 +701,11 @@ class Answer
             $position = isset($this->new_position[$i]) ? $this->new_position[$i] : null;
             $hotspot_coordinates = isset($this->new_hotspot_coordinates[$i]) ? $this->new_hotspot_coordinates[$i] : null;
             $hotspot_type = isset($this->new_hotspot_type[$i]) ? $this->new_hotspot_type[$i] : null;
+<<<<<<< HEAD
             $destination = isset($this->new_destination[$i]) ? $this->new_destination[$i] : null;
             //$autoId = $this->selectAutoId($i);
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $iid = isset($this->iid[$i]) ? $this->iid[$i] : 0;
 
             if (!isset($this->position[$i])) {
@@ -700,8 +718,12 @@ class Answer
                     ->setPonderation(!is_null($weighting) ? $weighting : 0.0)
                     ->setPosition($position)
                     ->setHotspotCoordinates($hotspot_coordinates)
+<<<<<<< HEAD
                     ->setHotspotType($hotspot_type)
                     ->setDestination($destination);
+=======
+                    ->setHotspotType($hotspot_type);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
                 $em->persist($quizAnswer);
                 $em->flush();
@@ -737,7 +759,11 @@ class Answer
                     $this->new_correct[$i],
                     $this->new_weighting[$i],
                     $this->new_position[$i],
+<<<<<<< HEAD
                     $this->new_destination[$i],
+=======
+                    null,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     $this->new_hotspot_coordinates[$i],
                     $this->new_hotspot_type[$i]
                 );
@@ -805,7 +831,10 @@ class Answer
         $this->hotspot_coordinates = $this->new_hotspot_coordinates;
         $this->hotspot_type = $this->new_hotspot_type;
         $this->nbrAnswers = $this->new_nbrAnswers;
+<<<<<<< HEAD
         $this->destination = $this->new_destination;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $this->cancel();
     }
@@ -879,7 +908,10 @@ class Answer
                     'position' => $this->position[$i],
                     'hotspot_coordinates' => $this->hotspot_coordinates[$i],
                     'hotspot_type' => $this->hotspot_type[$i],
+<<<<<<< HEAD
                     'destination' => $this->destination[$i],
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ];
                 $temp[$answer['position']] = $answer;
                 $allAnswers[$this->id[$i]] = $this->answer[$i];
@@ -957,8 +989,12 @@ class Answer
                     ->setPonderation($this->weighting[$i])
                     ->setPosition($this->position[$i])
                     ->setHotspotCoordinates($this->hotspot_coordinates[$i])
+<<<<<<< HEAD
                     ->setHotspotType($this->hotspot_type[$i])
                     ->setDestination($this->destination[$i]);
+=======
+                    ->setHotspotType($this->hotspot_type[$i]);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
                 $em->persist($quizAnswer);
                 $em->flush();

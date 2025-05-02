@@ -13,6 +13,7 @@
   &__icon {
     @apply text-transparent bg-clip-text bg-gradient-to-br from-primary to-primary-gradient leading-none;
 
+<<<<<<< HEAD
     &,
     &.mdi {
       font-size: 52px;
@@ -20,6 +21,11 @@
 
     &::before {
     }
+=======
+    &.mdi {
+      font-size: 52px;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   }
 
   &__title {

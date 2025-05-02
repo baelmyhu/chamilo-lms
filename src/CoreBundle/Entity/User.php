@@ -16,7 +16,13 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Controller\Api\UserSkillsController;
+=======
+use Chamilo\CoreBundle\Controller\Api\CreateUserOnAccessUrlAction;
+use Chamilo\CoreBundle\Controller\Api\UserSkillsController;
+use Chamilo\CoreBundle\Dto\CreateUserOnAccessUrlInput;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\Listener\UserListener;
 use Chamilo\CoreBundle\Filter\PartialSearchOrFilter;
 use Chamilo\CoreBundle\Repository\Node\UserRepository;
@@ -25,6 +31,10 @@ use Chamilo\CourseBundle\Entity\CGroupRelTutor;
 use Chamilo\CourseBundle\Entity\CGroupRelUser;
 use Chamilo\CourseBundle\Entity\CSurveyInvitation;
 use DateTime;
+<<<<<<< HEAD
+=======
+use DateTimeInterface;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -60,6 +70,19 @@ use UserManager;
             normalizationContext: ['groups' => ['user_skills:read']],
             name: 'get_user_skills'
         ),
+<<<<<<< HEAD
+=======
+        new Post(
+            uriTemplate: '/advanced/create-user-on-access-url',
+            controller: CreateUserOnAccessUrlAction::class,
+            denormalizationContext: ['groups' => ['write']],
+            security: "is_granted('ROLE_ADMIN')",
+            input: CreateUserOnAccessUrlInput::class,
+            output: User::class,
+            deserialize: true,
+            name: 'create_user_on_access_url'
+        ),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],
@@ -585,9 +608,12 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: CGroupRelTutor::class, orphanRemoval: true)]
     protected Collection $courseGroupsAsTutor;
 
+<<<<<<< HEAD
     #[ORM\Column(name: 'auth_source', type: 'string', length: 50, nullable: true)]
     protected ?string $authSource;
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[ORM\Column(name: 'status', type: 'integer')]
     protected int $status;
 
@@ -615,9 +641,12 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
     #[ORM\Column(name: 'productions', type: 'string', length: 250, unique: false, nullable: true)]
     protected ?string $productions = null;
 
+<<<<<<< HEAD
     #[ORM\Column(name: 'registration_date', type: 'datetime')]
     protected DateTime $registrationDate;
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[ORM\Column(name: 'expiration_date', type: 'datetime', unique: false, nullable: true)]
     protected ?DateTime $expirationDate = null;
 
@@ -705,6 +734,30 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: SocialPostFeedback::class, orphanRemoval: true)]
     private Collection $socialPostsFeedbacks;
 
+<<<<<<< HEAD
+=======
+    #[ORM\Column(name: 'mfa_enabled', type: 'boolean', options: ['default' => false])]
+    protected bool $mfaEnabled = false;
+
+    #[ORM\Column(name: 'mfa_service', type: 'string', length: 255, nullable: true)]
+    protected ?string $mfaService = null;
+
+    #[ORM\Column(name: 'mfa_secret', type: 'string', length: 255, nullable: true)]
+    protected ?string $mfaSecret = null;
+
+    #[ORM\Column(name: 'mfa_backup_codes', type: 'text', nullable: true)]
+    protected ?string $mfaBackupCodes = null;
+
+    #[ORM\Column(name: 'mfa_last_used', type: 'datetime', nullable: true)]
+    protected ?DateTimeInterface $mfaLastUsed = null;
+
+    /**
+     * @var Collection<int, UserAuthSource>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserAuthSource::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $authSources;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct()
     {
         $this->skipResourceNode = false;
@@ -714,7 +767,10 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         $this->website = '';
         $this->locale = 'en';
         $this->timezone = 'Europe\Paris';
+<<<<<<< HEAD
         $this->authSource = 'platform';
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $this->status = CourseRelUser::STUDENT;
         $this->salt = sha1(uniqid('', true));
         $this->active = 1;
@@ -759,7 +815,10 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         $this->logins = new ArrayCollection();
         $this->createdAt = new DateTime();
         $this->updatedAt = new DateTime();
+<<<<<<< HEAD
         $this->registrationDate = new DateTime();
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $this->roles = [];
         $this->credentialsExpired = false;
         $this->credentialsExpireAt = new DateTime();
@@ -769,6 +828,10 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         $this->sentSocialPosts = new ArrayCollection();
         $this->receivedSocialPosts = new ArrayCollection();
         $this->socialPostsFeedbacks = new ArrayCollection();
+<<<<<<< HEAD
+=======
+        $this->authSources = new ArrayCollection();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public function __toString(): string
@@ -913,6 +976,7 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         return $this;
     }
 
+<<<<<<< HEAD
     public function getAuthSource(): ?string
     {
         return $this->authSource;
@@ -925,6 +989,8 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         return $this;
     }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function getEmail(): string
     {
         return $this->email;
@@ -1045,6 +1111,7 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         return $this;
     }
 
+<<<<<<< HEAD
     public function getRegistrationDate(): DateTime
     {
         return $this->registrationDate;
@@ -1057,6 +1124,8 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         return $this;
     }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function getExpirationDate(): ?DateTime
     {
         return $this->expirationDate;
@@ -1122,11 +1191,14 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         return $this;
     }
 
+<<<<<<< HEAD
     public function getMemberSince(): DateTime
     {
         return $this->registrationDate;
     }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function isOnline(): bool
     {
         return false;
@@ -1220,7 +1292,11 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         return $this->plainPassword;
     }
 
+<<<<<<< HEAD
     public function setPlainPassword(string $password): self
+=======
+    public function setPlainPassword(?string $password): self
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $this->plainPassword = $password;
         // forces the object to look "dirty" to Doctrine. Avoids
@@ -1610,6 +1686,12 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         $this->plainPassword = null;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Returns whether a user can be admin of all multi-URL portals in the case of a multi-URL install.
+     */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function isSuperAdmin(): bool
     {
         return $this->hasRole('ROLE_SUPER_ADMIN');
@@ -2210,6 +2292,21 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
         return $this;
     }
 
+<<<<<<< HEAD
+=======
+    public function getLogin(): string
+    {
+        return $this->username;
+    }
+
+    public function setLogin(string $login): self
+    {
+        $this->username = $login;
+
+        return $this;
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     /**
      * @return Collection<int, TrackELogin>
      */
@@ -2414,4 +2511,154 @@ class User implements UserInterface, EquatableInterface, ResourceInterface, Reso
     {
         return $session?->hasCoachInCourseList($this) || $course?->getSubscriptionByUser($this)?->isTutor();
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * @return Collection<int, UserAuthSource>
+     */
+    public function getAuthSources(): Collection
+    {
+        return $this->authSources;
+    }
+
+    public function getAuthSourcesByUrl(AccessUrl $url): Collection
+    {
+        $criteria = Criteria::create();
+        $criteria->where(
+            Criteria::expr()->eq('url', $url)
+        );
+
+        return $this->authSources->matching($criteria);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getAuthSourcesAuthentications(?AccessUrl $url = null): array
+    {
+        $authSources = $url ? $this->getAuthSourcesByUrl($url) : $this->getAuthSources();
+
+        return $authSources->map(fn (UserAuthSource $authSource) => $authSource->getAuthentication())->toArray();
+    }
+
+    public function addAuthSource(UserAuthSource $authSource): static
+    {
+        if (!$this->authSources->contains($authSource)) {
+            $this->authSources->add($authSource);
+            $authSource->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function addAuthSourceByAuthentication(string $authentication, AccessUrl $url): static
+    {
+        $authSource = (new UserAuthSource())
+            ->setAuthentication($authentication)
+            ->setUrl($url)
+        ;
+
+        $this->addAuthSource($authSource);
+
+        return $this;
+    }
+
+    public function hasAuthSourceByAuthentication(string $authentication): bool
+    {
+        return $this->authSources
+            ->exists(fn (UserAuthSource $authSource) => $authSource->getAuthentication() === $authentication)
+        ;
+    }
+
+    public function getAuthSourceByAuthentication(string $authentication): UserAuthSource
+    {
+        return $this->authSources->findFirst(
+            fn (UserAuthSource $authSource) => $authSource->getAuthentication() === $authentication
+        );
+    }
+
+    public function removeAuthSources(): static
+    {
+        foreach ($this->authSources as $authSource) {
+            $authSource->setUser(null);
+        }
+
+        $this->authSources = new ArrayCollection();
+
+        return $this;
+    }
+
+    public function removeAuthSource(UserAuthSource $authSource): static
+    {
+        if ($this->authSources->removeElement($authSource)) {
+            // set the owning side to null (unless already changed)
+            if ($authSource->getUser() === $this) {
+                $authSource->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getMfaEnabled(): bool
+    {
+        return $this->mfaEnabled;
+    }
+
+    public function setMfaEnabled(bool $mfaEnabled): self
+    {
+        $this->mfaEnabled = $mfaEnabled;
+
+        return $this;
+    }
+
+    public function getMfaService(): ?string
+    {
+        return $this->mfaService;
+    }
+
+    public function setMfaService(?string $mfaService): self
+    {
+        $this->mfaService = $mfaService;
+
+        return $this;
+    }
+
+    public function getMfaSecret(): ?string
+    {
+        return $this->mfaSecret;
+    }
+
+    public function setMfaSecret(?string $mfaSecret): self
+    {
+        $this->mfaSecret = $mfaSecret;
+
+        return $this;
+    }
+
+    public function getMfaBackupCodes(): ?string
+    {
+        return $this->mfaBackupCodes;
+    }
+
+    public function setMfaBackupCodes(?string $mfaBackupCodes): self
+    {
+        $this->mfaBackupCodes = $mfaBackupCodes;
+
+        return $this;
+    }
+
+    public function getMfaLastUsed(): ?DateTimeInterface
+    {
+        return $this->mfaLastUsed;
+    }
+
+    public function setMfaLastUsed(?DateTimeInterface $mfaLastUsed): self
+    {
+        $this->mfaLastUsed = $mfaLastUsed;
+
+        return $this;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

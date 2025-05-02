@@ -131,31 +131,46 @@ $columnModel = [
     [
         'name' => 'name',
         'index' => 'name',
+<<<<<<< HEAD
         'width' => '35',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'align' => 'left',
     ],
     [
         'name' => 'users',
         'index' => 'users',
+<<<<<<< HEAD
         'width' => '15',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'align' => 'left',
     ],
     [
         'name' => 'status',
         'index' => 'status',
+<<<<<<< HEAD
         'width' => '15',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'align' => 'left',
     ],
     [
         'name' => 'group_type',
         'index' => 'group_type',
+<<<<<<< HEAD
         'width' => '15',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'align' => 'center',
     ],
     [
         'name' => 'actions',
         'index' => 'actions',
+<<<<<<< HEAD
         'width' => '10',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'align' => 'center',
         'sortable' => 'false',
     ],

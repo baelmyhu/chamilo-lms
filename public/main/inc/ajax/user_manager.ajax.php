@@ -14,6 +14,11 @@ $action = $_GET['a'];
 
 switch ($action) {
     case 'get_user_like':
+<<<<<<< HEAD
+=======
+        api_block_anonymous_users(false);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (api_is_platform_admin() || api_is_drh()) {
             $query = $_REQUEST['q'];
             $conditions = [
@@ -73,7 +78,15 @@ switch ($action) {
             // Only allow anonymous users to see user popup if the popup user
             // is a teacher (which might be necessary to illustrate a course)
             if (COURSEMANAGER === (int) $user_info['status']) {
+<<<<<<< HEAD
                 echo $userData;
+=======
+                if ($user_info['status'] === COURSEMANAGER) {
+                    echo $userData;
+                } else {
+                    echo '<h3>-</h3>';
+                }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
         } else {
             echo Display::url(
@@ -245,7 +258,13 @@ switch ($action) {
         }
         break;
     case 'user_by_role':
+<<<<<<< HEAD
         api_block_anonymous_users(false);
+=======
+        if (!api_is_platform_admin()) {
+            api_not_allowed(false, null, 403);
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $status = isset($_REQUEST['status']) ? (int) $_REQUEST['status'] : DRH;
 
         $role = User::getRoleFromStatus($status);

@@ -1,7 +1,14 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Entity\User;
+=======
+use Chamilo\CoreBundle\Entity\Page;
+use Chamilo\CoreBundle\Entity\PageCategory;
+use Chamilo\CoreBundle\Entity\User;
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Framework\Container;
 use Chamilo\CoreBundle\ServiceHelper\ContainerHelper;
 use ChamiloSession as Session;
@@ -116,9 +123,25 @@ $extraFieldsLoaded = false;
 $htmlHeadXtra[] = api_get_password_checker_js('#username', '#pass1');
 // User is not allowed if Terms and Conditions are disabled and
 // registration is disabled too.
+<<<<<<< HEAD
 $isNotAllowedHere = ('false' === api_get_setting('allow_terms_conditions') && 'false' === api_get_setting('allow_registration'));
 if ($isNotAllowedHere) {
     api_not_allowed(true, get_lang('Sorry, you are trying to access the registration page for this portal, but registration is currently disabled. Please contact the administrator (see contact information in the footer). If you already have an account on this site.'));
+=======
+$isCreatingIntroPage = isset($_GET['create_intro_page']);
+$isPlatformAdmin = api_is_platform_admin();
+
+$isNotAllowedHere = (
+    'false' === api_get_setting('allow_terms_conditions') &&
+    'false' === api_get_setting('allow_registration')
+);
+
+if ($isNotAllowedHere && !($isCreatingIntroPage && $isPlatformAdmin)) {
+    api_not_allowed(
+        true,
+        get_lang('Sorry, you are trying to access the registration page for this portal, but registration is currently disabled. Please contact the administrator (see contact information in the footer). If you already have an account on this site.')
+    );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 
 $settingConditions = api_get_setting('profile.show_conditions_to_user', true);
@@ -189,8 +212,14 @@ if (!empty($course_code_redirect)) {
     Session::write('exercise_redirect', $exercise_redirect);
 }
 
+<<<<<<< HEAD
 if (false === $userAlreadyRegisteredShowTerms &&
     'true' === api_get_setting('allow_registration')
+=======
+// allow_registration can be 'true', 'false', 'approval' or 'confirmation'. Only 'false' hides the form.
+if (false === $userAlreadyRegisteredShowTerms &&
+    'false' !== api_get_setting('allow_registration')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 ) {
     // EMAIL
     $form->addElement('text', 'email', get_lang('e-mail'), ['size' => 40]);
@@ -629,6 +658,7 @@ if ('true' === api_get_setting('allow_terms_conditions') && $userAlreadyRegister
     $toolName = get_lang('Terms and Conditions');
 }
 
+<<<<<<< HEAD
 // Forbidden to self-register
 if ($isNotAllowedHere) {
     api_not_allowed(
@@ -639,6 +669,8 @@ if ($isNotAllowedHere) {
     );
 }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 if ('approval' === api_get_setting('allow_registration')) {
     $content .= Display::return_message(get_lang('Your account has to be approved'));
 }
@@ -654,7 +686,11 @@ $showTerms = false;
 // Terms and conditions
 $infoMessage = '';
 if ('true' === api_get_setting('allow_terms_conditions')) {
+<<<<<<< HEAD
     if (!api_is_platform_admin()) {
+=======
+    if (!$isPlatformAdmin) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if ('true' === api_get_setting('ticket.show_terms_if_profile_completed')) {
             $userId = api_get_user_id();
             if (empty($userId) && isset($termRegistered['user_id'])) {
@@ -928,7 +964,11 @@ if ($form->validate()) {
             $values['language'],
             $phone,
             null,
+<<<<<<< HEAD
             PLATFORM_AUTH_SOURCE,
+=======
+            [UserAuthSource::PLATFORM],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             null,
             1,
             0,
@@ -1275,7 +1315,11 @@ if ($form->validate()) {
     if ($sessionPremiumChecker && $sessionId) {
         Session::erase('SessionIsPremium');
         Session::erase('sessionId');
+<<<<<<< HEAD
         header('Location:'.api_get_path(WEB_PLUGIN_PATH).'buycourses/src/process.php?i='.$sessionId.'&t=2');
+=======
+        header('Location:'.api_get_path(WEB_PLUGIN_PATH).'BuyCourses/src/process.php?i='.$sessionId.'&t=2');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         exit;
     }
 
@@ -1355,6 +1399,67 @@ if ($form->validate()) {
         if (false !== $termActivated) {
             $inscriptionHeader = Display::page_header($toolName);
         }
+<<<<<<< HEAD
+=======
+        $em = Container::getEntityManager();
+        $categoryRepo = $em->getRepository(PageCategory::class);
+        $pageRepo = $em->getRepository(Page::class);
+        $accessUrl = api_get_url_entity();
+        $locale = api_get_language_isocode();
+
+        $category = $categoryRepo->findOneBy(['title' => 'introduction']);
+        $introPage = null;
+        if ($category) {
+            $introPage = $pageRepo->findOneBy([
+                'category' => $category,
+                'url' => $accessUrl,
+                'enabled' => true,
+            ]);
+        }
+
+        if ($introPage) {
+            $content = '<div class="alert alert-info shadow-sm rounded border-start border-4 border-primary p-3 mb-4">'
+                . $introPage->getContent()
+                . '</div>' . $content;
+        }
+
+        if ($isCreatingIntroPage && $isPlatformAdmin) {
+            $user = api_get_user_entity();
+
+            if ($introPage) {
+                header('Location: '.api_get_path(WEB_PATH).'resources/pages/edit?id=/api/pages/'.$introPage->getId());
+                exit;
+            }
+
+            if (!$category) {
+                $category = new PageCategory();
+                $category
+                    ->setTitle('introduction')
+                    ->setType('cms')
+                    ->setCreator($user);
+                $em->persist($category);
+                $em->flush();
+            }
+
+            $page = new Page();
+            $page
+                ->setTitle(get_lang("Introduction to registration"))
+                ->setContent('<p>'.get_lang("Welcome to the registration process.").'</p>')
+                ->setSlug('intro-inscription')
+                ->setLocale($locale)
+                ->setCategory($category)
+                ->setEnabled(true)
+                ->setCreator($user)
+                ->setUrl($accessUrl)
+                ->setPosition(1);
+
+            $em->persist($page);
+            $em->flush();
+
+            header('Location: '.api_get_path(WEB_PATH).'resources/pages/edit?id=/api/pages/'.$page->getId());
+            exit;
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $tpl->assign('inscription_header', $inscriptionHeader);
         $tpl->assign('inscription_content', $content);
         $tpl->assign('form', $form->returnForm());

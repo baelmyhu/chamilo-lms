@@ -45,7 +45,11 @@ while ($row = Database::fetch_row($result)) {
 
 foreach ($list_info as $key => $info_log) {
     $list_info[$key][5] = $info_log[5] ? api_convert_and_format_date($info_log[5]) : 'N/A';
+<<<<<<< HEAD
     $list_info[$key][3] = 1 == $info_log[3] ? get_lang('AssessmentsVisible') : get_lang('AssessmentsInvisible');
+=======
+    $list_info[$key][3] = 1 == $info_log[3] ? get_lang('Assessments visible') : get_lang('Assessments invisible');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $userInfo = api_get_user_info($info_log[6]);
     if ($userInfo) {
         $list_info[$key][6] = $userInfo['complete_name_with_message_link'];
@@ -61,6 +65,7 @@ $parameters = [
 $table = new SortableTableFromArrayConfig($list_info, 1, 20, 'gradebookeval');
 $table->set_additional_parameters($parameters);
 
+<<<<<<< HEAD
 $table->set_header(0, get_lang('AssessmentsNameLog'));
 $table->set_header(1, get_lang('AssessmentsDescriptionLog'));
 $table->set_header(2, get_lang('AssessmentsPreviousWeight'));
@@ -68,6 +73,15 @@ $table->set_header(3, get_lang('AssessmentsVisibilityLog'));
 $table->set_header(4, get_lang('Category'));
 $table->set_header(5, get_lang('Date'));
 $table->set_header(6, get_lang('AssessmentsWhoChangedItLog'));
+=======
+$table->set_header(0, get_lang('Assessment name'));
+$table->set_header(1, get_lang('Assessment description'));
+$table->set_header(2, get_lang('Previous weight of resource'));
+$table->set_header(3, get_lang('Assessment visibility'));
+$table->set_header(4, get_lang('Category'));
+$table->set_header(5, get_lang('Date'));
+$table->set_header(6, get_lang('Who changed it'));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $table->display();
 Display :: display_footer();

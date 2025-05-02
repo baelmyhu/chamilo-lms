@@ -15,7 +15,11 @@ class DashboardManager
     }
 
     /**
+<<<<<<< HEAD
      * This function allows easy activating and inactivating of dashboard plugins.
+=======
+     * This function allows easy activating and inactivating of Dashboard plugins.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function handle_dashboard_plugins()
     {
@@ -23,7 +27,11 @@ class DashboardManager
         $tokenCondition = '&sec_token='.$token;
 
         /* We scan the plugin directory. Each folder is a potential plugin. */
+<<<<<<< HEAD
         $dashboard_pluginpath = api_get_path(SYS_PLUGIN_PATH).'dashboard/';
+=======
+        $dashboard_pluginpath = api_get_path(SYS_PLUGIN_PATH).'Dashboard/';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $possiblePlugins = self::getPossibleDashboardPluginsPath();
 
         $table_cols = ['name', 'version', 'description'];
@@ -85,7 +93,11 @@ class DashboardManager
                         if (2 == $j) {
                             echo '<td>';
                             echo '<font color="#aaa">'.$disabled_block[$key].'</font><br />';
+<<<<<<< HEAD
                             echo '<font color="red">'.get_lang('This plugin has been deleted from the dashboard plugin directory').'</font>';
+=======
+                            echo '<font color="red">'.get_lang('This plugin has been deleted from the Dashboard plugin directory').'</font>';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                             echo '</td>';
                         } else {
                             echo '<td>';
@@ -111,7 +123,11 @@ class DashboardManager
     }
 
     /**
+<<<<<<< HEAD
      * display checkboxes for dashboard plugin list.
+=======
+     * display checkboxes for Dashboard plugin list.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      *
      * @param string $plugin_path
      */
@@ -137,7 +153,11 @@ class DashboardManager
      * This function allows easy activating and inactivating
      * of plugins and save them inside db.
      *
+<<<<<<< HEAD
      * @param array $plugin_paths dashboard plugin paths
+=======
+     * @param array $plugin_paths Dashboard plugin paths
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      *                            return int affected rows
      */
     public static function store_dashboard_plugins($plugin_paths)
@@ -146,7 +166,11 @@ class DashboardManager
         $affected_rows = 0;
 
         // get all plugins path inside plugin directory
+<<<<<<< HEAD
         $dashboard_pluginpath = api_get_path(SYS_PLUGIN_PATH).'dashboard/';
+=======
+        $dashboard_pluginpath = api_get_path(SYS_PLUGIN_PATH).'Dashboard/';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $possiblePlugins = self::getPossibleDashboardPluginsPath();
 
         if (count($possiblePlugins) > 0) {
@@ -255,7 +279,11 @@ class DashboardManager
     }
 
     /**
+<<<<<<< HEAD
      * Get all plugins path inside dashboard directory.
+=======
+     * Get all plugins path inside Dashboard directory.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      *
      * @return array name plugins directories
      */
@@ -264,7 +292,11 @@ class DashboardManager
         // get all plugins path inside plugin directory
         /* We scan the plugin directory. Each folder is a potential plugin. */
         $possiblePlugins = [];
+<<<<<<< HEAD
         $dashboard_pluginpath = api_get_path(SYS_PLUGIN_PATH).'dashboard/';
+=======
+        $dashboard_pluginpath = api_get_path(SYS_PLUGIN_PATH).'Dashboard/';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $handle = @opendir($dashboard_pluginpath);
         while (false !== ($file = readdir($handle))) {
             if ('.' != $file && '..' != $file && is_dir($dashboard_pluginpath.$file)) {
@@ -359,7 +391,11 @@ class DashboardManager
         $html = '';
         if (count($enabled_dashboard_plugins) > 0) {
             $html .= '<div style="margin-top:20px">';
+<<<<<<< HEAD
             $html .= '<div><strong>'.get_lang('Select blocks to display in the dashboard blocks view').'</strong></div><br />';
+=======
+            $html .= '<div><strong>'.get_lang('Select blocks to display in the Dashboard blocks view').'</strong></div><br />';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $html .= '<form name="dashboard_list" method="post" action="index.php?action=store_user_block">';
             $html .= '<table class="data_table">';
             $html .= '<tr>';
@@ -382,7 +418,11 @@ class DashboardManager
                 $path = $block['path'];
                 $controller_class = $block['controller'];
                 $filename_controller = $path.'.class.php';
+<<<<<<< HEAD
                 $dashboard_plugin_path = api_get_path(SYS_PLUGIN_PATH).'dashboard/'.$path.'/';
+=======
+                $dashboard_plugin_path = api_get_path(SYS_PLUGIN_PATH).'Dashboard/'.$path.'/';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 require_once $dashboard_plugin_path.$filename_controller;
                 if (class_exists($controller_class)) {
                     $obj_block = new $controller_class($user_id);
@@ -414,7 +454,11 @@ class DashboardManager
 
             $html .= '</table>';
             $html .= '<div class="row"><div class="col-md-12">';
+<<<<<<< HEAD
             $html .= '<button class="btn btn--plain" type="submit" name="submit_dashboard_list" value="'.get_lang('Enable dashboard block').'"><em class="fa fa-check-square"></em> '.
+=======
+            $html .= '<button class="btn btn--plain" type="submit" name="submit_dashboard_list" value="'.get_lang('Enable Dashboard block').'"><em class="fa fa-check-square"></em> '.
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 get_lang('Enable dashboard block').'</button></form>';
             $html .= '</div></div>';
         } else {

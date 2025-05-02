@@ -3,6 +3,10 @@
 /* For licensing terms, see /license.txt */
 
 use Chamilo\CoreBundle\Framework\Container;
+<<<<<<< HEAD
+=======
+use Chamilo\CourseBundle\Entity\CSurvey;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  * Gradebook link to a survey item.
@@ -11,8 +15,12 @@ use Chamilo\CoreBundle\Framework\Container;
  */
 class SurveyLink extends AbstractLink
 {
+<<<<<<< HEAD
     private $survey_table;
     /** @var \Chamilo\CourseBundle\Entity\CSurvey */
+=======
+    /** @var CSurvey */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     private $survey_data;
 
     /**
@@ -24,6 +32,7 @@ class SurveyLink extends AbstractLink
         $this->set_type(LINK_SURVEY);
     }
 
+<<<<<<< HEAD
     /**
      * @return string
      */
@@ -48,26 +57,67 @@ class SurveyLink extends AbstractLink
      * @return string
      */
     public function get_type_name()
+=======
+    public function get_name(): string
+    {
+        $survey = $this->get_survey_data();
+
+        if (!$survey instanceof CSurvey) {
+            return get_lang('Untitled Survey');
+        }
+
+        return $survey->getCode() . ': ' . self::html_to_text($survey->getTitle());
+    }
+
+    public function get_description(): string
+    {
+        $survey = $this->get_survey_data();
+
+        if (!$survey instanceof CSurvey) {
+            return '';
+        }
+
+        return $survey->getSubtitle();
+    }
+
+    public function get_type_name(): string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return get_lang('Survey');
     }
 
+<<<<<<< HEAD
     public function is_allowed_to_change_name()
+=======
+    public function is_allowed_to_change_name(): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return false;
     }
 
+<<<<<<< HEAD
     public function needs_name_and_description()
+=======
+    public function needs_name_and_description(): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return false;
     }
 
+<<<<<<< HEAD
     public function needs_max()
+=======
+    public function needs_max(): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return false;
     }
 
+<<<<<<< HEAD
     public function needs_results()
+=======
+    public function needs_results(): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return false;
     }
@@ -77,6 +127,7 @@ class SurveyLink extends AbstractLink
      *
      * @return array 2-dimensional array - every element contains 2 subelements (id, name)
      */
+<<<<<<< HEAD
     public function get_all_links()
     {
         if (empty($this->course_id)) {
@@ -88,16 +139,35 @@ class SurveyLink extends AbstractLink
         $repo = Container::getSurveyRepository();
         $course = api_get_course_entity($course_id);
         $session = !empty($sessionId) ? api_get_session_entity($sessionId) : null;
+=======
+    public function get_all_links(): array
+    {
+        if (empty($this->course_id)) {
+            return [];
+        }
+
+        $session = api_get_session_entity($this->get_session_id());
+        $course = api_get_course_entity($this->getCourseId());
+        $repo = Container::getSurveyRepository();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $qb = $repo->getResourcesByCourse($course, $session);
         $surveys = $qb->getQuery()->getResult();
         $links = [];
+<<<<<<< HEAD
         /** @var \Chamilo\CourseBundle\Entity\CSurvey $survey */
+=======
+        /** @var CSurvey $survey */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         foreach ($surveys as $survey) {
             $links[] = [
                 $survey->getIid(),
                 api_trunc_str(
+<<<<<<< HEAD
                     $survey->getCode().': '.self::html_to_text($survey->getTitle()),
+=======
+                    $survey->getCode() . ': ' . self::html_to_text($survey->getTitle()),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     80
                 ),
             ];
@@ -110,6 +180,7 @@ class SurveyLink extends AbstractLink
      * Has anyone done this survey yet?
      * Implementation of the AbstractLink class, mainly used dynamically in gradebook/lib/fe.
      */
+<<<<<<< HEAD
     public function has_results()
     {
         $ref_id = $this->get_ref_id();
@@ -132,6 +203,22 @@ class SurveyLink extends AbstractLink
         $data = Database::fetch_array($sql_result);
 
         return 0 != $data[0];
+=======
+    public function has_results(): bool
+    {
+        $survey = $this->get_survey_data();
+        if (!$survey) {
+            return false;
+        }
+
+        $repo = Container::getSurveyInvitationRepository();
+        $course = api_get_course_entity($this->course_id);
+        $session = api_get_session_entity($this->get_session_id());
+
+        $results = $repo->getAnsweredInvitations($survey, $course, $session);
+
+        return count($results) > 0;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -142,6 +229,7 @@ class SurveyLink extends AbstractLink
      *
      * @return array|null
      */
+<<<<<<< HEAD
     public function calc_score($studentId = null, $type = null)
     {
         // Note: Max score is assumed to be always 1 for surveys,
@@ -209,12 +297,46 @@ class SurveyLink extends AbstractLink
                     return [$sum, $rescount];
                     break;
             }
+=======
+    public function calc_score($studentId = null, $type = null): ?array
+    {
+        $survey = $this->get_survey_data();
+        if (!$survey) {
+            return [null, null];
+        }
+
+        $course = api_get_course_entity($this->course_id);
+        $session = api_get_session_entity($this->get_session_id());
+        $repo = Container::getSurveyInvitationRepository();
+        $max_score = 1;
+
+        if ($studentId) {
+            $user = api_get_user_entity($studentId);
+            $answered = $repo->hasUserAnswered($survey, $course, $user, $session);
+
+            return [$answered ? $max_score : 0, $max_score];
+        }
+
+        $results = $repo->getAnsweredInvitations($survey, $course, $session);
+        $rescount = count($results);
+
+        if ($rescount === 0) {
+            return [null, null];
+        }
+
+        switch ($type) {
+            case 'best':
+            case 'average':
+            default:
+                return [$rescount, $rescount];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
     }
 
     /**
      * Check if this still links to a survey.
      */
+<<<<<<< HEAD
     public function is_valid_link()
     {
         $sessionId = $this->get_session_id();
@@ -232,12 +354,21 @@ class SurveyLink extends AbstractLink
     }
 
     public function get_link()
+=======
+    public function is_valid_link(): bool
+    {
+        return null !== $this->get_survey_data();
+    }
+
+    public function get_link(): ?string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         if ('true' === api_get_setting('survey.hide_survey_reporting_button')) {
             return null;
         }
 
         if (api_is_allowed_to_edit()) {
+<<<<<<< HEAD
             // Let students make access only through "Surveys" tool.
             $sessionId = $this->get_session_id();
             $courseId = $this->getCourseId();
@@ -247,6 +378,15 @@ class SurveyLink extends AbstractLink
 
                 return api_get_path(WEB_CODE_PATH).'survey/reporting.php?'.
                     api_get_cidreq_params($this->getCourseId(), $sessionId).'&survey_id='.$survey_id;
+=======
+            $survey = $this->get_survey_data();
+            $sessionId = $this->get_session_id();
+
+            if ($survey) {
+                return api_get_path(WEB_CODE_PATH) . 'survey/reporting.php?' .
+                    api_get_cidreq_params($this->getCourseId(), $sessionId) .
+                    '&survey_id=' . $survey->getIid();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
         }
 
@@ -255,15 +395,21 @@ class SurveyLink extends AbstractLink
 
     /**
      * Get the name of the icon for this tool.
+<<<<<<< HEAD
      *
      * @return string
      */
     public function get_icon_name()
+=======
+     */
+    public function get_icon_name(): string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return 'survey';
     }
 
     /**
+<<<<<<< HEAD
      * Lazy load function to get the database table of the surveys.
      */
     private function get_survey_table()
@@ -285,6 +431,20 @@ class SurveyLink extends AbstractLink
             $sessionId = $this->get_session_id();
             $repo = Container::getSurveyRepository();
             $survey = $repo->find($this->get_ref_id());
+=======
+     * Get the survey data from the c_survey table with the current object id.
+     */
+    private function get_survey_data(): ?CSurvey
+    {
+        if (empty($this->survey_data)) {
+            $repo = Container::getSurveyRepository();
+            $survey = $repo->find($this->get_ref_id());
+
+            if (!$survey instanceof CSurvey) {
+                return null;
+            }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $this->survey_data = $survey;
         }
 
@@ -293,10 +453,15 @@ class SurveyLink extends AbstractLink
 
     /**
      * @param string $string
+<<<<<<< HEAD
      *
      * @return string
      */
     private static function html_to_text($string)
+=======
+     */
+    private static function html_to_text($string): string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return strip_tags($string);
     }

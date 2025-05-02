@@ -510,7 +510,10 @@ switch ($action) {
             $skillUser->setArgumentation('');
             $skillUser->setArgumentationAuthorId(api_get_user_id());
             $skillUser->setAcquiredSkillAt(new DateTime());
+<<<<<<< HEAD
             $skillUser->setAssignedBy(0);
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $em->persist($skillUser);
             $em->flush();
             $result = 'success';

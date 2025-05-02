@@ -11,7 +11,10 @@ use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\Entity\UserCourseCategory;
 use Chamilo\CoreBundle\Exception\NotAllowedException;
 use Chamilo\CoreBundle\Framework\Container;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\ServiceHelper\MailHelper;
 use Chamilo\CoreBundle\ServiceHelper\PermissionServiceHelper;
 use Chamilo\CoreBundle\ServiceHelper\ThemeHelper;
@@ -24,7 +27,10 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+<<<<<<< HEAD
 use Symfony\Component\Yaml\Yaml;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use ZipStream\Option\Archive;
 use ZipStream\ZipStream;
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
@@ -179,11 +185,14 @@ define('SECTION_GLOBAL', 'global');
 define('SECTION_INCLUDE', 'include');
 define('SECTION_CUSTOMPAGE', 'custompage');
 
+<<<<<<< HEAD
 // CONSTANT name for local authentication source
 define('PLATFORM_AUTH_SOURCE', 'platform');
 define('CAS_AUTH_SOURCE', 'cas');
 define('LDAP_AUTH_SOURCE', 'extldap');
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 // event logs types
 define('LOG_COURSE_DELETE', 'course_deleted');
 define('LOG_COURSE_CREATE', 'course_created');
@@ -1008,8 +1017,13 @@ function api_protect_course_script($print_headers = false, $allow_session_admins
             $currentPath = $_SERVER['PHP_SELF'];
             // Allowed only this course paths.
             $paths = [
+<<<<<<< HEAD
                 '/plugin/positioning/start.php',
                 '/plugin/positioning/start_student.php',
+=======
+                '/plugin/Positioning/start.php',
+                '/plugin/Positioning/start_student.php',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 '/main/course_home/course_home.php',
                 '/main/exercise/overview.php',
             ];
@@ -1315,13 +1329,21 @@ function _api_format_user($user, $add_password = false, $loadAvatars = true)
         'official_code',
         'status',
         'active',
+<<<<<<< HEAD
         'auth_source',
+=======
+        'auth_sources',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'username',
         'theme',
         'language',
         'locale',
         'creator_id',
+<<<<<<< HEAD
         'registration_date',
+=======
+        'created_at',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         'hr_dept_id',
         'expiration_date',
         'last_login',
@@ -1524,6 +1546,10 @@ function api_get_user_info(
     $result = Database::query($sql);
     if (Database::num_rows($result) > 0) {
         $result_array = Database::fetch_array($result);
+<<<<<<< HEAD
+=======
+        $result_array['auth_sources'] = api_get_user_entity($result_array['id'])->getAuthSourcesAuthentications();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $result_array['user_is_online_in_chat'] = 0;
         if ($checkIfUserOnline) {
             $use_status_in_platform = user_is_online($user_id);
@@ -1647,10 +1673,17 @@ function api_get_user_info_from_entity(
     $result['address'] = $user->getAddress();
     $result['official_code'] = $user->getOfficialCode();
     $result['active'] = $user->isActive();
+<<<<<<< HEAD
     $result['auth_source'] = $user->getAuthSource();
     $result['language'] = $user->getLocale();
     $result['creator_id'] = $user->getCreatorId();
     $result['registration_date'] = $user->getRegistrationDate()->format('Y-m-d H:i:s');
+=======
+    $result['auth_sources'] = $user->getAuthSourcesAuthentications();
+    $result['language'] = $user->getLocale();
+    $result['creator_id'] = $user->getCreatorId();
+    $result['created_at'] = $user->getCreatedAt()->format('Y-m-d H:i:s');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $result['hr_dept_id'] = $user->getHrDeptId();
     $result['expiration_date'] = '';
     if ($user->getExpirationDate()) {
@@ -1989,7 +2022,11 @@ function api_get_anonymous_id()
         $result = Database::query($sql);
         if (empty(Database::num_rows($result))) {
             $login = uniqid('anon_');
+<<<<<<< HEAD
             $anonList = UserManager::get_user_list(['status' => ANONYMOUS], ['registration_date ASC']);
+=======
+            $anonList = UserManager::get_user_list(['status' => ANONYMOUS], ['created_at ASC']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (count($anonList) >= $max) {
                 foreach ($anonList as $userToDelete) {
                     UserManager::delete_user($userToDelete['user_id']);
@@ -5995,7 +6032,11 @@ function api_get_course_url($courseId = null, $sessionId = null, $groupId = null
  */
 function api_get_multiple_access_url(): bool
 {
+<<<<<<< HEAD
     return Container::$container->get(AccessUrlHelper::class)->isMultiple();
+=======
+    return Container::getAccessUrlHelper()->isMultiple();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 
 /**
@@ -6839,6 +6880,7 @@ function api_get_configuration_value($variable)
 }
 
 /**
+<<<<<<< HEAD
  * Loads hosting limits from the YAML file.
  *
  * @return array The hosting limits.
@@ -6853,6 +6895,8 @@ function load_hosting_limits(): array
 }
 
 /**
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
  * Gets a specific hosting limit.
  *
  * @param int $urlId The URL ID.
@@ -6861,9 +6905,21 @@ function load_hosting_limits(): array
  */
 function get_hosting_limit(int $urlId, string $limitName): mixed
 {
+<<<<<<< HEAD
     $limits = load_hosting_limits();
 
     foreach ($limits[$urlId] as $limitArray) {
+=======
+    if (!Container::$container->hasParameter('settings_overrides')) {
+        return [];
+    }
+
+    $settingsOverrides = Container::$container->getParameter('settings_overrides');
+
+    $limits = $settingsOverrides[$urlId]['hosting_limit'] ?? $settingsOverrides['default']['hosting_limit'];
+
+    foreach ($limits as $limitArray) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (isset($limitArray[$limitName])) {
             return $limitArray[$limitName];
         }
@@ -7540,6 +7596,25 @@ function api_protect_webservices()
     }
 }
 
+<<<<<<< HEAD
+=======
+function api_filename_has_blacklisted_stream_wrapper(string $filename) {
+    if (strpos($filename, '://') > 0) {
+        $wrappers = stream_get_wrappers();
+        $allowedWrappers = ['http', 'https', 'file'];
+        foreach ($wrappers as $wrapper) {
+            if (in_array($wrapper, $allowedWrappers)) {
+                continue;
+            }
+            if (stripos($filename, $wrapper . '://') === 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 /**
  * Checks if a set of roles have a specific permission.
  *

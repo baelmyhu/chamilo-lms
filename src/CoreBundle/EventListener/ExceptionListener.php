@@ -36,6 +36,7 @@ class ExceptionListener
 
         if ($exception instanceof NotAllowedException) {
             if (null === $this->tokenStorage->getToken()) {
+<<<<<<< HEAD
                 $currentUrl = $request->getUri();
                 $parsedUrl = parse_url($currentUrl);
                 $baseUrl = $parsedUrl['scheme'].'://'.$parsedUrl['host'];
@@ -44,6 +45,13 @@ class ExceptionListener
                 $redirectUrl = $baseUrl.$path.($query ? '?'.$query : '');
 
                 $loginUrl = $this->router->generate('login', ['redirect' => $redirectUrl], UrlGeneratorInterface::ABSOLUTE_URL);
+=======
+                $loginUrl = $this->router->generate(
+                    'login',
+                    ['redirect' => $request->getSchemeAndHttpHost().$request->getRequestUri()],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $event->setResponse(new RedirectResponse($loginUrl));
 
                 return;
@@ -51,7 +59,11 @@ class ExceptionListener
         }
 
         if (isset($_SERVER['APP_ENV']) && \in_array($_SERVER['APP_ENV'], ['dev', 'test'], true)) {
+<<<<<<< HEAD
             throw $exception;
+=======
+            return;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         $message = $this->twig->render(

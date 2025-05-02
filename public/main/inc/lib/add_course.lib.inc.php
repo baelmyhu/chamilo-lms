@@ -953,9 +953,15 @@ class AddCourse
                         $message,
                         $siteName,
                         $recipient_email,
+<<<<<<< HEAD
                         null,
                         null,
                         null
+=======
+                        [],
+                        [],
+                        false
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     );
                 }
             }

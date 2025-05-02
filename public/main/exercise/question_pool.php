@@ -450,6 +450,12 @@ if (!empty($_course)) {
 
 // Answer type list
 $form = new FormValidator('question_pool', 'GET', $url);
+<<<<<<< HEAD
+=======
+$form->addHidden('cidReq', $_course['real_id']);
+$form->addHidden('cid', api_get_course_int_id());
+$form->addHidden('sid', api_get_session_id());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form->addHidden('fromExercise', $fromExercise);
 $form
     ->addSelect(

@@ -100,14 +100,22 @@ if ($is_platform_admin) {
         /*
         $menu_items[] = Display::url(
             Display::return_icon('dashboard.png', get_lang('Dashboard'), [], ICON_SIZE_MEDIUM),
+<<<<<<< HEAD
             api_get_path(WEB_CODE_PATH).'dashboard/index.php'
+=======
+            api_get_path(WEB_CODE_PATH).'Dashboard/index.php'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
         */
         if ($pluginCalendar) {
             $lpCalendar = LearningCalendarPlugin::create();
             $menu_items[] = Display::url(
                 Display::getMdiIcon('calendar-text', 'ch-tool-icon', null, 32, $lpCalendar->get_lang('Learning calendar')),
+<<<<<<< HEAD
                 api_get_path(WEB_PLUGIN_PATH).'learning_calendar/start.php'
+=======
+                api_get_path(WEB_PLUGIN_PATH).'LearningCalendar/start.php'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             );
             $calendarMenuAdded = true;
         }
@@ -228,7 +236,11 @@ if (!empty($session_id) &&
         $lpCalendar = LearningCalendarPlugin::create();
         $actionsLeft .= Display::url(
             Display::getMdiIcon('calendar-text', 'ch-tool-icon', null, 32, $lpCalendar->get_lang('Learning calendar')),
+<<<<<<< HEAD
             api_get_path(WEB_PLUGIN_PATH).'learning_calendar/start.php'
+=======
+            api_get_path(WEB_PLUGIN_PATH).'LearningCalendar/start.php'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
     }
 

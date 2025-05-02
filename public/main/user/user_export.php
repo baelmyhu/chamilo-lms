@@ -2,11 +2,22 @@
 
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+use Chamilo\CoreBundle\Framework\Container;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 require_once __DIR__.'/../inc/global.inc.php';
 $this_section = SECTION_COURSES;
 
 api_protect_admin_script(true, true);
 
+<<<<<<< HEAD
+=======
+$accessUrlHelper = Container::getAccessUrlHelper();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $encryption = api_get_configuration_value('password_encryption');
 
 $export = [];
@@ -49,9 +60,16 @@ if (is_array($courseSessionValue) && isset($courseSessionValue[1])) {
 
 $extraUrlJoin = '';
 $extraUrlCondition = '';
+<<<<<<< HEAD
 if (api_is_multiple_url_enabled()) {
     $tbl_user_rel_access_url = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_USER);
     $access_url_id = api_get_current_access_url_id();
+=======
+$accessUrl = $accessUrlHelper->getCurrent();
+if ($accessUrlHelper->isMultiple()) {
+    $tbl_user_rel_access_url = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_USER);
+    $access_url_id = $accessUrl->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     if (-1 != $access_url_id) {
         $extraUrlJoin .= " INNER JOIN $tbl_user_rel_access_url as user_rel_url
 				           ON (u.id = user_rel_url.user_id) ";
@@ -66,11 +84,18 @@ $sql = "SELECT
             u.email 		AS Email,
             u.username	AS UserName,
             ".(('none' !== $encryption) ? " " : "u.password AS Password, ")."
+<<<<<<< HEAD
             u.auth_source	AS AuthSource,
             u.status		AS Status,
             u.official_code	AS OfficialCode,
             u.phone		AS Phone,
             u.registration_date AS RegistrationDate";
+=======
+            u.status		AS Status,
+            u.official_code	AS OfficialCode,
+            u.phone		AS Phone,
+            u.created_at AS RegistrationDate";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 if (strlen($course_code) > 0) {
     $sql .= "   FROM $userTable u
                 INNER JOIN $course_user_table cu
@@ -107,9 +132,15 @@ if (strlen($course_code) > 0) {
 					ORDER BY lastname,firstname";
     $filename = 'export_users_'.$sessionInfo['name'].'_'.api_get_local_time();
 } else {
+<<<<<<< HEAD
     if (api_is_multiple_url_enabled()) {
         $tbl_user_rel_access_url = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_USER);
         $access_url_id = api_get_current_access_url_id();
+=======
+    if ($accessUrlHelper->isMultiple()) {
+        $tbl_user_rel_access_url = Database::get_main_table(TABLE_MAIN_ACCESS_URL_REL_USER);
+        $access_url_id = $accessUrl->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (-1 != $access_url_id) {
             $sql .= " FROM $userTable u
 					INNER JOIN $tbl_user_rel_access_url as user_rel_url
@@ -161,6 +192,10 @@ if ('1' == $export['addcsvheader'] && 'csv' === $export['file_type']) {
 
 $res = Database::query($sql);
 while ($user = Database::fetch_assoc($res)) {
+<<<<<<< HEAD
+=======
+    $userEntity = api_get_user_entity($user['UserId']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $studentData = UserManager:: get_extra_user_data(
         $user['UserId'],
         true,
@@ -174,6 +209,16 @@ while ($user = Database::fetch_assoc($res)) {
             $user[$key] = $value;
         }
     }
+<<<<<<< HEAD
+=======
+
+    $authSources = $userEntity->getAuthSourcesByUrl($accessUrl)
+        ->map(fn (UserAuthSource $authSource) => $authSource->getAuthentication())
+        ->toArray()
+    ;
+    $user['AuthSource'] = implode(', ', $authSources);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $data[] = $user;
 }
 

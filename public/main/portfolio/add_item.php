@@ -3,9 +3,19 @@
 
 use Chamilo\CoreBundle\Entity\Portfolio;
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
+<<<<<<< HEAD
 
 $categories = $em
     ->getRepository('ChamiloCoreBundle:PortfolioCategory')
+=======
+use Chamilo\CoreBundle\Entity\PortfolioCategory;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\PortfolioItemAddedEvent;
+
+$categories = $em
+    ->getRepository(PortfolioCategory::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ->findBy([
         'user' => $user,
     ]);
@@ -36,7 +46,11 @@ if ($form->validate()) {
         ->setCourse($course)
         ->setSession($session)
         ->setCategory(
+<<<<<<< HEAD
             $em->find('ChamiloCoreBundle:PortfolioCategory', $values['category'])
+=======
+            $em->find(PortfolioCategory::class, $values['category'])
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         )
         ->setCreationDate($currentTime)
         ->setUpdateDate($currentTime);
@@ -44,6 +58,14 @@ if ($form->validate()) {
     $em->persist($portfolio);
     $em->flush();
 
+<<<<<<< HEAD
+=======
+    Container::getEventDispatcher()->dispatch(
+        new PortfolioItemAddedEvent(['portfolio' => $portfolio]),
+        Events::PORTFOLIO_ITEM_ADDED
+    );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     Display::addFlash(
         Display::return_message(get_lang('Portfolio item added'), 'success')
     );

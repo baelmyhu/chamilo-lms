@@ -4,6 +4,12 @@
 
 use Chamilo\CoreBundle\Entity\TrackEExerciseConfirmation;
 use Chamilo\CoreBundle\Entity\TrackEExercise;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\ExerciseQuestionAnsweredEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use ChamiloSession as Session;
 
 require_once __DIR__.'/../global.inc.php';
@@ -825,12 +831,21 @@ switch ($action) {
                 }
             }
 
+<<<<<<< HEAD
             /*HookQuizQuestionAnswered::create()
                 ->setEventData(
                     [
                         'exe_id' => (int) $exeId,
                         'quiz' => [
                             'id' => (int) $objExercise->id,
+=======
+            Container::getEventDispatcher()->dispatch(
+                new ExerciseQuestionAnsweredEvent(
+                    [
+                        'exe_id' => (int) $exeId,
+                        'exercise' => [
+                            'id' => $objExercise->id,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                             'title' => $objExercise->selectTitle(true),
                         ],
                         'question' => [
@@ -838,8 +853,15 @@ switch ($action) {
                             'weight' => (float) $result['weight'],
                         ],
                     ]
+<<<<<<< HEAD
                 )
                 ->notifyQuizQuestionAnswered();*/
+=======
+                ),
+                Events::EXERCISE_QUESTION_ANSWERED
+            );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             // Destruction of the Question object
             unset($objQuestionTmp);
             if ($debug) {

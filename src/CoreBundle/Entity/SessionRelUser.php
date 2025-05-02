@@ -30,7 +30,11 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(security: "is_granted('ROLE_ADMIN') or object.user == user"),
         new GetCollection(security: "is_granted('ROLE_USER')"),
+<<<<<<< HEAD
         new Post(security: "is_granted('ROLE_ADMIN')"),
+=======
+        new Post(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')"),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ],
     normalizationContext: [
         'groups' => [
@@ -108,6 +112,12 @@ class SessionRelUser
     #[ORM\Column(name: 'collapsed', type: 'boolean', nullable: true, options: ['default' => null])]
     protected ?bool $collapsed = null;
 
+<<<<<<< HEAD
+=======
+    #[ORM\Column(name: 'new_subscription_session_id', type: 'integer', nullable: true)]
+    protected ?int $newSubscriptionSessionId = null;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     /**
      * @throws Exception
      */
@@ -226,4 +236,19 @@ class SessionRelUser
 
         return $this;
     }
+<<<<<<< HEAD
+=======
+
+    public function getNewSubscriptionSessionId(): ?int
+    {
+        return $this->newSubscriptionSessionId;
+    }
+
+    public function setNewSubscriptionSessionId(?int $newSubscriptionSessionId): self
+    {
+        $this->newSubscriptionSessionId = $newSubscriptionSessionId;
+
+        return $this;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

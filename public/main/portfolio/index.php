@@ -6,6 +6,14 @@ use Chamilo\CoreBundle\Entity\Course;
 use Chamilo\CoreBundle\Entity\Portfolio;
 use Chamilo\CoreBundle\Entity\PortfolioCategory;
 use Chamilo\CoreBundle\Entity\User;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\AbstractEvent;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\PortfolioItemDeletedEvent;
+use Chamilo\CoreBundle\Event\PortfolioItemVisibilityChangedEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 // Make sure we void the course context if we are in the social network section
 if (empty($_GET['cidReq'])) {
@@ -77,7 +85,11 @@ switch ($action) {
         }
 
         /** @var PortfolioCategory $category */
+<<<<<<< HEAD
         $category = $em->find('ChamiloCoreBundle:PortfolioCategory', $id);
+=======
+        $category = $em->find(PortfolioCategory::class, $id);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!$isValid($category)) {
             api_not_allowed(true);
@@ -94,7 +106,11 @@ switch ($action) {
         }
 
         /** @var PortfolioCategory $category */
+<<<<<<< HEAD
         $category = $em->find('ChamiloCoreBundle:PortfolioCategory', $id);
+=======
+        $category = $em->find(PortfolioCategory::class, $id);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!$isValid($category)) {
             api_not_allowed(true);
@@ -119,7 +135,11 @@ switch ($action) {
         }
 
         /** @var PortfolioCategory $category */
+<<<<<<< HEAD
         $category = $em->find('ChamiloCoreBundle:PortfolioCategory', $id);
+=======
+        $category = $em->find(PortfolioCategory::class, $id);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!$isValid($category)) {
             api_not_allowed(true);
@@ -145,7 +165,11 @@ switch ($action) {
         }
 
         /** @var CPortfolio $item */
+<<<<<<< HEAD
         $item = $em->find('ChamiloCoreBundle:Portfolio', $id);
+=======
+        $item = $em->find(Portfolio::class, $id);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!$isValid($item)) {
             api_not_allowed(true);
@@ -162,7 +186,11 @@ switch ($action) {
         }
 
         /** @var Portfolio $item */
+<<<<<<< HEAD
         $item = $em->find('ChamiloCoreBundle:Portfolio', $id);
+=======
+        $item = $em->find(Portfolio::class, $id);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!$isValid($item)) {
             api_not_allowed(true);
@@ -173,6 +201,14 @@ switch ($action) {
         $em->persist($item);
         $em->flush();
 
+<<<<<<< HEAD
+=======
+        Container::getEventDispatcher()->dispatch(
+            new PortfolioItemVisibilityChangedEvent(['portfolio' => $item, 'visibility']),
+            Events::PORTFOLIO_ITEM_VISIBILITY_CHANGED
+        );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         Display::addFlash(
             Display::return_message(get_lang('The visibility has been changed.'), 'success')
         );
@@ -187,12 +223,24 @@ switch ($action) {
         }
 
         /** @var Portfolio $item */
+<<<<<<< HEAD
         $item = $em->find('ChamiloCoreBundle:Portfolio', $id);
+=======
+        $item = $em->find(Portfolio::class, $id);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!$isValid($item)) {
             api_not_allowed(true);
         }
 
+<<<<<<< HEAD
+=======
+        Container::getEventDispatcher()->dispatch(
+            new PortfolioItemDeletedEvent(['item' => $item], AbstractEvent::TYPE_PRE),
+            Events::PORTFOLIO_ITEM_DELETED
+        );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $em->remove($item);
         $em->flush();
 

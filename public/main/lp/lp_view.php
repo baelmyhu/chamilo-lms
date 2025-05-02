@@ -565,7 +565,11 @@ $frameReady = Display::getFrameReadyBlock(
     '#content_id, #content_id_blank',
     $itemType,
     'function () {
+<<<<<<< HEAD
         var arr = ["link", "sco", "xapi", "quiz", "h5p", "forum"];
+=======
+        var arr = ["link", "sco", "xapi", "quiz", "h5p", "forum", "survey"];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         return $.inArray(olms.lms_item_type, arr) !== -1;
     }'

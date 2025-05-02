@@ -140,7 +140,11 @@ switch ($action) {
                 '&'.api_get_cidreq().
                 '&cat_id='.$categoryId;
             $url = api_get_path(WEB_PLUGIN_PATH).
+<<<<<<< HEAD
                 'customcertificate/src/print_certificate.php?export_all_in_one=1&'.$params;
+=======
+                'CustomCertificate/src/print_certificate.php?export_all_in_one=1&'.$params;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         } else {
             if (api_is_student_boss()) {
                 $userGroup = new UserGroupModel();
@@ -164,7 +168,11 @@ switch ($action) {
                 '&session_id='.api_get_session_id().
                 '&'.api_get_cidreq().
                 '&cat_id='.$categoryId;
+<<<<<<< HEAD
             $url = api_get_path(WEB_PLUGIN_PATH).'customcertificate/src/print_certificate.php?export_all=1&'.$params;
+=======
+            $url = api_get_path(WEB_PLUGIN_PATH).'CustomCertificate/src/print_certificate.php?export_all=1&'.$params;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
             header('Location: '.$url);
         }
@@ -194,7 +202,11 @@ $interbreadcrumb[] = [
     'url' => Category::getUrl(),
     'name' => get_lang('Assessments'),
 ];
+<<<<<<< HEAD
 $interbreadcrumb[] = ['url' => '#', 'name' => get_lang('AssessmentsListOfLearnersCertificates')];
+=======
+$interbreadcrumb[] = ['url' => '#', 'name' => get_lang('List of learner certificates')];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $this_section = SECTION_COURSES;
 Display::display_header('');
@@ -214,7 +226,11 @@ if ('delete' === $action) {
 }
 
 $token = Security::get_token();
+<<<<<<< HEAD
 echo Display::page_header(get_lang('AssessmentsListOfLearnersCertificates'));
+=======
+echo Display::page_header(get_lang('List of learner certificates'));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 if (!empty($content)) {
     echo $content;
@@ -299,13 +315,21 @@ if (count($certificate_list) > 0 && 'true' !== $hideCertificateExport) {
 
     if ($allowCustomCertificate) {
         $actions .= Display::url(
+<<<<<<< HEAD
             Display::getMdiIcon(ActionIcon::EXPORT_ARCHIVE, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('ExportAllCertificatesToZIP')),
+=======
+            Display::getMdiIcon(ActionIcon::EXPORT_ARCHIVE, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Export all certificates to ZIP')),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $url.'&action=export_all_certificates_zip'
         );
     }
 
     $actions .= Display::url(
+<<<<<<< HEAD
         Display::getMdiIcon(ActionIcon::SEND_MESSAGE, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Send messageCertificateNotifications')),
+=======
+        Display::getMdiIcon(ActionIcon::SEND_MESSAGE, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Send certificate notification to all users')),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $url.'&action=show_notification_form'
     );
 }

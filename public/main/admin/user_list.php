@@ -186,7 +186,11 @@ function prepare_user_sql_query(bool $getCount, bool $showDeletedUsers = false):
                     u.email AS col6,
                     u.status AS col7,
                     u.active AS col8,
+<<<<<<< HEAD
                     u.registration_date AS col9,
+=======
+                    u.created_at AS col9,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     u.last_login as col10,
                     u.id AS col11,
                     u.expiration_date AS exp,
@@ -225,7 +229,11 @@ function prepare_user_sql_query(bool $getCount, bool $showDeletedUsers = false):
     foreach ($keywordList as $keyword) {
         $keywordListValues[$keyword] = null;
         if (isset($_GET[$keyword]) && !empty($_GET[$keyword])) {
+<<<<<<< HEAD
             $keywordListValues[$keyword] = $_GET[$keyword];
+=======
+            $keywordListValues[$keyword] = Security::remove_XSS($_GET[$keyword]);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $atLeastOne = true;
         }
     }

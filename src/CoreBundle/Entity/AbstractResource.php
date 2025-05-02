@@ -70,6 +70,10 @@ abstract class AbstractResource
         'illustration:read',
         'message:read',
         'c_tool_intro:read',
+<<<<<<< HEAD
+=======
+        'attendance:read',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ])]
     #[ORM\OneToOne(targetEntity: ResourceNode::class, cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'resource_node_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
@@ -96,7 +100,11 @@ abstract class AbstractResource
      */
     public $parentResource;
 
+<<<<<<< HEAD
     #[Groups(['resource_node:read', 'document:read'])]
+=======
+    #[Groups(['resource_node:read', 'document:read', 'attendance:read'])]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public ?array $resourceLinkListFromEntity = null;
 
     /**
@@ -105,7 +113,11 @@ abstract class AbstractResource
      *
      * @var array<int, array<string, int>>
      */
+<<<<<<< HEAD
     #[Groups(['c_tool_intro:write', 'resource_node:write', 'c_student_publication:write', 'calendar_event:write'])]
+=======
+    #[Groups(['c_tool_intro:write', 'resource_node:write', 'c_student_publication:write', 'calendar_event:write', 'attendance:write'])]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public array $resourceLinkList = [];
 
     /**

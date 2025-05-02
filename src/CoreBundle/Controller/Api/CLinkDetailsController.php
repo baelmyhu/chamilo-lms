@@ -6,6 +6,10 @@ declare(strict_types=1);
 
 namespace Chamilo\CoreBundle\Controller\Api;
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Repository\AssetRepository;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CourseBundle\Entity\CLink;
 use Chamilo\CourseBundle\Repository\CShortcutRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CLinkDetailsController extends AbstractController
 {
+<<<<<<< HEAD
     public function __invoke(CLink $link, CShortcutRepository $shortcutRepository): Response
+=======
+    public function __invoke(CLink $link, CShortcutRepository $shortcutRepository, AssetRepository $assetRepository): Response
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $shortcut = $shortcutRepository->getShortcutFromResource($link);
         $isOnHomepage = null !== $shortcut;
@@ -45,6 +53,15 @@ class CLinkDetailsController extends AbstractController
             'category' => $link->getCategory()?->getIid(),
         ];
 
+<<<<<<< HEAD
+=======
+        if (null !== $link->getCustomImage()) {
+            $details['customImageUrl'] = $assetRepository->getAssetUrl($link->getCustomImage());
+        } else {
+            $details['customImageUrl'] = null;
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $this->json($details, Response::HTTP_OK);
     }
 }

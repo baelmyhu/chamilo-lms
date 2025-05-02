@@ -19,7 +19,11 @@
           <img
             v-if="item.resourceNode.firstResourceFile.image"
             :alt="item.title"
+<<<<<<< HEAD
             :src="item.contentUrl + '&w=500'"
+=======
+            :src="item.contentUrl + '?w=500'"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
           />
 
           <video

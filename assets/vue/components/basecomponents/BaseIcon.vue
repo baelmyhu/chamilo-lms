@@ -2,6 +2,11 @@
   <i
     :class="iconClass"
     aria-hidden="true"
+<<<<<<< HEAD
+=======
+    @click="$emit('click', $event)"
+    class="cursor-pointer"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   />
 </template>
 

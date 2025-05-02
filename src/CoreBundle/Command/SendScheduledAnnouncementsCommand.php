@@ -12,12 +12,17 @@ use Chamilo\CoreBundle\Service\ScheduledAnnouncementService;
 use Database;
 use Doctrine\ORM\EntityManager;
 use Exception;
+<<<<<<< HEAD
+=======
+use Symfony\Component\Console\Attribute\AsCommand;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+<<<<<<< HEAD
 class SendScheduledAnnouncementsCommand extends Command
 {
     /**
@@ -25,6 +30,14 @@ class SendScheduledAnnouncementsCommand extends Command
      */
     protected static $defaultName = 'app:send-scheduled-announcements';
 
+=======
+#[AsCommand(
+    name: 'app:send-scheduled-announcements',
+    description: 'Send scheduled announcements to all users.',
+)]
+class SendScheduledAnnouncementsCommand extends Command
+{
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct(
         private readonly AccessUrlRepository $accessUrlRepository,
         private readonly ScheduledAnnouncementService $scheduledAnnouncementService,
@@ -36,7 +49,10 @@ class SendScheduledAnnouncementsCommand extends Command
     protected function configure(): void
     {
         $this
+<<<<<<< HEAD
             ->setDescription('Send scheduled announcements to all users.')
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->addOption('debug', null, InputOption::VALUE_NONE, 'If set, debug messages will be shown.')
         ;
     }

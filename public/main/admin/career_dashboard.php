@@ -50,7 +50,11 @@ $careers = $career->get_all(['status = ?' => 1]); //only status =1
 $career_select_list = [];
 $career_select_list[0] = ' -- '.get_lang('Select').' --';
 foreach ($careers as $item) {
+<<<<<<< HEAD
     $career_select_list[$item['id']] = $item['name'];
+=======
+    $career_select_list[$item['id']] = $item['title'];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 
 $form->addSelect(

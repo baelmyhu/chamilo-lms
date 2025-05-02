@@ -76,8 +76,11 @@ if (isset($_GET['id'])) {
         'forum_state' => GroupManager::TOOL_PRIVATE,
         'max_student' => 0,
         'document_access' => 0,
+<<<<<<< HEAD
         'allow_change_group_name' => GroupManager::GROUP_ONLY_TEACHER_CAN_RENAME,
         'only_me' => GroupManager::GROUP_VISIBILITY_DEFAULT,
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ];
 }
 
@@ -166,6 +169,7 @@ $form->addGroup($group, 'max_member_group', get_lang('Limit'), null, false);
 $form->addRule('max_member_group', get_lang('Please enter a valid number for the maximum number of members.'), 'callback', 'check_max_number_of_members');
 $form->addElement('html', '</div>');
 
+<<<<<<< HEAD
 // group naming settings
 $form->addElement('html', '<div class="col-md-6">');
 
@@ -202,6 +206,8 @@ $form->addGroup(
 
 $form->addElement('html', '</div>');
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form->addElement('html', '<div class="col-md-6">');
 // Self registration
 $group = [
@@ -445,9 +451,13 @@ if ($form->validate()) {
                 $self_unreg_allowed,
                 $max_member,
                 $values['groups_per_user'],
+<<<<<<< HEAD
                 $values['document_access'] ?? 0,
                 $values['allow_change_group_name'],
                 $values['only_me']
+=======
+                $values['document_access'] ?? 0
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             );
             Display::addFlash(Display::return_message(get_lang('Group settings have been modified')));
             header('Location: '.$currentUrl.'&category='.$values['id']);
@@ -467,9 +477,13 @@ if ($form->validate()) {
                 $self_unreg_allowed,
                 $max_member,
                 $values['groups_per_user'],
+<<<<<<< HEAD
                 $values['document_access'] ?? 0,
                 $values['allow_change_group_name'],
                 $values['only_me']
+=======
+                $values['document_access'] ?? 0
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             );
             Display::addFlash(Display::return_message(get_lang('Category created')));
             header('Location: '.$currentUrl);
@@ -494,10 +508,13 @@ if (GroupManager::MEMBER_PER_GROUP_NO_LIMIT == $defaults['max_student']) {
     $defaults['max_member_no_limit'] = 1;
     $defaults['max_member'] = $defaults['max_student'];
 }
+<<<<<<< HEAD
 if (api_get_setting('allow_group_categories')) {
     $defaults['id'] = $_GET['id'];
 }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form->setDefaults($defaults);
 $form->display();
 

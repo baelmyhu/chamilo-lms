@@ -1,6 +1,10 @@
 doctrine:
     dbal:
+<<<<<<< HEAD
         server-version: 'mariadb-10.2.12'
+=======
+        server-version: 'mariadb-10.4.14'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         dbname: '%env(DATABASE_NAME)%'
         user: '%env(DATABASE_USER)%'
         password: '%env(DATABASE_PASSWORD)%'

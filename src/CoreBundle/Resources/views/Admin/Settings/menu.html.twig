@@ -38,6 +38,10 @@
     'tracking': 'chart-box',
     'webservice': 'cloud-sync',
     'stylesheets': 'language-css3',
+<<<<<<< HEAD
+=======
+    'ai_helpers': 'robot',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 %}
 {% for namespace in schemas|keys %}
@@ -46,7 +50,11 @@
         class="list-group-item border-0 {% if (current_namespace ==  namespace)  %} bg-gray-25 rounded-lg {% endif %} "
         href="{{ path('chamilo_platform_settings', { 'namespace': namespace }) }}"
     >
+<<<<<<< HEAD
         <i class="mdi mdi-{{ array[namespace] }} ch-tool-icon-gradient" style="font-size: 32px; width: 32px; height: 32px; line-height: 32px;" aria-hidden="true" title="{{ namespace | capitalize | trans }}"></i>
+=======
+        <i class="mdi mdi-{{ array[namespace] | default('help-circle') }} ch-tool-icon-gradient" style="font-size: 32px; width: 32px; height: 32px; line-height: 32px;" aria-hidden="true" title="{{ namespace | capitalize | trans }}"></i>
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         {{ namespace | capitalize | trans }}
     </a>

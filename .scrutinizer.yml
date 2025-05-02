@@ -36,6 +36,7 @@ filter:
         - 'public/main/lp/packaging/*'
         - 'public/main/template/*'
         - 'public/main/lang/*'
+<<<<<<< HEAD
         - 'public/plugin/buycourses/src/Culqi/*'
         - 'public/plugin/buycourses/src/Requests/*'
         - 'public/plugin/buycourses/src/paypalfunctions.php'
@@ -46,6 +47,18 @@ filter:
         - 'public/plugin/ims_lti/OAuthSimple.php'
         - 'public/plugin/sepe/src/wsse/*'
         - 'public/plugin/test2pdf/class/*'
+=======
+        - 'public/plugin/BuyCourses/src/Culqi/*'
+        - 'public/plugin/BuyCourses/src/Requests/*'
+        - 'public/plugin/BuyCourses/src/paypalfunctions.php'
+        - 'public/plugin/BuyCourses/src/Requests.php'
+        - 'public/plugin/vchamilo/cli/*'
+        - 'public/plugin/Pens/lib/'
+        - 'public/plugin/Bbb/lib/bbb_api.php'
+        - 'public/plugin/ImsLti/OAuthSimple.php'
+        - 'public/plugin/sepe/src/wsse/*'
+        - 'public/plugin/Test2Pdf/class/*'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         - 'public/plugin/jcapture/lib/*'
         - 'public/plugin/jcapture/src/*'
         - 'tests/*'

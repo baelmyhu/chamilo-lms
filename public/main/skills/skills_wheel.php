@@ -5,11 +5,23 @@ $cidReset = true;
 
 require_once __DIR__.'/../inc/global.inc.php';
 
+<<<<<<< HEAD
+=======
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
+
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $this_section = SECTION_PLATFORM_ADMIN;
 
 api_protect_admin_script(false, true);
 SkillModel::isAllowed();
 
+<<<<<<< HEAD
+=======
+$httpRequest = HttpRequest::createFromGlobals();
+
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 //Adds the JS needed to use the jqgrid
 $htmlHeadXtra[] = api_get_js('d3/d3.v3.5.4.min.js');
 $htmlHeadXtra[] = api_get_js('d3/colorbrewer.js');
@@ -23,9 +35,16 @@ if (isset($_GET['load_user'])) {
 }
 
 $skill_condition = '';
+<<<<<<< HEAD
 $skillId = isset($_REQUEST['skill_id']) ? (int) $_REQUEST['skill_id'] : 0;
 if (!empty($skillId)) {
     $skill_condition = '&skill_id='.$skillId;
+=======
+$skillId = $httpRequest->query->getInt('skill_id', 0);
+
+if ($skillId > 0) {
+    $skill_condition = "&skill_id=$skillId";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 $tpl->assign('skill_id_to_load', $skillId);
 

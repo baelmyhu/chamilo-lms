@@ -356,7 +356,13 @@ if (isset($_POST['form_sent']) && $_POST['form_sent']) {
         SessionManager::subscribe_users_to_session_course(
             $UserList,
             $id_session,
+<<<<<<< HEAD
             $courseInfo['code']
+=======
+            $courseInfo['code'],
+            SESSION_VISIBLE_READ_ONLY,
+            true
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
 
         Display::addFlash(Display::return_message(get_lang('Update successful')));
@@ -661,12 +667,21 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
     if ('multiple' === $add_type) {
         if (is_array($extra_field_list)) {
             if (is_array($new_field_list) && count($new_field_list) > 0) {
+<<<<<<< HEAD
                 echo '<h3>'.get_lang('Filter users').'</h3>';
                 foreach ($new_field_list as $new_field) {
                     echo $new_field['name'];
                     $varname = 'field_'.$new_field['variable'];
                     $fieldtype = $new_field['type'];
                     echo '&nbsp;<select name="'.$varname.'">';
+=======
+                echo '<h3 class="text-xl font-bold mb-4">'.get_lang('Filter users').'</h3>';
+                foreach ($new_field_list as $new_field) {
+                    echo '<label class="block text-gray-700 font-semibold mb-2">'.$new_field['name'].'</label>';
+                    $varname = 'field_'.$new_field['variable'];
+                    $fieldtype = $new_field['type'];
+                    echo '<select name="'.$varname.'" class="w-full border border-gray-300 p-2 rounded mb-4">';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     echo '<option value="0">--'.get_lang('Select').'--</option>';
                     foreach ($new_field['data'] as $option) {
                         $checked = '';
@@ -693,7 +708,11 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
                     echo $extraHidden;
                     echo '&nbsp;&nbsp;';
                 }
+<<<<<<< HEAD
                 echo '<input type="button" value="'.get_lang('Filter').'" onclick="validate_filter()" />';
+=======
+                echo '<input type="button" value="'.get_lang('Filter').'" class="btn btn-primary" onclick="validate_filter()" />';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 echo '<br /><br />';
             }
         }
@@ -702,6 +721,7 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
     <input type="hidden" name="form_sent" value="1"/>
     <input type="hidden" name="add_type"/>
 
+<<<<<<< HEAD
     <div id="multiple-add-session" class="grid grid-cols-3">
         <div class="col-md-4">
             <div class="form-group">
@@ -752,10 +772,58 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
                     ?>
                 <?php echo get_lang('First letter (last name)'); ?> :
                 <select id="first_letter_user" name="firstLetterUser" onchange="change_select(this.value);">
+=======
+    <div id="multiple-add-session" class="flex justify-between items-start my-5">
+        <div class="w-1/3 p-2">
+            <label class="block text-gray-700 font-semibold mb-2"><?php echo get_lang('Portal users list'); ?> </label>
+            <?php
+            if (!('multiple' == $add_type)) {
+                ?>
+                <input type="text" id="user_to_add" onkeyup="xajax_search_users(this.value,'single')"
+                       class="w-full border border-gray-300 p-2 rounded"/>
+                <div id="ajax_list_users_single" class="mt-2"></div>
+                <?php
+            } else {
+                ?>
+                <div id="ajax_list_users_multiple">
+                    <select id="origin_users" name="nosessionUsersList[]" multiple="multiple" size="15"
+                            class="w-full border border-gray-300 p-2 rounded">
+                        <?php
+                        foreach ($nosessionUsersList as $uid => $enreg) {
+                            ?>
+                            <option value="<?php echo $uid; ?>" <?php if (in_array($uid, $UserList)) {
+                                echo 'selected="selected"';
+                            } ?>>
+                                <?php
+                                $personName = $enreg['ln'].' '.$enreg['fn'].' ('.$enreg['un'].') '
+                                    .$enreg['official_code'];
+                                if ($showOfficialCode) {
+                                    $officialCode = !empty($enreg['official_code']) ? $enreg['official_code'].' - '
+                                        : '? - ';
+                                    $personName = $officialCode.$enreg['ln'].' '.$enreg['fn'].' ('.$enreg['un'].')';
+                                }
+                                echo $personName; ?>
+                            </option>
+                            <?php
+                        } ?>
+                    </select>
+                </div>
+                <?php
+            }
+            unset($nosessionUsersList);
+            ?>
+        </div>
+        <div class="flex flex-col items-center justify-center space-y-3 mt-4">
+            <?php if ('multiple' == $add_type) {
+                ?>
+                <?php echo get_lang('First letter (last name)'); ?> :
+                <select class="mb-4" id="first_letter_user" name="firstLetterUser" onchange="change_select(this.value);">
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     <option value="%">--</option>
                     <?php
                     echo Display:: get_alphabet_options(); ?>
                 </select>
+<<<<<<< HEAD
                 <br/>
                 <br/>
             <?php
@@ -805,6 +873,34 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
             <label><?php echo get_lang('List of users registered in this session'); ?> :</label>
             <select id="destination_users" name="sessionUsersList[]" multiple="multiple" size="15"
                     class="form-control">
+=======
+                <?php
+            } ?>
+            <?php if ($ajax_search) { ?>
+                <button name="remove_user" class="btn btn--primary mb-4"
+                        type="button" onclick="remove_item(document.getElementById('destination_users'))">
+                    <em class="pi pi-chevron-left"></em>
+                </button>
+            <?php } else { ?>
+                <button name="add_user" class="btn btn--primary mb-4"
+                        type="button" onclick="moveItem(document.getElementById('origin_users'), document.getElementById('destination_users'))">
+                    <em class="pi pi-chevron-right"></em>
+                </button>
+                <button name="remove_user" class="btn btn--primary mb-4"
+                        type="button" onclick="moveItem(document.getElementById('destination_users'), document.getElementById('origin_users'))">
+                    <em class="pi pi-chevron-left"></em>
+                </button>
+            <?php } ?>
+            <button name="next" class="btn btn--success mb-4" type="button"
+                    onclick="valide()">
+                <?php echo (!empty($addProcess)) ? get_lang('Finish session creation') : get_lang('Subscribe users to this session'); ?>
+            </button>
+        </div>
+        <div class="w-1/3 p-2">
+            <label class="block text-gray-700 font-semibold mb-2"><?php echo get_lang('List of users registered in this session'); ?>:</label>
+            <select id="destination_users" name="sessionUsersList[]" multiple="multiple" size="15"
+                    class="w-full border border-gray-300 p-2 rounded">
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 <?php
                 foreach ($sessionUsersList as $enreg) {
                     ?>
@@ -812,6 +908,7 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
                         <?php
                         $personName = $enreg['lastname'].' '.$enreg['firstname'].' ('.$enreg['username'].') '
                             .$enreg['official_code'];
+<<<<<<< HEAD
                     if ($showOfficialCode) {
                         $officialCode =
                                 !empty($enreg['official_code']) ? $enreg['official_code'].' - ' : '? - ';
@@ -820,6 +917,15 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
                                 .')';
                     }
                     echo $personName; ?>
+=======
+                        if ($showOfficialCode) {
+                            $officialCode =
+                                !empty($enreg['official_code']) ? $enreg['official_code'].' - ' : '? - ';
+                            $personName =
+                                $officialCode.$enreg['lastname'].' '.$enreg['firstname'].' ('.$enreg['username'].')';
+                        }
+                        echo $personName; ?>
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     </option>
                     <?php
                 }
@@ -865,8 +971,14 @@ echo Display::page_header($tool_name.' ('.$session_info['name'].') - '.$courseIn
 
     function valide() {
         var options = document.getElementById('destination_users').options;
+<<<<<<< HEAD
         for (i = 0; i < options.length; i++)
             options[i].selected = true;
+=======
+        for (i = 0; i < options.length; i++) {
+            options[i].selected = true;
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         document.forms.formulaire.submit();
     }
 

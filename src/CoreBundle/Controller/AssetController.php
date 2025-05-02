@@ -22,7 +22,11 @@ class AssetController
 {
     use ControllerTrait;
 
+<<<<<<< HEAD
     #[Route(path: '/{category}/{path}', methods: ['GET'], requirements: ['path' => '.+'], name: 'chamilo_core_asset_showfile')]
+=======
+    #[Route(path: '/{category}/{path}', name: 'chamilo_core_asset_showfile', requirements: ['path' => '.+'], methods: ['GET'])]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function showFile(
         string $category,
         string $path,
@@ -37,12 +41,17 @@ class AssetController
             $fileName = basename($filePath);
             $detector = new ExtensionMimeTypeDetector();
             $mimeType = (string) $detector->detectMimeTypeFromFile($filePath);
+<<<<<<< HEAD
             // If image use glide, because why not.
+=======
+            // If image use glide
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if (str_contains($mimeType, 'image')) {
                 $server = $glide->getServer();
                 $request = $requestStack->getCurrentRequest();
                 $params = $request->query->all();
 
+<<<<<<< HEAD
                 // The filter overwrites the params from GET.
                 /*if (!empty($filter)) {
                     $params = $glide->getFilters()[$filter] ?? [];
@@ -55,6 +64,8 @@ class AssetController
                     $params['crop'] = $crop;
                 }*/
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 return $server->getImageResponse($filePath, $params);
             }
 
@@ -65,8 +76,13 @@ class AssetController
 
                     stream_copy_to_stream($stream, $outputStream);
 
+<<<<<<< HEAD
                     fclose($outputStream);
                     fclose($fileStream);
+=======
+                    fclose($stream);
+                    fclose($outputStream);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 }
             );
             $disposition = $response->headers->makeDisposition(

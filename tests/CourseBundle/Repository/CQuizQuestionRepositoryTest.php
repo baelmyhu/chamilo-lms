@@ -93,7 +93,10 @@ class CQuizQuestionRepositoryTest extends AbstractApiTest
             ->setPosition(1)
             ->setAnswer('answer')
             ->setAnswerCode('answer')
+<<<<<<< HEAD
             ->setDestination('')
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setCorrect(1)
             ->setHotspotCoordinates('')
             ->setHotspotType('')

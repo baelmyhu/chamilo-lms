@@ -691,13 +691,24 @@ class SubLanguageManager
 
     /**
      * Add a sub-language.
+<<<<<<< HEAD
      */
     public static function addSubLanguage(string $originalName, string $englishName, bool $isAvailable, int $parentId, string $isoCode): bool|int
+=======
+     *
+     * @throws Exception
+     */
+    public static function addSubLanguage(string $originalName, string $englishName, bool $isAvailable, int $parentId, string $isoCode): Language
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $entityManager = Database::getManager();
         $parentLanguage = $entityManager->getRepository(Language::class)->find($parentId);
         if (!$parentLanguage) {
+<<<<<<< HEAD
             return false;
+=======
+            throw new Exception();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         $subLanguage = new Language();
@@ -707,6 +718,7 @@ class SubLanguageManager
             ->setAvailable($isAvailable)
             ->setParent($parentLanguage);
 
+<<<<<<< HEAD
         try {
             $entityManager->persist($subLanguage);
             $entityManager->flush();
@@ -716,6 +728,12 @@ class SubLanguageManager
         }
 
         return $subLanguage->getId();
+=======
+        $entityManager->persist($subLanguage);
+        $entityManager->flush();
+
+        return $subLanguage;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -744,15 +762,28 @@ class SubLanguageManager
 
     /**
      * Check if a language exists by its ID.
+<<<<<<< HEAD
      *
      * @throws NotSupported
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function languageExistsById(int $languageId): bool
     {
         $entityManager = Database::getManager();
+<<<<<<< HEAD
         $language = $entityManager->getRepository(Language::class)->find($languageId);
 
         return $language !== null;
+=======
+        try {
+            $language = $entityManager->getRepository(Language::class)->find($languageId);
+
+            return $language !== null;
+        } catch (NotSupported) {
+            return false;
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -770,18 +801,34 @@ class SubLanguageManager
 
     /**
      * Get all information of a sub-language.
+<<<<<<< HEAD
      *
      * @throws NotSupported
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      */
     public static function getAllInformationOfSubLanguage(int $parentId, int $subLanguageId): ?Language
     {
         $entityManager = Database::getManager();
+<<<<<<< HEAD
         $languageRepository = $entityManager->getRepository(Language::class);
 
         return $languageRepository->findOneBy([
             'parent' => $parentId,
             'id' => $subLanguageId
         ]);
+=======
+        try {
+            $languageRepository = $entityManager->getRepository(Language::class);
+
+            return $languageRepository->findOneBy([
+                'parent' => $parentId,
+                'id' => $subLanguageId
+            ]);
+        } catch (NotSupported) {
+            return null;
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -857,7 +904,11 @@ class SubLanguageManager
         return null; // No parent language
     }
 
+<<<<<<< HEAD
     public static function generateSublanguageCode(string $parentCode, string $variant, int $maxLength = 10): string
+=======
+    public static function generateSublanguageCode(string $parentCode, string $variant, int $maxLength = Language::ISO_MAX_LENGTH): string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $parentCode = strtolower(trim($parentCode));
         $variant = strtolower(trim($variant));

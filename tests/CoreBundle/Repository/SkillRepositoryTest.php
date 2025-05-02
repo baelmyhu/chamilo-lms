@@ -182,7 +182,11 @@ class SkillRepositoryTest extends AbstractApiTest
         $this->assertNotNull($skill->getId());
         $this->assertSame(1, $skill->getCourses()->count());
         $this->assertSame(1, $skill->getItems()->count());
+<<<<<<< HEAD
         $this->assertSame(1, $subSkill->getSkills()->count());
+=======
+        $this->assertSame(0, $subSkill->getSkills()->count());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $this->assertTrue($skill->hasCourseAndSession($skillRelCourse));
 
@@ -227,7 +231,10 @@ class SkillRepositoryTest extends AbstractApiTest
             ->setSession($session)
             ->setUser($user)
             ->setArgumentation('argumentation')
+<<<<<<< HEAD
             ->setAssignedBy(1)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->setArgumentationAuthorId(1)
         ;
         $this->assertHasNoEntityViolations($skillRelUser);

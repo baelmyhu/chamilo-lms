@@ -2,6 +2,11 @@
 /* For licensing terms, see /license.txt */
 
 use Chamilo\CoreBundle\Component\Utils\ChamiloApi;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\Course;
+use Chamilo\CoreBundle\Entity\Plugin as PluginEntity;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\SystemTemplate;
 use ChamiloSession as Session;
 use Symfony\Component\Filesystem\Filesystem;
@@ -131,6 +136,7 @@ function handleExtensions()
 function handlePlugins()
 {
     Session::erase('plugin_data');
+<<<<<<< HEAD
     $plugin_obj = new AppPlugin();
     $token = Security::get_token();
     if (isset($_POST['submit_plugins'])) {
@@ -260,6 +266,118 @@ function handlePlugins()
     echo get_lang('Enable the selected plugins').'</button>';
     echo '</div>';
     echo '</form>';
+=======
+    $pluginRepo = Container::getPluginRepository();
+
+    $allPlugins = (new AppPlugin())->read_plugins_from_path();
+
+    // Header
+    echo '<div class="mb-4 flex items-center justify-between">';
+    echo '<h2 class="text-2xl font-semibold text-gray-90">'.get_lang('Manage Plugins').'</h2>';
+    echo '<p class="text-gray-50 text-sm">'.get_lang('Install, activate or deactivate plugins easily.').'</p>';
+    echo '</div>';
+
+    echo '<table class="w-full border border-gray-25 rounded-lg shadow-md">';
+    echo '<thead>';
+    echo '<tr class="bg-gray-10 text-left">';
+    echo '<th class="p-3 border-b border-gray-25">'.get_lang('Plugin').'</th>';
+    echo '<th class="p-3 border-b border-gray-25">'.get_lang('Version').'</th>';
+    echo '<th class="p-3 border-b border-gray-25">'.get_lang('Status').'</th>';
+    echo '<th class="p-3 border-b border-gray-25 text-center">'.get_lang('Actions').'</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+
+    foreach ($allPlugins as $pluginName) {
+        $pluginInfoFile = api_get_path(SYS_PLUGIN_PATH).$pluginName.'/plugin.php';
+
+        if (!file_exists($pluginInfoFile)) {
+            continue;
+        }
+
+        $plugin_info = [];
+
+        require $pluginInfoFile;
+
+        $plugin = $pluginRepo->findOneByTitle($pluginName);
+        $pluginConfiguration = $plugin?->getConfigurationsByAccessUrl(Container::getAccessUrlHelper()->getCurrent());
+        $isInstalled = $plugin && $plugin->isInstalled();
+        $isEnabled = $plugin && $pluginConfiguration && $pluginConfiguration->isActive();
+
+        // Status badge
+        $statusBadge = $isInstalled
+            ? ($isEnabled
+                ? '<span class="badge badge--success">'.get_lang('Enabled').'</span>'
+                : '<span class="badge badge--warning">'.get_lang('Disabled').'</span>')
+            : '<span class="badge badge--default">'.get_lang('Not Installed').'</span>';
+
+        echo '<tr class="border-t border-gray-25 hover:bg-gray-15 transition duration-200">';
+        echo '<td class="p-3 font-medium">'.$plugin_info['title'].'</td>';
+        echo '<td class="p-3">'.$plugin_info['version'].'</td>';
+        echo '<td class="p-3">'.$statusBadge.'</td>';
+        echo '<td class="p-3 text-center">';
+
+        echo '<div class="flex justify-center gap-2">';
+
+        if ($isInstalled) {
+            $toggleAction = $isEnabled ? 'disable' : 'enable';
+            $toggleText = $isEnabled ? get_lang('Disable') : get_lang('Enable');
+            $toggleColor = $isEnabled ? 'btn--plain' : 'btn--warning';
+
+            $toggleIcon = $isEnabled ? 'mdi mdi-toggle-switch-off-outline' : 'mdi mdi-toggle-switch-outline';
+
+            echo '<button class="plugin-action btn btn--sm '.$toggleColor.'"
+                    data-plugin="'.$pluginName.'" data-action="'.$toggleAction.'">
+                    <i class="'.$toggleIcon.'"></i> '.$toggleText.'
+                  </button>';
+
+            echo '<button class="plugin-action btn btn--sm btn--danger"
+                    data-plugin="'.$pluginName.'" data-action="uninstall">
+                    <i class="mdi mdi-trash-can-outline"></i> '.get_lang('Uninstall').'
+                  </button>';
+
+            $configureUrl = Container::getRouter()->generate(
+                'legacy_main',
+                ['name' => 'admin/configure_plugin.php', 'plugin' => $pluginName]
+            );
+
+            echo Display::url(
+                get_lang('Configure'),
+                $configureUrl,
+                ['class' => 'btn btn--info btn--sm']
+            );
+        } else {
+            echo '<button class="plugin-action btn btn--sm btn--success"
+                    data-plugin="'.$pluginName.'" data-action="install">
+                    <i class="mdi mdi-download"></i> '.get_lang('Install').'
+                  </button>';
+        }
+
+        echo '</div>';
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody></table>';
+
+    echo '<script>
+    $(document).ready(function () {
+        $(".plugin-action").click(function () {
+            var pluginName = $(this).data("plugin");
+            var action = $(this).data("action");
+
+            $.post("'.api_get_path(WEB_AJAX_PATH).'plugin.ajax.php", { a: action, plugin: pluginName }, function(response) {
+                var data = JSON.parse(response);
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert("Error: " + data.error);
+                }
+            });
+        });
+    });
+    </script>';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 
 /**
@@ -434,6 +552,7 @@ function storeRegions()
 }
 
 /**
+<<<<<<< HEAD
  * This function allows easy activating and inactivating of plugins.
  *
  * @author Patrick Cool <patrick.cool@UGent.be>, Ghent University
@@ -464,6 +583,8 @@ function storePlugins()
 }
 
 /**
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
  * This function checks if the given style is a recognize style that exists in the css directory as
  * a standalone directory.
  *
@@ -1381,7 +1502,11 @@ function generateSettingsForm($settings, $settings_by_access_list)
                 $courseSelectOptions = [];
 
                 if (!empty($row['selected_value'])) {
+<<<<<<< HEAD
                     $course = $em->find('ChamiloCoreBundle:Course', $row['selected_value']);
+=======
+                    $course = $em->find(Course::class, $row['selected_value']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
                     $courseSelectOptions[$course->getId()] = $course->getTitle();
                 }

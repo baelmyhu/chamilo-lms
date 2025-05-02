@@ -44,9 +44,21 @@ class LanguageRepository extends ServiceEntityRepository
         return $qb;
     }
 
+<<<<<<< HEAD
     public function getAllAvailableToArray(): array
     {
         $languages = $this->getAllAvailable()->getQuery()->getResult();
+=======
+    public function getAllAvailableToArray(bool $onlyActive = false): array
+    {
+        $queryBuilder = $this->getAllAvailable();
+
+        if (!$onlyActive) {
+            $queryBuilder->resetDQLPart('where');
+        }
+
+        $languages = $queryBuilder->getQuery()->getResult();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $list = [];
 

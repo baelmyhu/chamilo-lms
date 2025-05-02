@@ -5,16 +5,58 @@ declare(strict_types=1);
 namespace Chamilo\CoreBundle\Controller;
 
 use Chamilo\CoreBundle\Entity\GradebookCategory;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Repository\GradeBookCategoryRepository;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CourseBundle\Entity\CDocument;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+<<<<<<< HEAD
+=======
+use Symfony\Component\HttpFoundation\Request;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/gradebook')]
 class GradebookController extends AbstractController
 {
+<<<<<<< HEAD
+=======
+    public function __construct(
+        private readonly GradeBookCategoryRepository $gradeBookCategoryRepository,
+    ) {}
+
+    #[Route('/categories', name: 'chamilo_core_gradebook_categories', methods: ['GET'])]
+    public function getCategories(Request $request): JsonResponse
+    {
+        // Extract parameters from the query string
+        $courseId = (int) $request->query->get('courseId');
+        $sessionId = $request->query->get('sessionId') ? (int) $request->query->get('sessionId') : null;
+
+        if (!$courseId) {
+            return new JsonResponse(['error' => 'courseId parameter is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Ensure the default category exists
+        $this->gradeBookCategoryRepository->createDefaultCategory($courseId, $sessionId);
+
+        // Fetch categories using the repository
+        $categories = $this->gradeBookCategoryRepository->getCategoriesForCourse($courseId, $sessionId);
+
+        // Format the response
+        $formatted = array_map(fn ($category) => [
+            'id' => $category->getId(),
+            'title' => $category->getTitle(),
+            'parentId' => $category->getParent()?->getId(),
+        ], $categories);
+
+        return new JsonResponse($formatted);
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     // Sets the default certificate for a gradebook category
     #[Route('/set_default_certificate/{cid}/{certificateId}', name: 'chamilo_core_gradebook_set_default_certificate')]
     public function setDefaultCertificate(int $cid, int $certificateId, EntityManagerInterface $entityManager): Response

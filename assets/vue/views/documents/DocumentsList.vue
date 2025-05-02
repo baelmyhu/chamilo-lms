@@ -183,6 +183,17 @@
             @click="openMoveDialog(slotProps.data)"
           />
           <BaseButton
+<<<<<<< HEAD
+=======
+            :disabled="slotProps.data.filetype !== 'file'"
+            :title="slotProps.data.filetype !== 'file' ? t('Replace (files only)') : t('Replace file')"
+            icon="file-swap"
+            size="small"
+            type="secondary"
+            @click="slotProps.data.filetype === 'file' && openReplaceDialog(slotProps.data)"
+          />
+          <BaseButton
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             :title="t('Information')"
             icon="information"
             size="small"
@@ -206,6 +217,18 @@
           />
 
           <BaseButton
+<<<<<<< HEAD
+=======
+            v-if="canEdit(slotProps.data) && allowAccessUrlFiles && isFile(slotProps.data) && securityStore.isAdmin"
+            icon="file-replace"
+            size="small"
+            type="secondary"
+            :title="t('Add File Variation')"
+            @click="goToAddVariation(slotProps.data)"
+          />
+
+          <BaseButton
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             v-if="canEdit(slotProps.data)"
             :title="t('Edit')"
             icon="edit"
@@ -269,6 +292,16 @@
       type="danger"
       @click="showDeleteMultipleDialog"
     />
+<<<<<<< HEAD
+=======
+    <BaseButton
+      :disabled="isDownloading || !selectedItems || !selectedItems.length"
+      :label="isDownloading ? t('In progress') : t('Download selected items as ZIP')"
+      icon="download"
+      type="primary"
+      @click="downloadSelectedItems"
+    />
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   </BaseToolbar>
 
   <BaseDialogConfirmCancel
@@ -352,6 +385,24 @@
     </div>
   </BaseDialogConfirmCancel>
 
+<<<<<<< HEAD
+=======
+  <BaseDialogConfirmCancel
+    v-model:is-visible="isReplaceDialogVisible"
+    :title="t('Replace file')"
+    @confirm-clicked="replaceDocument"
+    @cancel-clicked="isReplaceDialogVisible = false"
+  >
+    <BaseFileUpload
+      id="replace-file"
+      :label="t('Select replacement file')"
+      accept="*/*"
+      model-value="selectedReplaceFile"
+      @file-selected="selectedReplaceFile = $event"
+    />
+  </BaseDialogConfirmCancel>
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   <BaseDialog
     v-model:is-visible="isFileUsageDialogVisible"
     :style="{ width: '28rem' }"
@@ -439,22 +490,40 @@ import BaseFileUpload from "../../components/basecomponents/BaseFileUpload.vue"
 import { useDocumentActionButtons } from "../../composables/document/documentActionButtons"
 import SectionHeader from "../../components/layout/SectionHeader.vue"
 import { checkIsAllowedToEdit } from "../../composables/userPermissions"
+<<<<<<< HEAD
+=======
+import { usePlatformConfig } from "../../store/platformConfig"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
 const securityStore = useSecurityStore()
 
+<<<<<<< HEAD
+=======
+const platformConfigStore = usePlatformConfig()
+const allowAccessUrlFiles = computed(() => "false" !== platformConfigStore.getSetting("course.access_url_specific_files"))
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 const { t } = useI18n()
 const { filters, options, onUpdateOptions, deleteItem } = useDatatableList("Documents")
 const notification = useNotification()
 const { cid, sid, gid } = useCidReq()
+<<<<<<< HEAD
 const { isImage, isHtml } = useFileUtils()
+=======
+const { isImage, isHtml, isFile } = useFileUtils()
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 const { relativeDatetime } = useFormatDate()
 const isAllowedToEdit = ref(false)
 const folders = ref([])
 const selectedFolder = ref(null)
+<<<<<<< HEAD
+=======
+const isDownloading = ref(false)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 const {
   showNewDocumentButton,
@@ -519,6 +588,13 @@ const isSessionDocument = (item) => {
 
 const isHtmlFile = (fileData) => isHtml(fileData)
 
+<<<<<<< HEAD
+=======
+const isReplaceDialogVisible = ref(false)
+const selectedReplaceFile = ref(null)
+const documentToReplace = ref(null)
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 onMounted(async () => {
   isAllowedToEdit.value = await checkIsAllowedToEdit(true, true, true)
   filters.value.loadNode = 1
@@ -559,6 +635,18 @@ const showBackButtonIfNotRootFolder = computed(() => {
   return resourceNode.value.resourceType.title !== "courses"
 })
 
+<<<<<<< HEAD
+=======
+function goToAddVariation(item) {
+  const resourceFileId = item.resourceNode.firstResourceFile.id
+  router.push({
+    name: 'DocumentsAddVariation',
+    params: { resourceFileId, node: route.params.node },
+    query: { cid, sid, gid },
+  })
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 function back() {
   if (!resourceNode.value) {
     return
@@ -620,6 +708,41 @@ function confirmDeleteItem(itemToDelete) {
   isDeleteItemDialogVisible.value = true
 }
 
+<<<<<<< HEAD
+=======
+async function downloadSelectedItems() {
+  if (!selectedItems.value.length) {
+    notification.showErrorNotification(t("No items selected."))
+    return
+  }
+
+  isDownloading.value = true
+
+  try {
+    const response = await axios.post(
+      "/api/documents/download-selected",
+      { ids: selectedItems.value.map(item => item.iid) },
+      { responseType: "blob" }
+    )
+
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement("a")
+    link.href = url
+    link.setAttribute("download", "selected_documents.zip")
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+
+    notification.showSuccessNotification(t("Download started"))
+  } catch (error) {
+    console.error("Error downloading selected items:", error)
+    notification.showErrorNotification(t("Error downloading selected items."))
+  } finally {
+    isDownloading.value = false;
+  }
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 async function deleteMultipleItems() {
   await store.dispatch("documents/delMultiple", selectedItems.value)
   isDeleteMultipleDialogVisible.value = false
@@ -784,10 +907,52 @@ function openMoveDialog(document) {
   isMoveDialogVisible.value = true
 }
 
+<<<<<<< HEAD
 async function fetchFolders(nodeId = null, parentPath = "") {
   const foldersList = [
     {
       label: "Root",
+=======
+function openReplaceDialog(document) {
+  documentToReplace.value = document
+  isReplaceDialogVisible.value = true
+}
+
+async function replaceDocument() {
+  if (!selectedReplaceFile.value) {
+    notification.showErrorNotification(t("No file selected."))
+    return
+  }
+
+  if (documentToReplace.value.filetype !== 'file') {
+    notification.showErrorNotification(t("Only files can be replaced."))
+    return
+  }
+
+  const formData = new FormData()
+  console.log(selectedReplaceFile.value)
+  formData.append('file', selectedReplaceFile.value)
+
+  try {
+    await axios.post(`/api/documents/${documentToReplace.value.iid}/replace`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    notification.showSuccessNotification(t("File replaced"))
+    isReplaceDialogVisible.value = false
+    onUpdateOptions(options.value)
+  } catch (error) {
+    notification.showErrorNotification(t("Error replacing file."))
+    console.error(error)
+  }
+}
+
+async function fetchFolders(nodeId = null, parentPath = "") {
+  const foldersList = [
+    {
+      label: t('Documents'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
       value: nodeId || route.params.node || route.query.node || "root-node-id",
     },
   ]

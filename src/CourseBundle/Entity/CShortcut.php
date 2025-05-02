@@ -42,6 +42,12 @@ class CShortcut extends AbstractResource implements ResourceInterface, Stringabl
     #[Groups(['cshortcut:read'])]
     protected string $type;
 
+<<<<<<< HEAD
+=======
+    #[Groups(['cshortcut:read'])]
+    private ?string $customImageUrl = null;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __toString(): string
     {
         return $this->getTitle();
@@ -94,6 +100,21 @@ class CShortcut extends AbstractResource implements ResourceInterface, Stringabl
         return $this;
     }
 
+<<<<<<< HEAD
+=======
+    public function getCustomImageUrl(): ?string
+    {
+        return $this->customImageUrl;
+    }
+
+    public function setCustomImageUrl(?string $customImageUrl): self
+    {
+        $this->customImageUrl = $customImageUrl;
+
+        return $this;
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function getId(): int
     {
         return $this->id;

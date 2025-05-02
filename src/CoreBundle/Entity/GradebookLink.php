@@ -67,6 +67,12 @@ class GradebookLink
     #[ORM\Column(name: 'user_score_list', type: 'array', nullable: true)]
     protected ?array $userScoreList = null;
 
+<<<<<<< HEAD
+=======
+    #[ORM\Column(name: 'min_score', type: 'float', precision: 6, scale: 2, nullable: true)]
+    protected ?float $minScore = null;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct()
     {
         $this->locked = 0;
@@ -260,4 +266,19 @@ class GradebookLink
 
         return $this;
     }
+<<<<<<< HEAD
+=======
+
+    public function getMinScore(): ?float
+    {
+        return $this->minScore;
+    }
+
+    public function setMinScore(?float $minScore): self
+    {
+        $this->minScore = $minScore;
+
+        return $this;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

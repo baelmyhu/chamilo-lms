@@ -41,7 +41,12 @@ export const chamiloIconToClass = {
   "dots-vertical": "mdi mdi-dots-vertical",
   "down": "mdi mdi-arrow-down-right",
   "download": "mdi mdi-download-box",
+<<<<<<< HEAD
   "drawing": "mdi mdi-drawing",
+=======
+  "comment": "mdi mdi-comment-text-outline",
+  "drawing": "mdi mdi-pencil-outline",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   "edit": "mdi mdi-pencil",
   "email-plus": "mdi mdi-email-plus-outline",
   "email-unread": "mdi mdi-email-mark-as-unread",
@@ -55,9 +60,18 @@ export const chamiloIconToClass = {
   "file-generic": "mdi mdi-file",
   "file-image": "mdi mdi-file-image",
   "file-pdf": "mdi mdi-file-pdf-box",
+<<<<<<< HEAD
   "file-text": "mdi mdi-file-document",
   "file-upload": "mdi mdi-file-upload",
   "file-video": "mdi mdi-file-video",
+=======
+  "file-swap": "mdi mdi-swap-horizontal",
+  "file-text": "mdi mdi-file-document",
+  "file-upload": "mdi mdi-file-upload",
+  "file-video": "mdi mdi-file-video",
+  "filter": "mdi mdi-filter",
+  "file-replace": "mdi mdi-file-replace",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
   "fit-to-screen": "",
   "folder-generic": "mdi mdi-folder",
   "folder-multiple-plus": "mdi mdi-folder-multiple-plus",
@@ -127,5 +141,15 @@ export const chamiloIconToClass = {
   "next": "mdi mdi-arrow-right-bold-box",
   "crosshairs": "mdi mdi-crosshairs",
   "square": "mdi mdi-square",
+<<<<<<< HEAD
   "wheel": "mdi mdi-tire"
+=======
+  "wheel": "mdi mdi-tire",
+  "view-table": "mdi mdi-table-eye",
+  "eye-lock": "mdi mdi-lock",
+  "unlock": "mdi mdi-lock-open",
+  "lock": "mdi mdi-lock",
+  "account-check": "mdi mdi-account-check",
+  "account-cancel": "mdi mdi-account-cancel",
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

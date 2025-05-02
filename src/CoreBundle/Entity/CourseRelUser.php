@@ -26,7 +26,11 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(security: "is_granted('ROLE_ADMIN') or object.user == user"),
         new GetCollection(security: "is_granted('ROLE_ADMIN')"),
+<<<<<<< HEAD
         new Post(security: "is_granted('ROLE_ADMIN')"),
+=======
+        new Post(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_USER')"),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ],
     normalizationContext: [
         'groups' => ['course_rel_user:read'],

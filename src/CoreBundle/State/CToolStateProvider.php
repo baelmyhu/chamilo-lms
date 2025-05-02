@@ -10,6 +10,10 @@ use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\Pagination\PartialPaginatorInterface;
 use ApiPlatform\State\ProviderInterface;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\DataTransformer\CourseToolDataTranformer;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\ResourceLink;
 use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\Settings\SettingsManager;
@@ -27,6 +31,11 @@ final class CToolStateProvider implements ProviderInterface
 {
     use CourseFromRequestTrait;
 
+<<<<<<< HEAD
+=======
+    private CourseToolDataTranformer $transformer;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct(
         private readonly CollectionProvider $provider,
         protected EntityManagerInterface $entityManager,
@@ -34,7 +43,17 @@ final class CToolStateProvider implements ProviderInterface
         private readonly Security $security,
         private readonly ToolChain $toolChain,
         protected RequestStack $requestStack,
+<<<<<<< HEAD
     ) {}
+=======
+    ) {
+        $this->transformer = new CourseToolDataTranformer(
+            $this->requestStack,
+            $this->entityManager,
+            $this->toolChain
+        );
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
@@ -93,7 +112,11 @@ final class CToolStateProvider implements ProviderInterface
                 }
             }
 
+<<<<<<< HEAD
             $results[] = $cTool;
+=======
+            $results[] = $this->transformer->transform($cTool);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         return $results;

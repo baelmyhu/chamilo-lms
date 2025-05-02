@@ -30,6 +30,10 @@ define('DATE_TIME_FORMAT_SHORT', 6); // Aug 25, 2009 at 03:28 PM
 define('DATE_TIME_FORMAT_SHORT_TIME_FIRST', 7); // 03:28 PM, Aug 25 2009
 define('DATE_FORMAT_NUMBER_NO_YEAR', 8); // 25.08 dd-mm
 define('DATE_FORMAT_ONLY_DAYNAME', 9); // Monday, Sunday, etc
+<<<<<<< HEAD
+=======
+define('DATE_TIME_FORMAT_SHORT_LOCALIZED', 11);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 // Formatting person's name.
 // Formatting a person's name using the pattern as it has been
@@ -479,6 +483,13 @@ function api_format_date($time, $format = null, $language = null)
                 $timetype = IntlDateFormatter::SHORT;
 
                 break;
+<<<<<<< HEAD
+=======
+            case DATE_TIME_FORMAT_SHORT_LOCALIZED:
+                $datetype = IntlDateFormatter::SHORT;
+                $timetype = IntlDateFormatter::SHORT;
+                break;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             default:
                 $datetype = IntlDateFormatter::FULL;
                 $timetype = IntlDateFormatter::SHORT;
@@ -1838,24 +1849,40 @@ function &_api_get_day_month_names($language = null)
         ];
         for ($i = 0; $i < 7; $i++) {
             $date_parts[$language]['days_short'][] = get_lang(
+<<<<<<< HEAD
                 $week_day[$i].'Short',
+=======
+                $week_day[$i], //.'Short',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 '',
                 $language
             );
             $date_parts[$language]['days_long'][] = get_lang(
+<<<<<<< HEAD
                 $week_day[$i].'Long',
+=======
+                $week_day[$i], //.'Long',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 '',
                 $language
             );
         }
         for ($i = 0; $i < 12; $i++) {
             $date_parts[$language]['months_short'][] = get_lang(
+<<<<<<< HEAD
                 $month[$i].'Short',
+=======
+                $month[$i], //.'Short',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 '',
                 $language
             );
             $date_parts[$language]['months_long'][] = get_lang(
+<<<<<<< HEAD
                 $month[$i].'Long',
+=======
+                $month[$i], //.'Long',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 '',
                 $language
             );

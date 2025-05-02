@@ -366,7 +366,14 @@ if (api_is_platform_admin()) {
     ];
     // Replaced by page blocks
     //$items[] = ['url' => 'configure_homepage.php', 'label' => get_lang('Edit portal homepage')];
+<<<<<<< HEAD
     $items[] = ['url' => 'configure_inscription.php', 'label' => get_lang('Setting the registration page')];
+=======
+    $items[] = [
+        'url' => api_get_path(WEB_CODE_PATH).'auth/inscription.php?create_intro_page=1',
+        'label' => get_lang('Setting the registration page')
+    ];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $items[] = ['url' => 'statistics/index.php', 'label' => get_lang('Statistics')];
     $items[] = [
         'url' => api_get_path(WEB_CODE_PATH).'my_space/company_reports.php',
@@ -392,7 +399,11 @@ if (api_is_platform_admin()) {
 
     if ('true' == api_get_plugin_setting('dictionary', 'enable_plugin_dictionary')) {
         $items[] = [
+<<<<<<< HEAD
             'url' => api_get_path(WEB_PLUGIN_PATH).'dictionary/terms.php',
+=======
+            'url' => api_get_path(WEB_PLUGIN_PATH).'Dictionary/terms.php',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'label' => get_lang('Dictionary'),
         ];
     }
@@ -575,6 +586,7 @@ if (api_is_platform_admin()) {
 $admin_ajax_url = api_get_path(WEB_AJAX_PATH).'admin.ajax.php';
 
 $tpl = new Template();
+<<<<<<< HEAD
 
 // Display the Site Use Cookie Warning Validation
 $useCookieValidation = api_get_setting('cookie_warning');
@@ -591,6 +603,8 @@ if ('true' === $useCookieValidation) {
     }
 }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $tpl->assign('web_admin_ajax_url', $admin_ajax_url);
 $tpl->assign('blocks_admin', $blocks);
 

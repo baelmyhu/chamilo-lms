@@ -26,6 +26,13 @@ var/upload/*
 /config/configuration.php
 /main/inc/conf/configuration.php
 
+<<<<<<< HEAD
+=======
+/config/authentication.yaml
+/config/settings_overrides.yaml
+/config/plugin.yaml
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 # Home
 components/*
 
@@ -42,7 +49,11 @@ components/*
 nbproject/*
 
 # Plugins config files
+<<<<<<< HEAD
 public/plugin/bbb/config.vm.php
+=======
+public/plugin/Bbb/config.vm.php
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 # Cron temp files
 public/main/cron/incoming/*

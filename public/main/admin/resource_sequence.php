@@ -5,6 +5,10 @@
 use Chamilo\CoreBundle\Entity\Sequence;
 use Chamilo\CoreBundle\Entity\SequenceResource;
 use ChamiloSession as Session;
+<<<<<<< HEAD
+=======
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $cidReset = true;
 
@@ -14,10 +18,21 @@ api_protect_global_admin_script();
 
 Session::erase('sr_vertex');
 
+<<<<<<< HEAD
 // setting breadcrumbs
 $interbreadcrumb[] = ['url' => 'index.php', 'name' => get_lang('PlatformAdmin')];
 
 $type = isset($_REQUEST['type']) ? (int) $_REQUEST['type'] : SequenceResource::SESSION_TYPE;
+=======
+$httpRequest = HttpRequest::createFromGlobals();
+
+// setting breadcrumbs
+$interbreadcrumb[] = ['url' => 'index.php', 'name' => get_lang('PlatformAdmin')];
+
+$type = $httpRequest->query->has('type')
+    ? $httpRequest->query->getInt('type', SequenceResource::SESSION_TYPE)
+    : $httpRequest->request->getInt('type', SequenceResource::SESSION_TYPE);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $tpl = new Template(get_lang('ResourcesSequencing'));
 $em = Database::getManager();
@@ -27,6 +42,10 @@ $currentUrl = api_get_self().'?type='.$type;
 
 $formSequence = new FormValidator('sequence_form', 'post', $currentUrl, null, null, FormValidator::LAYOUT_INLINE);
 $formSequence->addText('name', get_lang('Sequence'), true, ['cols-size' => [3, 8, 1]]);
+<<<<<<< HEAD
+=======
+$formSequence->applyFilter('name', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $formSequence->addButtonCreate(get_lang('AddSequence'), 'submit_sequence', false, ['cols-size' => [3, 8, 1]]);
 
 $em = Database::getManager();

@@ -58,6 +58,10 @@ class TicketManager
         $order = empty($order) ? 'category.total_tickets DESC' : $order;
         $order = Database::escape_string($order);
         $projectId = (int) $projectId;
+<<<<<<< HEAD
+=======
+        $accessUrlId = Container::getAccessUrlHelper()->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $sql = "SELECT
                     category.*,
@@ -68,7 +72,11 @@ class TicketManager
                 $table_support_category category
                 INNER JOIN $table_support_project project
                 ON project.id = category.project_id
+<<<<<<< HEAD
                 WHERE project.id  = $projectId
+=======
+                WHERE project.id = $projectId AND project.access_url_id = $accessUrlId
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ORDER BY $order";
         $result = Database::query($sql);
         $types = [];
@@ -121,7 +129,11 @@ class TicketManager
     {
         $table = Database::get_main_table(TABLE_TICKET_CATEGORY);
         $id = (int) $id;
+<<<<<<< HEAD
         $sql = "SELECT id, title, description, total_tickets
+=======
+        $sql = "SELECT id, title, title as name, description, total_tickets
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 FROM $table WHERE id = $id";
 
         $result = Database::query($sql);
@@ -373,6 +385,10 @@ class TicketManager
             'message' => $content,
             'code' => '',
             'total_messages' => 0,
+<<<<<<< HEAD
+=======
+            'access_url_id' => Container::getAccessUrlHelper()->getCurrent()->getId(),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ];
 
         if (!empty($exerciseId)) {
@@ -810,6 +826,10 @@ class TicketManager
         $direction = !empty($direction) ? $direction : 'DESC';
         $userId = api_get_user_id();
         $userInfo = api_get_user_info($userId);
+<<<<<<< HEAD
+=======
+        $accessUrlId = Container::getAccessUrlHelper()->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (empty($userInfo)) {
             return [];
@@ -873,6 +893,10 @@ class TicketManager
             ON (ticket.status_id = status.id)
             WHERE 1=1
         ";
+<<<<<<< HEAD
+=======
+        $sql .= " AND ticket.access_url_id = $accessUrlId ";
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $projectId = (int) $_GET['project_id'];
         $userIsAllowInProject = self::userIsAllowInProject($projectId);
@@ -1058,6 +1082,11 @@ class TicketManager
             return 0;
         }
 
+<<<<<<< HEAD
+=======
+        $accessUrlId = Container::getAccessUrlHelper()->getCurrent()->getId();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $sql = "SELECT COUNT(ticket.id) AS total
                 FROM $table_support_tickets ticket
                 INNER JOIN $table_support_category cat
@@ -1068,6 +1097,11 @@ class TicketManager
                 ON (ticket.status_id = status.id)
 	            WHERE 1 = 1";
 
+<<<<<<< HEAD
+=======
+        $sql .= " AND ticket.access_url_id = $accessUrlId ";
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $projectId = (int) $_GET['project_id'];
         $allowRoleList = self::getAllowedRolesFromProject($projectId);
 
@@ -1379,7 +1413,11 @@ class TicketManager
         $creatorId = $ticketInfo['ticket']['sys_insert_user_id'];
 
         // Subject
+<<<<<<< HEAD
         $titleEmail = "[$ticketCode] $title";
+=======
+        $titleEmail = "[$ticketCode] ".Security::remove_XSS($title);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         // Content
         $href = api_get_path(WEB_CODE_PATH) . 'ticket/ticket_details.php?ticket_id=' . $ticketId;
@@ -1558,6 +1596,10 @@ class TicketManager
             $sql .= " AND user_id NOT IN (SELECT user_id FROM $table_main_admin)
                       AND ticket.status_id != '".self::STATUS_FORWARDED."'";
         }
+<<<<<<< HEAD
+=======
+        $sql .= ' AND ticket.access_url_id = '.(int) Container::getAccessUrlHelper()->getCurrent()->getId();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $sql .= "  AND ticket.project_id != '' ";
         $res = Database::query($sql);
         $obj = Database::fetch_object($res);
@@ -1619,6 +1661,7 @@ class TicketManager
         $table = Database::get_main_table(TABLE_TICKET_TICKET);
         $now = api_get_utc_datetime();
         $userId = api_get_user_id();
+<<<<<<< HEAD
         $sql = "UPDATE $table
                 SET
                     status_id = '".self::STATUS_CLOSE."',
@@ -1630,6 +1673,23 @@ class TicketManager
                     status_id != '".self::STATUS_CLOSE."' AND
                     status_id != '".self::STATUS_NEW."' AND
                     status_id != '".self::STATUS_FORWARDED."'";
+=======
+        $accessUrlId = (int) Container::getAccessUrlHelper()->getCurrent()->getId();
+
+        $sql = "UPDATE $table
+            SET
+                status_id = '".self::STATUS_CLOSE."',
+                sys_lastedit_user_id ='$userId',
+                sys_lastedit_datetime ='$now',
+                end_date = '$now'
+            WHERE
+                DATEDIFF('$now', sys_lastedit_datetime) > 7 AND
+                status_id != '".self::STATUS_CLOSE."' AND
+                status_id != '".self::STATUS_NEW."' AND
+                status_id != '".self::STATUS_FORWARDED."' AND
+                access_url_id = $accessUrlId";
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         Database::query($sql);
     }
 
@@ -1720,6 +1780,11 @@ class TicketManager
                     AND ticket.priority_id = priority.id
                     AND ticket.status_id = status.id
                     AND user.user_id = ticket.request_user ";
+<<<<<<< HEAD
+=======
+        $sql .= ' AND ticket.access_url_id = '.(int) Container::getAccessUrlHelper()->getCurrent()->getId();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         // Search simple
         if (isset($_GET['submit_simple'])) {
             if ('' !== $_GET['keyword']) {
@@ -1898,7 +1963,14 @@ class TicketManager
      */
     public static function getStatusList()
     {
+<<<<<<< HEAD
         $items = Database::getManager()->getRepository(TicketStatus::class)->findAll();
+=======
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+        $items = Database::getManager()
+            ->getRepository(TicketStatus::class)
+            ->findBy(['accessUrl' => $accessUrl]);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $list = [];
         /** @var TicketStatus $row */
@@ -1950,10 +2022,21 @@ class TicketManager
      */
     public static function getPriorityList()
     {
+<<<<<<< HEAD
         $projects = Database::getManager()->getRepository(TicketPriority::class)->findAll();
         $list = [];
         /** @var TicketPriority $row */
         foreach ($projects as $row) {
+=======
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+        $priorities = Database::getManager()
+            ->getRepository(TicketPriority::class)
+            ->findBy(['accessUrl' => $accessUrl]);
+
+        $list = [];
+        /** @var TicketPriority $row */
+        foreach ($priorities as $row) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $list[$row->getId()] = $row->getTitle();
         }
 
@@ -1965,7 +2048,14 @@ class TicketManager
      */
     public static function getProjects()
     {
+<<<<<<< HEAD
         $projects = Database::getManager()->getRepository(TicketProject::class)->findAll();
+=======
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+        $projects = Database::getManager()
+            ->getRepository(TicketProject::class)
+            ->findBy(['accessUrl' => $accessUrl]);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $list = [];
         /** @var TicketProject $row */
@@ -1987,7 +2077,15 @@ class TicketManager
      */
     public static function getProjectsSimple()
     {
+<<<<<<< HEAD
         $projects = Database::getManager()->getRepository(TicketProject::class)->findAll();
+=======
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+        $projects = Database::getManager()
+            ->getRepository(TicketProject::class)
+            ->findBy(['accessUrl' => $accessUrl]);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $list = [];
         /** @var TicketProject $row */
         foreach ($projects as $row) {
@@ -2025,6 +2123,10 @@ class TicketManager
         $project->setTitle($params['title']);
         $project->setDescription($params['description']);
         $project->setInsertUserId(api_get_user_id());
+<<<<<<< HEAD
+=======
+        $project->setAccessUrl(Container::getAccessUrlHelper()->getCurrent());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         Database::getManager()->persist($project);
         Database::getManager()->flush();
@@ -2051,6 +2153,10 @@ class TicketManager
         $project->setDescription($params['description']);
         $project->setLastEditDateTime(new DateTime($params['sys_lastedit_datetime']));
         $project->setLastEditUserId($params['sys_lastedit_user_id']);
+<<<<<<< HEAD
+=======
+        $project->setAccessUrl(Container::getAccessUrlHelper()->getCurrent());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         Database::getManager()->persist($project);
         Database::getManager()->flush();
@@ -2088,7 +2194,15 @@ class TicketManager
      */
     public static function getStatusAdminList()
     {
+<<<<<<< HEAD
         $items = Database::getManager()->getRepository(TicketStatus::class)->findAll();
+=======
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+        $items = Database::getManager()
+            ->getRepository(TicketStatus::class)
+            ->findBy(['accessUrl' => $accessUrl]);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $list = [];
         /** @var TicketStatus $row */
         foreach ($items as $row) {
@@ -2145,6 +2259,10 @@ class TicketManager
         $item->setCode(URLify::filter($params['title']));
         $item->setTitle($params['title']);
         $item->setDescription($params['description']);
+<<<<<<< HEAD
+=======
+        $item->setAccessUrl(Container::getAccessUrlHelper()->getCurrent());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         Database::getManager()->persist($item);
         Database::getManager()->flush();
@@ -2169,6 +2287,10 @@ class TicketManager
         $item = self::getStatus($id);
         $item->setTitle($params['title']);
         $item->setDescription($params['description']);
+<<<<<<< HEAD
+=======
+        $item->setAccessUrl(Container::getAccessUrlHelper()->getCurrent());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         Database::getManager()->persist($item);
         Database::getManager()->flush();
@@ -2204,12 +2326,24 @@ class TicketManager
     /**
      * @return array
      */
+<<<<<<< HEAD
     public static function getPriorityAdminList()
     {
         $items = Database::getManager()->getRepository(TicketPriority::class)->findAll();
 
         $list = [];
         /** @var TicketStatus $row */
+=======
+    public static function getPriorityAdminList(): array
+    {
+        $accessUrl = Container::getAccessUrlHelper()->getCurrent();
+        $items = Database::getManager()
+            ->getRepository(TicketPriority::class)
+            ->findBy(['accessUrl' => $accessUrl]);
+
+        $list = [];
+        /** @var TicketPriority $row */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         foreach ($items as $row) {
             $list[] = [
                 'id' => $row->getId(),
@@ -2248,7 +2382,11 @@ class TicketManager
             ->setColor('')
             ->setInsertUserId(api_get_user_id())
             ->setUrgency('')
+<<<<<<< HEAD
         ;
+=======
+            ->setAccessUrl(Container::getAccessUrlHelper()->getCurrent());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         Database::getManager()->persist($item);
         Database::getManager()->flush();
@@ -2273,6 +2411,10 @@ class TicketManager
         $item = self::getPriority($id);
         $item->setTitle($params['title']);
         $item->setDescription($params['description']);
+<<<<<<< HEAD
+=======
+        $item->setAccessUrl(Container::getAccessUrlHelper()->getCurrent());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         Database::getManager()->persist($item);
         Database::getManager()->flush();

@@ -74,8 +74,17 @@ export function useDatatableList(servicePrefix) {
   }
 
   function goToEditItem(item) {
+<<<<<<< HEAD
     let folderParams = route.query
     folderParams["id"] = item["@id"]
+=======
+    const folderParams = {
+      ...route.query,
+      id: item["@id"],
+      page: options.value.page,
+      itemsPerPage: options.value.itemsPerPage,
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     if ("folder" === item.filetype || isEmpty(item.filetype)) {
       router.push({
@@ -88,6 +97,7 @@ export function useDatatableList(servicePrefix) {
     if ("file" === item.filetype) {
       folderParams["getFile"] = true
       if (
+<<<<<<< HEAD
         item.resourceNode.firstResourceFile &&
         item.resourceNode.firstResourceFile.mimeType &&
         "text/html" === item.resourceNode.firstResourceFile.mimeType
@@ -96,6 +106,14 @@ export function useDatatableList(servicePrefix) {
       }
 
       this.$router.push({
+=======
+        item.resourceNode?.firstResourceFile?.mimeType === "text/html"
+      ) {
+        // Keep getFile = true
+      }
+
+      router.push({
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         name: `${servicePrefix}UpdateFile`,
         params: { id: item["@id"] },
         query: folderParams,

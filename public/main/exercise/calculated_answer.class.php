@@ -135,6 +135,10 @@ class CalculatedAnswer extends Question
             'regex',
             '/\[.*\]/'
         );
+<<<<<<< HEAD
+=======
+        $form->applyFilter('answer', 'attr_on_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $form->addElement(
             'label',

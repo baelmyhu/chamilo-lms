@@ -205,7 +205,10 @@ class Version20170627122900 extends AbstractMigrationChamilo
             'server_type' => 'platform',
             'show_official_code_whoisonline' => 'profile',
             'show_terms_if_profile_completed' => 'ticket',
+<<<<<<< HEAD
             'enable_record_audio' => 'course',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'add_users_by_coach' => 'session',
             'allow_captcha' => 'security',
             'allow_coach_to_edit_course_session' => 'session',
@@ -234,9 +237,13 @@ class Version20170627122900 extends AbstractMigrationChamilo
             'dropbox_max_filesize' => 'dropbox',
             'email_alert_manager_on_new_quiz' => 'exercise',
             'enable_webcam_clip' => 'document',
+<<<<<<< HEAD
             'enabled_support_pixlr' => 'editor',
             'enabled_support_svg' => 'editor',
             'enabled_text2audio' => 'document',
+=======
+            'enabled_support_svg' => 'editor',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             'extend_rights_for_coach' => 'session',
             'extend_rights_for_coach_on_survey' => 'survey',
             'hide_course_group_if_no_tools_available' => 'group',

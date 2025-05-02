@@ -165,7 +165,11 @@
           :label="t('Send information')"
           :loading="sendingContactInformation"
           class="p-button-outlined p-button-plain"
+<<<<<<< HEAD
           icon="mdi mdi-send-check"
+=======
+          icon="mdi mdi-send"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
           type="button"
           @click="sendContactInformation"
         />

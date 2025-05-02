@@ -2,6 +2,12 @@
 
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\LearningPathItemViewedEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use ChamiloSession as Session;
 
 class ScormApi
@@ -519,6 +525,14 @@ class ScormApi
         // To be sure progress is updated.
         $myLP->save_last($score);
 
+<<<<<<< HEAD
+=======
+        Container::getEventDispatcher()->dispatch(
+            new LearningPathItemViewedEvent(['item_view_id' => $myLPI->db_item_view_id]),
+            Events::LP_ITEM_VIEWED
+        );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         Session::write('lpobject', serialize($myLP));
         Session::write('oLP', $myLP);
         if ($debug > 0) {

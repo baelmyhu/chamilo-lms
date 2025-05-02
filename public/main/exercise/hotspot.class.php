@@ -2,6 +2,11 @@
 
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
+=======
+use Chamilo\CourseBundle\Entity\CQuizRelQuestion;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 /**
  * Class HotSpot.
  *
@@ -117,4 +122,44 @@ class HotSpot extends Question
             'DelineationStatus1' => get_lang('Use right-click to close the delineation'),
         ];
     }
+<<<<<<< HEAD
+=======
+
+    public function getScenarioDestination(int $exerciseId): array
+    {
+        $em = Database::getManager();
+
+        $rel = $em->getRepository(CQuizRelQuestion::class)->findOneBy([
+            'question' => $this->iid,
+            'quiz' => $exerciseId,
+        ]);
+
+        if (!$rel || empty($rel->getDestination())) {
+            return [
+                'success' => ['type' => '', 'url' => ''],
+                'failure' => ['type' => '', 'url' => ''],
+            ];
+        }
+
+        $decoded = json_decode($rel->getDestination(), true);
+
+        if (!is_array($decoded)) {
+            return [
+                'success' => ['type' => '', 'url' => ''],
+                'failure' => ['type' => '', 'url' => ''],
+            ];
+        }
+
+        return [
+            'success' => [
+                'type' => $decoded['success']['type'] ?? '',
+                'url'  => $decoded['success']['url'] ?? '',
+            ],
+            'failure' => [
+                'type' => $decoded['failure']['type'] ?? '',
+                'url'  => $decoded['failure']['url'] ?? '',
+            ],
+        ];
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

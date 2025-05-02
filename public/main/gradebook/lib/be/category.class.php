@@ -4,6 +4,10 @@
 
 use Chamilo\CoreBundle\Entity\Course;
 use Chamilo\CoreBundle\Entity\GradebookCategory;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Framework\Container;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use ChamiloSession as Session;
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
 
@@ -519,6 +523,11 @@ class Category implements GradebookItem
             $category = new GradebookCategory();
             $category->setTitle($this->name);
             $category->setDescription($this->description);
+<<<<<<< HEAD
+=======
+            $userId = is_numeric($this->user_id) ? (int) $this->user_id : api_get_user_id();
+            $category->setUser(api_get_user_entity($userId));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $category->setUser(api_get_user_entity($this->user_id));
             $category->setCourse($course);
             $category->setParent($parent);
@@ -612,7 +621,12 @@ class Category implements GradebookItem
 
         $category->setTitle($this->name);
         $category->setDescription($this->description);
+<<<<<<< HEAD
         $category->setUser(api_get_user_entity($this->user_id));
+=======
+        $userId = is_numeric($this->user_id) ? (int) $this->user_id : api_get_user_id();
+        $category->setUser(api_get_user_entity($userId));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $category->setCourse($course);
         $category->setParent($parent);
         $category->setWeight($this->weight);
@@ -2002,6 +2016,7 @@ class Category implements GradebookItem
 
     /**
      * Generates a certificate for this user if everything matches.
+<<<<<<< HEAD
      *
      * @param int  $user_id
      * @param bool $sendNotification
@@ -2014,14 +2029,29 @@ class Category implements GradebookItem
         $user_id,
         $sendNotification = false,
         $skipGenerationIfExists = false
+=======
+     */
+    public static function generateUserCertificate(
+        GradebookCategory $category,
+        int               $user_id,
+        bool              $sendNotification = false,
+        bool $skipGenerationIfExists = false
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ) {
         $user_id = (int) $user_id;
         $categoryId = $category->getId();
         $sessionId = $category->getSession() ? $category->getSession()->getId() : 0;
         $courseId = $category->getCourse()->getId();
+<<<<<<< HEAD
         $userFinishedCourse = self::userFinishedCourse($user_id, $category, true);
         if (!$userFinishedCourse) {
             return false;
+=======
+
+        // check if all min_score requirements are met
+        if (!self::userMeetsMinimumScores($user_id, $category)) {
+            return false; // Do not generate certificate if the user does not meet all min_score criteria
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         $skillToolEnabled = SkillModel::hasAccessToUserSkill(api_get_user_id(), $user_id);
@@ -2034,7 +2064,11 @@ class Category implements GradebookItem
             $userHasSkills = !empty($userSkills);
         }
 
+<<<<<<< HEAD
         // Block certification links depending on gradebook configuration (generate certifications)
+=======
+        // If certificate generation is disabled, return only badge link (if available)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if (empty($category->getGenerateCertificates())) {
             if ($userHasSkills) {
                 return [
@@ -2050,6 +2084,10 @@ class Category implements GradebookItem
         }
         $my_certificate = GradebookUtils::get_certificate_by_user_id($categoryId, $user_id);
 
+<<<<<<< HEAD
+=======
+        // If certificate already exists and we should skip regeneration, return false
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if ($skipGenerationIfExists && !empty($my_certificate)) {
             return false;
         }
@@ -2089,7 +2127,11 @@ class Category implements GradebookItem
 
             $fileWasGenerated = $certificate_obj->isHtmlFileGenerated();
 
+<<<<<<< HEAD
             // Fix when using custom certificate BT#15937
+=======
+            // Fix when using a custom certificate plugin
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             if ('true' === api_get_plugin_setting('customcertificate', 'enable_plugin_customcertificate')) {
                 $infoCertificate = CustomCertificatePlugin::getCertificateData($my_certificate['id'], $user_id);
                 if (!empty($infoCertificate)) {
@@ -2135,6 +2177,46 @@ class Category implements GradebookItem
 
             return $html;
         }
+<<<<<<< HEAD
+=======
+
+        return false;
+    }
+
+    /**
+     * Checks whether the user has met the minimum score (`min_score`) in all required evaluations.
+     */
+    public static function userMeetsMinimumScores(int $userId, GradebookCategory $category): bool
+    {
+        $evaluations = $category->getEvaluations();
+
+        foreach ($evaluations as $evaluation) {
+            $minScore = $evaluation->getMinScore();
+            if ($minScore !== null) {
+                $userScore = self::getUserScoreForEvaluation($userId, $evaluation->getId());
+                if ($userScore === null || $userScore < $minScore) {
+                    return false; // If at least one evaluation is below `min_score`, return false
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Retrieves the score of a user for a specific evaluation using the GradebookResult repository.
+     */
+    public static function getUserScoreForEvaluation(int $userId, int $evaluationId): ?float
+    {
+        $gradebookResultRepo = Container::getGradebookResultRepository();
+
+        $gradebookResult = $gradebookResultRepo->findOneBy([
+            'user' => $userId,
+            'evaluation' => $evaluationId,
+        ]);
+
+        return $gradebookResult ? $gradebookResult->getScore() : null;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**

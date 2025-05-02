@@ -33,6 +33,10 @@ $skillLevelRepo = $entityManager->getRepository(\Chamilo\CoreBundle\Entity\Level
 $skillUserRepo = $entityManager->getRepository(\Chamilo\CoreBundle\Entity\SkillRelUser::class);
 
 $skillLevels = api_get_setting('skill.skill_levels_names', true);
+<<<<<<< HEAD
+=======
+$autoloadSubskills = api_get_setting('skill.manual_assignment_subskill_autoload');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $skillsOptions = ['' => get_lang('Select')];
 $acquiredLevel = ['' => get_lang('none')];
@@ -63,6 +67,7 @@ $subSkillList = isset($_REQUEST['sub_skill_list']) ? explode(',', $_REQUEST['sub
 $subSkillList = array_unique($subSkillList);
 
 if (empty($subSkillList) && $skillId) {
+<<<<<<< HEAD
     $skillRelSkill = new SkillRelSkillModel();
     $parents = $skillRelSkill->getSkillParents($skillId);
     ksort($parents);
@@ -83,6 +88,30 @@ if (empty($subSkillList) && $skillId) {
     $currentUrl = api_get_path(WEB_CODE_PATH).'skills/assign.php?user='.$userId.'&id='.$firstParentId.'&current_value='.$skillId.'&current='.$currentLevel.'&sub_skill_list='.$subSkillListToString;
     header('Location: '.$currentUrl);
     exit;
+=======
+    if ('true' === $autoloadSubskills) {
+        $skillRelSkill = new SkillRelSkillModel();
+        $parents = $skillRelSkill->getSkillParents($skillId);
+        ksort($parents);
+
+        $subSkillList = [];
+        foreach ($parents as $parent) {
+            if ($parent['skill_id'] != 1) {
+                $subSkillList[] = $parent['skill_id'];
+            }
+        }
+        $subSkillList[] = $skillId;
+        $subSkillList = array_unique($subSkillList);
+
+        $firstParentId = $subSkillList[0];
+        $subSkillListToString = implode(',', array_slice($subSkillList, 0, -1)) . ',' . $skillId;
+        $currentLevel = 'sub_skill_id_' . count($subSkillList) - 1;
+
+        $currentUrl = api_get_path(WEB_CODE_PATH).'skills/assign.php?user='.$userId.'&id='.$firstParentId.'&current_value='.$skillId.'&current='.$currentLevel.'&sub_skill_list='.$subSkillListToString;
+        header('Location: '.$currentUrl);
+        exit;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }
 
 if (!empty($subSkillList)) {
@@ -198,7 +227,11 @@ if (!empty($skillIdFromGet)) {
     foreach ($subSkillList as $subSkillId) {
         $children = $skillManager->getChildren($subSkillId);
 
+<<<<<<< HEAD
         if (isset($subSkillList[$counter - 1])) {
+=======
+        if (isset($subSkillList[$counter - 1]) && isset($subSkillList[$counter])) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $oldSkill = $skillRepo->find($subSkillList[$counter]);
         }
         $skillsOptions = [];
@@ -221,6 +254,7 @@ if (!empty($skillIdFromGet)) {
             }
         }
 
+<<<<<<< HEAD
         $form->addSelect(
             'sub_skill_id_'.($counter + 1),
             $levelName,
@@ -230,6 +264,19 @@ if (!empty($skillIdFromGet)) {
                 'class' => 'sub_skill ',
             ]
         );
+=======
+        if ('true' === $autoloadSubskills) {
+            $form->addSelect(
+                'sub_skill_id_'.($counter + 1),
+                $levelName,
+                $skillsOptions,
+                [
+                    'id' => 'sub_skill_id_'.($counter + 1),
+                    'class' => 'sub_skill ',
+                ]
+            );
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (isset($subSkillList[$counter + 1])) {
             $nextSkill = $skillRepo->find($subSkillList[$counter + 1]);
@@ -268,7 +315,14 @@ $form->addRule(
     10
 );
 $form->applyFilter('argumentation', 'trim');
+<<<<<<< HEAD
 $form->addButtonSave(get_lang('Save'));
+=======
+$form->addHtml('<div class="flex space-x-4">');
+$form->addButton('save', get_lang('Save'), 'check', 'primary');
+$form->addButton('save_and_add_more', get_lang('Save and add more'), 'check', 'secondary');
+$form->addHtml('</div>');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form->setDefaults($formDefaultValues);
 
 if ($form->validate()) {
@@ -295,6 +349,7 @@ if ($form->validate()) {
     }
 
     if ($user->hasSkill($skill)) {
+<<<<<<< HEAD
         Display::addFlash(
             Display::return_message(
                 sprintf(
@@ -305,6 +360,16 @@ if ($form->validate()) {
                 'warning'
             )
         );
+=======
+        $_SESSION['flash_message'] = [
+            'type' => 'warning',
+            'message' => sprintf(
+                get_lang('The user %s has already achieved the skill %s'),
+                UserManager::formatUserFullName($user),
+                $skill->getTitle()
+            )
+        ];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         header('Location: '.$currentUrl);
         exit;
@@ -369,6 +434,7 @@ if ($form->validate()) {
         }
     }
 
+<<<<<<< HEAD
     Display::addFlash(
         Display::return_message(
             sprintf(
@@ -381,6 +447,23 @@ if ($form->validate()) {
     );
 
     header('Location: '.api_get_path(WEB_PATH)."badge/{$skillUser->getId()}");
+=======
+    $_SESSION['flash_message'] = [
+        'type' => 'success',
+        'message' => sprintf(
+            get_lang('The skill %s has been successfully assigned to user %s'),
+            $skill->getTitle(),
+            UserManager::formatUserFullName($user)
+        )
+    ];
+
+    if (isset($_POST['save_and_add_more'])) {
+        header('Location: '.api_get_path(WEB_CODE_PATH)."skills/assign.php?user={$userId}");
+    } else {
+        $secToken = Security::get_token();
+        header('Location: '.api_get_path(WEB_CODE_PATH).'admin/user_information.php?user_id='.$userId.'&sec_token='.$secToken);
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     exit;
 }
 
@@ -444,6 +527,20 @@ $(function() {
 });
 </script>';
 
+<<<<<<< HEAD
 $template = new Template(get_lang('Add skill'));
 $template->assign('content', $form->returnForm());
+=======
+$flashMessage = '';
+if (isset($_SESSION['flash_message'])) {
+    $messageType = isset($_SESSION['flash_message']['type']) ? $_SESSION['flash_message']['type'] : 'warning';
+    $messageText = isset($_SESSION['flash_message']['message']) ? $_SESSION['flash_message']['message'] : '';
+
+    $flashMessage = Display::return_message($messageText, $messageType);
+    unset($_SESSION['flash_message']);
+}
+
+$template = new Template(get_lang('Add skill'));
+$template->assign('content', $flashMessage.$form->returnForm());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $template->display_one_col_template();

@@ -166,6 +166,10 @@ class MultipleAnswerTrueFalseDegreeCertainty extends Question
                 ['style' => 'vertical-align:middle;'],
             );
             $form->addRule('answer['.$i.']', get_lang('Required field'), 'required');
+<<<<<<< HEAD
+=======
+            $form->applyFilter("answer[$i]", 'attr_on_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
             if (isset($_POST['answer']) && isset($_POST['answer'][$i])) {
                 $form->getElement("answer[$i]")->setValue(Security::remove_XSS($_POST['answer'][$i]));
@@ -183,6 +187,10 @@ class MultipleAnswerTrueFalseDegreeCertainty extends Question
                 if (isset($_POST['comment']) && isset($_POST['comment'][$i])) {
                     $form->getElement("comment[$i]")->setValue(Security::remove_XSS($_POST['comment'][$i]));
                 }
+<<<<<<< HEAD
+=======
+                $form->applyFilter("comment[$i]", 'attr_on_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
             $form->addElement('html', '</tr>');
         }

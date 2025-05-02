@@ -7,21 +7,38 @@ namespace Chamilo\CoreBundle\State;
 use ApiPlatform\Doctrine\Orm\State\CollectionProvider;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Entity\AccessUrl;
 use Chamilo\CoreBundle\Entity\Session;
 use Chamilo\CoreBundle\Entity\User;
+=======
+use Chamilo\CoreBundle\DataTransformer\CalendarEventTransformer;
+use Chamilo\CoreBundle\Entity\AccessUrl;
+use Chamilo\CoreBundle\Entity\Session;
+use Chamilo\CoreBundle\Entity\User;
+use Chamilo\CoreBundle\Repository\Node\UsergroupRepository;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\SessionRepository;
 use Chamilo\CoreBundle\ServiceHelper\AccessUrlHelper;
 use Chamilo\CoreBundle\Settings\SettingsManager;
 use Chamilo\CourseBundle\Entity\CCalendarEvent;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+<<<<<<< HEAD
+=======
+use Symfony\Component\Routing\RouterInterface;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  * @template-implements ProviderInterface<CCalendarEvent|Session>
  */
 final class CalendarEventStateProvider implements ProviderInterface
 {
+<<<<<<< HEAD
+=======
+    private CalendarEventTransformer $transformer;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct(
         private readonly CollectionProvider $collectionProvider,
         private readonly Security $security,
@@ -29,7 +46,19 @@ final class CalendarEventStateProvider implements ProviderInterface
         private readonly SessionRepository $sessionRepository,
         private readonly RequestStack $requestStack,
         private readonly SettingsManager $settingsManager,
+<<<<<<< HEAD
     ) {}
+=======
+        private readonly RouterInterface $router,
+        private readonly UsergroupRepository $usergroupRepository,
+    ) {
+        $this->transformer = new CalendarEventTransformer(
+            $this->router,
+            $this->usergroupRepository,
+            $this->settingsManager
+        );
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
@@ -58,7 +87,14 @@ final class CalendarEventStateProvider implements ProviderInterface
             $userSessions = $this->getSessionList($user, $accessUrl, $context);
         }
 
+<<<<<<< HEAD
         return array_merge($cCalendarEvents, $userSessions);
+=======
+        return array_map(
+            fn ($object) => $this->transformer->transform($object),
+            array_merge($cCalendarEvents, $userSessions),
+        );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**

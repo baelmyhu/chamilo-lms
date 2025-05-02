@@ -222,6 +222,12 @@ class Message
         ;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @return array<int, MessageRelUser>
+     */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     #[Groups(['message:read'])]
     public function getReceiversSender(): array
     {

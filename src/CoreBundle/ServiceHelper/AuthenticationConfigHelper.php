@@ -7,6 +7,10 @@ declare(strict_types=1);
 namespace Chamilo\CoreBundle\ServiceHelper;
 
 use Chamilo\CoreBundle\Entity\AccessUrl;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,7 +27,15 @@ readonly class AuthenticationConfigHelper
 
     public function getProviderConfig(string $providerName, ?AccessUrl $url = null): array
     {
+<<<<<<< HEAD
         $providers = $this->getProvidersForUrl($url);
+=======
+        $providers = $this->getOAuthProvidersForUrl($url);
+
+        if ([] === $providers) {
+            return [];
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!isset($providers[$providerName])) {
             throw new InvalidArgumentException('Invalid authentication provider for access URL');
@@ -32,16 +44,26 @@ readonly class AuthenticationConfigHelper
         return $providers[$providerName];
     }
 
+<<<<<<< HEAD
     public function isEnabled(string $methodName, ?AccessUrl $url = null): bool
+=======
+    public function isOAuth2ProviderEnabled(string $methodName, ?AccessUrl $url = null): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $configParams = $this->getProviderConfig($methodName, $url);
 
         return $configParams['enabled'] ?? false;
     }
 
+<<<<<<< HEAD
     public function getEnabledProviders(?AccessUrl $url = null): array
     {
         $urlProviders = $this->getProvidersForUrl($url);
+=======
+    public function getEnabledOAuthProviders(?AccessUrl $url = null): array
+    {
+        $urlProviders = $this->getOAuthProvidersForUrl($url);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $enabledProviders = [];
 
@@ -58,6 +80,7 @@ readonly class AuthenticationConfigHelper
         return $enabledProviders;
     }
 
+<<<<<<< HEAD
     private function getProvidersForUrl(?AccessUrl $url): array
     {
         $urlId = $url ? $url->getId() : $this->urlHelper->getCurrent()->getId();
@@ -66,16 +89,59 @@ readonly class AuthenticationConfigHelper
 
         if (isset($authentication[$urlId])) {
             return $authentication[$urlId];
+=======
+    public function getAuthSources(?AccessUrl $url)
+    {
+        $urlId = $url ?: $this->urlHelper->getCurrent();
+
+        $authentication = $this->parameterBag->has('authentication')
+            ? $this->parameterBag->get('authentication')
+            : [];
+
+        if (isset($authentication[$urlId->getId()])) {
+            return $authentication[$urlId->getId()];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         if (isset($authentication['default'])) {
             return $authentication['default'];
         }
 
+<<<<<<< HEAD
         throw new InvalidArgumentException('Invalid access URL configuration');
     }
 
     public function getProviderOptions(string $providerType, array $config): array
+=======
+        return [];
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function getOAuthProvidersForUrl(?AccessUrl $url): array
+    {
+        $authentication = $this->getAuthSources($url);
+
+        if (isset($authentication['oauth2'])) {
+            return $authentication['oauth2'];
+        }
+
+        return [];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getAuthSourceAuthentications(?AccessUrl $url): array
+    {
+        $authSources = $this->getAuthSources($url);
+
+        return [UserAuthSource::PLATFORM, ...array_keys($authSources)];
+    }
+
+    public function getOAuthProviderOptions(string $providerType, array $config): array
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $defaults = match ($providerType) {
             'generic' => [

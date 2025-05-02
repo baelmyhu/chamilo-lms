@@ -90,6 +90,10 @@ if ('addnote' === $action) {
     // Setting the form elements
     $form->addElement('header', '', get_lang('Add new note in my personal notebook'));
     $form->addElement('text', 'note_title', get_lang('Note title'), ['id' => 'note_title']);
+<<<<<<< HEAD
+=======
+    $form->applyFilter('note_title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $form->addElement(
         'html_editor',
         'note_comment',
@@ -147,6 +151,10 @@ if ('addnote' === $action) {
     $form->addElement('header', '', get_lang('Edit my personal note'));
     $form->addElement('hidden', 'notebook_id');
     $form->addElement('text', 'note_title', get_lang('Note title'), ['size' => '100']);
+<<<<<<< HEAD
+=======
+    $form->applyFilter('note_title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     $form->addElement(
         'html_editor',
         'note_comment',

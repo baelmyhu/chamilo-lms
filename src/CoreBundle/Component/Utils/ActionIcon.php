@@ -104,6 +104,13 @@ enum ActionIcon: string
     case SAVE_FORM = 'content-save';
     // Send a message
     case SEND_MESSAGE = 'send';
+<<<<<<< HEAD
+=======
+    // Send all examsheets by email
+    case SEND_ALL_EMAILS = 'email-multiple';
+    // Send a single examsheet by email
+    case SEND_SINGLE_EMAIL = 'email-outline';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     // Add an attachment
     case ADD_ATTACHMENT = 'paperclip-plus';
     // ? See RESTORE_BACKUP
@@ -164,4 +171,9 @@ enum ActionIcon: string
     case SWAP_FILE = 'file-swap';
 
     case ADD_FILE_VARIATION = 'file-replace';
+<<<<<<< HEAD
+=======
+
+    case CLOSE = 'close';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

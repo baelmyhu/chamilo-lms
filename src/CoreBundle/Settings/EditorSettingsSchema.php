@@ -32,7 +32,10 @@ class EditorSettingsSchema extends AbstractSettingsSchema
                     'enabled_imgmap' => '',
                     'enabled_support_svg' => '',
                     'enabled_insertHtml' => '',
+<<<<<<< HEAD
                     'enabled_support_pixlr' => '',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'htmlpurifier_wiki' => '',
                     'enable_iframe_inclusion' => '',
                     'enabled_mathjax' => '',
@@ -71,7 +74,10 @@ class EditorSettingsSchema extends AbstractSettingsSchema
             ->add('enabled_imgmap', YesNoType::class)
             ->add('enabled_support_svg', YesNoType::class)
             ->add('enabled_insertHtml', YesNoType::class)
+<<<<<<< HEAD
             ->add('enabled_support_pixlr', YesNoType::class)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('htmlpurifier_wiki', YesNoType::class)
             ->add('enable_iframe_inclusion', YesNoType::class)
             ->add('enabled_mathjax', YesNoType::class)

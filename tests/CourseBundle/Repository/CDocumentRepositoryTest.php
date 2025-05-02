@@ -19,6 +19,10 @@ use Chamilo\Tests\AbstractApiTest;
 use Chamilo\Tests\ChamiloTestTrait;
 use LogicException;
 use Symfony\Component\HttpFoundation\Request;
+<<<<<<< HEAD
+=======
+use Symfony\Component\HttpFoundation\Response;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 class CDocumentRepositoryTest extends AbstractApiTest
 {
@@ -286,12 +290,23 @@ class CDocumentRepositoryTest extends AbstractApiTest
             'title' => 'folder1',
         ]);
 
+<<<<<<< HEAD
         $documentId = $response->toArray()['iid'];
 
         // Change visibility to draft.
         $documentRepo = self::getContainer()->get(CDocumentRepository::class);
         $document = $documentRepo->find($documentId);
         $documentRepo->setVisibilityDraft($document);
+=======
+        // Change visibility to draft.
+        $this->createClientWithCredentials($token)->request(
+            'PUT',
+            "$iri/toggle_visibility",
+            [
+                'query' => ['cid' => $courseId],
+            ]
+        );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         // Admin access.
         $this->createClientWithCredentials($token)->request(
@@ -534,6 +549,7 @@ class CDocumentRepositoryTest extends AbstractApiTest
         // $this->assertResponseStatusCodeSame(403);
 
         // Change visibility of the document to DRAFT
+<<<<<<< HEAD
         $documentRepo = self::getContainer()->get(CDocumentRepository::class);
         $document = $documentRepo->find($documentId);
         $documentRepo->setVisibilityDraft($document);
@@ -543,18 +559,39 @@ class CDocumentRepositoryTest extends AbstractApiTest
         $course = $courseRepo->find($courseId);
         $course->setVisibility(Course::OPEN_WORLD);
         $courseRepo->update($course);
+=======
+        $this->createClientWithCredentials($token)->request(
+            'PUT',
+            "/api/documents/$documentId/toggle_visibility",
+            [
+                'query' => ['cid' => $courseId],
+            ]
+        );
+
+        // Change course to OPEN TO THE WORLD but the document is in DRAFT, "another" user cannot have access.
+        $course = $courseRepo->find($courseId);
+        // $course->setVisibility(Course::OPEN_WORLD);
+        // $courseRepo->update($course);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $client->request(
             'GET',
             "/api/documents/$documentId",
             [
+<<<<<<< HEAD
                 'headers' => ['Content-Type' => 'application/json'],
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'query' => [
                     'cid' => $courseId,
                 ],
             ]
         );
+<<<<<<< HEAD
         $this->assertResponseStatusCodeSame(403);
+=======
+        // $this->assertResponseStatusCodeSame(403);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public function testChangeVisibility(): void
@@ -1000,7 +1037,11 @@ class CDocumentRepositoryTest extends AbstractApiTest
         ;
 
         $documentRepo->create($document);
+<<<<<<< HEAD
         $documentRepo->setVisibilityPublished($document);
+=======
+        $documentRepo->setVisibilityPublished($document, $course);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         /** @var ResourceLink $link */
         $link = $document->getFirstResourceLink();
@@ -1097,7 +1138,11 @@ class CDocumentRepositoryTest extends AbstractApiTest
 
         // Not logged in.
         $client->request('PUT', $url);
+<<<<<<< HEAD
         $this->assertResponseStatusCodeSame(401);
+=======
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         // Another user.
         $this->createUser('another');

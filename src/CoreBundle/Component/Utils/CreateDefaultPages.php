@@ -118,6 +118,16 @@ class CreateDefaultPages
 
         $this->pageCategoryRepository->update($publicCategory);
 
+<<<<<<< HEAD
+=======
+        $introductionCategory = (new PageCategory())
+            ->setTitle('introduction')
+            ->setType('grid')
+            ->setCreator($user)
+        ;
+        $this->pageCategoryRepository->update($introductionCategory);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return true;
     }
 

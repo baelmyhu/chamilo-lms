@@ -31,7 +31,11 @@ function fill_users()
             null,
             null,
             null,
+<<<<<<< HEAD
             $user['auth_source'],
+=======
+            [$user['auth_source']],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             null,
             $user['active']
         );

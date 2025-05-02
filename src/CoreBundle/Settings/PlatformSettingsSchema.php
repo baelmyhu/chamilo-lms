@@ -56,7 +56,11 @@ class PlatformSettingsSchema extends AbstractSettingsSchema
                     'registered' => 'false',
                     'load_term_conditions_section' => 'login',
                     'server_type' => 'prod',
+<<<<<<< HEAD
                     'show_tabs' => array_values(self::$tabs),
+=======
+                    'show_tabs' => array_values(array_diff(self::$tabs, ['videoconference', 'diagnostics'])),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'chamilo_database_version' => '2.0.0',
                     'unoconv_binaries' => '/usr/bin/unoconv',
                     'hide_main_navigation_menu' => 'false',
@@ -93,7 +97,10 @@ class PlatformSettingsSchema extends AbstractSettingsSchema
                     'redirect_index_to_url_for_logged_users' => '',
                     'default_menu_entry_for_course_or_session' => 'my_courses',
                     'notification_event' => 'false',
+<<<<<<< HEAD
                     'access_to_personal_file_for_all' => 'false',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ]
             )
             ->setTransformer(
@@ -157,7 +164,10 @@ class PlatformSettingsSchema extends AbstractSettingsSchema
             ->add('allow_my_files', YesNoType::class)
             // old settings with no category
             ->add('chamilo_database_version')
+<<<<<<< HEAD
             ->add('registered', YesNoType::class)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add(
                 'load_term_conditions_section',
                 ChoiceType::class,
@@ -174,22 +184,30 @@ class PlatformSettingsSchema extends AbstractSettingsSchema
                 [
                     'multiple' => true,
                     'choices' => self::$tabs,
+<<<<<<< HEAD
                     'label' => 'ShowTabsTitle',
                     'help' => 'ShowTabsComment',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ],
             )
             ->add(
                 'unoconv_binaries',
+<<<<<<< HEAD
                 TextType::class,
                 [
                     'label' => 'UnoconvBinariesTitle',
                     'help' => 'UnoconvBinariesComment',
                 ]
+=======
+                TextType::class
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             )
             ->add('hide_main_navigation_menu', YesNoType::class)
             ->add('pdf_img_dpi', TextType::class)
             ->add('tracking_skip_generic_data', YesNoType::class)
             ->add('hide_complete_name_in_whoisonline', YesNoType::class)
+<<<<<<< HEAD
             ->add(
                 'table_default_row',
                 TextType::class,
@@ -198,6 +216,9 @@ class PlatformSettingsSchema extends AbstractSettingsSchema
                     'help' => 'TableDefaultRowComment',
                 ]
             )
+=======
+            ->add('table_default_row', TextType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('allow_double_validation_in_registration', YesNoType::class)
             ->add('block_my_progress_page', YesNoType::class)
             ->add('generate_random_login', YesNoType::class)
@@ -285,12 +306,28 @@ class PlatformSettingsSchema extends AbstractSettingsSchema
                 ]
             )
             ->add('notification_event', YesNoType::class)
+<<<<<<< HEAD
             ->add('access_to_personal_file_for_all', YesNoType::class)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ;
 
         $this->updateFormFieldsFromSettingsInfo($builder);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Returns the list of internal settings that should be hidden from forms and search.
+     */
+    public function getHiddenSettings(): array
+    {
+        return [
+            'registered',
+        ];
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     private function settingArrayHelpValue(string $variable): string
     {
         $values = [

@@ -29,7 +29,11 @@ class UserTable extends SortableTable
         $this->set_header($column++, get_lang('Score'));
         $this->set_header($column++, get_lang('Course'));
         $this->set_header($column++, get_lang('Category'));
+<<<<<<< HEAD
         $this->set_header($column++, get_lang('ScoreAverage'));
+=======
+        $this->set_header($column++, get_lang('Score average'));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $this->set_header($column++, get_lang('Result'));
 
         $scoredisplay = ScoreDisplay::instance();

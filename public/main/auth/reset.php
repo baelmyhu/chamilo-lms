@@ -3,7 +3,11 @@
 
 require_once __DIR__.'/../inc/global.inc.php';
 
+<<<<<<< HEAD
 $token = isset($_GET['token']) ? $_GET['token'] : '';
+=======
+$token = $_GET['token'] ?? '';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 if (!ctype_alnum($token)) {
     $token = '';
@@ -61,6 +65,17 @@ if ($form->validate()) {
         Database::getManager()->persist($user);
         Database::getManager()->flush();
 
+<<<<<<< HEAD
+=======
+        if ('true' === api_get_setting('platform.force_renew_password_at_first_login')) {
+            $extraFieldValue = new ExtraFieldValue('user');
+            $value = $extraFieldValue->get_values_by_handler_and_field_variable($user->getId(), 'ask_new_password');
+            if (!empty($value) && isset($value['value']) && 1 === (int) $value['value']) {
+                $extraFieldValue->delete($value['id']);
+            }
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         Display::addFlash(Display::return_message(get_lang('Update successful')));
         header('Location: '.api_get_path(WEB_PATH));
         exit;

@@ -1,8 +1,24 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Entity\ExtraField;
 use Chamilo\CoreBundle\Entity\User;
+=======
+use Chamilo\CoreBundle\Entity\AccessUrlRelSession;
+use Chamilo\CoreBundle\Entity\ExtraField;
+use Chamilo\CoreBundle\Entity\ExtraFieldRelTag;
+use Chamilo\CoreBundle\Entity\ExtraFieldValues;
+use Chamilo\CoreBundle\Entity\SequenceResource;
+use Chamilo\CoreBundle\Entity\Session;
+use Chamilo\CoreBundle\Entity\SessionRelCourse;
+use Chamilo\CoreBundle\Entity\Tag;
+use Chamilo\CoreBundle\Entity\User;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Event\AbstractEvent;
+use Chamilo\CoreBundle\Event\Events;
+use Chamilo\CoreBundle\Event\SessionResubscriptionEvent;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Doctrine\ORM\Query\Expr\Join;
 use Chamilo\CoreBundle\Component\Utils\ObjectIcon;
 
@@ -241,11 +257,19 @@ class CoursesAndSessionsCatalog
      * @param string $categoryCode
      * @param int    $randomValue
      * @param array  $limit        will be used if $randomValue is not set.
+<<<<<<< HEAD
      *                             This array should contains 'start' and 'length' keys
      *
      * @return array
      */
     public static function getCoursesInCategory($categoryCode, $randomValue = null, $limit = [])
+=======
+     *                             This array should contain 'start' and 'length' keys
+     *
+     * @return array
+     */
+    public static function getCoursesInCategory(string $categoryCode, $randomValue = null, $limit = [])
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $tbl_course = Database::get_main_table(TABLE_MAIN_COURSE);
         $avoidCoursesCondition = self::getAvoidCourseCondition();
@@ -728,14 +752,23 @@ class CoursesAndSessionsCatalog
 
         $qb = $qb
             ->select('s')
+<<<<<<< HEAD
             ->from('ChamiloCoreBundle:Session', 's')
+=======
+            ->from(Session::class, 's')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->where(
                 $qb->expr()->in(
                     's',
                     $qb2
                         ->select('s2')
+<<<<<<< HEAD
                         ->from('ChamiloCoreBundle:AccessUrlRelSession', 'url')
                         ->join('ChamiloCoreBundle:Session', 's2')
+=======
+                        ->from(AccessUrlRelSession::class, 'url')
+                        ->join(Session::class, 's2')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         ->where(
                             $qb->expr()->eq('url.sessionId ', 's2.id')
                         )->andWhere(
@@ -809,8 +842,13 @@ class CoursesAndSessionsCatalog
                     's',
                     $qb3
                         ->select('s3')
+<<<<<<< HEAD
                         ->from('ChamiloCoreBundle:ExtraFieldValues', 'fv')
                         ->innerJoin('ChamiloCoreBundle:Session', 's3', Join::WITH, 'fv.itemId = s3.id')
+=======
+                        ->from(ExtraFieldValues::class, 'fv')
+                        ->innerJoin(Session::class, 's3', Join::WITH, 'fv.itemId = s3.id')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         ->where(
                             $qb->expr()->eq('fv.field', $extraFieldInfo['id'])
                         )->andWhere(
@@ -841,33 +879,55 @@ class CoursesAndSessionsCatalog
 
         $qb->select('s')
             ->distinct()
+<<<<<<< HEAD
             ->from('ChamiloCoreBundle:Session', 's')
             ->innerJoin(
                 'ChamiloCoreBundle:SessionRelCourse',
+=======
+            ->from(Session::class, 's')
+            ->innerJoin(
+                SessionRelCourse::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'src',
                 Join::WITH,
                 's.id = src.session'
             )
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:AccessUrlRelSession',
+=======
+                AccessUrlRelSession::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'url',
                 Join::WITH,
                 'url.sessionId = s.id'
             )
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:ExtraFieldRelTag',
+=======
+                ExtraFieldRelTag::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'frt',
                 Join::WITH,
                 'src.course = frt.itemId'
             )
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:Tag',
+=======
+                Tag::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 't',
                 Join::WITH,
                 'frt.tagId = t.id'
             )
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:ExtraField',
+=======
+                ExtraField::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'f',
                 Join::WITH,
                 'frt.fieldId = f.id'
@@ -917,15 +977,25 @@ class CoursesAndSessionsCatalog
 
         $qb->select('s')
             ->distinct()
+<<<<<<< HEAD
             ->from('ChamiloCoreBundle:Session', 's')
             ->innerJoin(
                 'ChamiloCoreBundle:SessionRelCourse',
+=======
+            ->from(Session::class, 's')
+            ->innerJoin(
+                SessionRelCourse::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'src',
                 Join::WITH,
                 's.id = src.session'
             )
             ->innerJoin(
+<<<<<<< HEAD
                 'ChamiloCoreBundle:AccessUrlRelSession',
+=======
+                AccessUrlRelSession::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'url',
                 Join::WITH,
                 'url.sessionId = s.id'
@@ -1264,6 +1334,7 @@ class CoursesAndSessionsCatalog
             );
         }
 
+<<<<<<< HEAD
         $hook = HookResubscribe::create();
         if (!empty($hook)) {
             $hook->setEventData([
@@ -1275,6 +1346,12 @@ class CoursesAndSessionsCatalog
                 $result = $exception->getMessage();
             }
         }
+=======
+        Container::getEventDispatcher()->dispatch(
+            new SessionResubscriptionEvent(['session_id' => $sessionId], AbstractEvent::TYPE_PRE),
+            Events::SESSION_RESUBSCRIPTION
+        );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         return $result;
     }
@@ -1506,7 +1583,11 @@ class CoursesAndSessionsCatalog
      */
     public static function sessionsListByCoursesTag(array $limit)
     {
+<<<<<<< HEAD
         $searchTag = isset($_REQUEST['search_tag']) ? $_REQUEST['search_tag'] : '';
+=======
+        $searchTag = $_REQUEST['search_tag'] ? Security::remove_XSS($_REQUEST['search_tag']) : '';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $searchDate = isset($_REQUEST['date']) ? $_REQUEST['date'] : date('Y-m-d');
         $courseUrl = self::getCatalogUrl(
             1,
@@ -1566,6 +1647,7 @@ class CoursesAndSessionsCatalog
         $userId = api_get_user_id();
         $sessionsBlocks = [];
         $entityManager = Database::getManager();
+<<<<<<< HEAD
         $sessionRelCourseRepo = $entityManager->getRepository('ChamiloCoreBundle:SessionRelCourse');
         $extraFieldRepo = $entityManager->getRepository('ChamiloCoreBundle:ExtraField');
         $tagRepo = \Chamilo\CoreBundle\Framework\Container::getTagRepository();
@@ -1576,6 +1658,18 @@ class CoursesAndSessionsCatalog
         ]);
 
         /** @var \Chamilo\CoreBundle\Entity\Session $session */
+=======
+        $sessionRelCourseRepo = $entityManager->getRepository(SessionRelCourse::class);
+        $extraFieldRepo = $entityManager->getRepository(ExtraField::class);
+        $tagRepo = Container::getTagRepository();
+
+        $tagsField = $extraFieldRepo->findOneBy([
+            'itemType' => ExtraField::COURSE_FIELD_TYPE,
+            'variable' => 'tags',
+        ]);
+
+        /** @var Session $session */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         foreach ($sessions as $session) {
             $sessionDates = SessionManager::parseSessionDates([
                 'display_start_date' => $session->getDisplayStartDate(),
@@ -1613,7 +1707,11 @@ class CoursesAndSessionsCatalog
             }
 
             /** @var SequenceResourceRepository $repo */
+<<<<<<< HEAD
             $repo = $entityManager->getRepository('ChamiloCoreBundle:SequenceResource');
+=======
+            $repo = $entityManager->getRepository(SequenceResource::class);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $sequences = $repo->getRequirementsAndDependenciesWithinSequences(
                 $session->getId(),
                 SequenceResource::SESSION_TYPE
@@ -1854,7 +1952,11 @@ class CoursesAndSessionsCatalog
         $action = isset($action) ? Security::remove_XSS($action) : $requestAction;
         $searchTerm = isset($_REQUEST['search_term']) ? Security::remove_XSS($_REQUEST['search_term']) : '';
         $keyword = isset($_REQUEST['keyword']) ? Security::remove_XSS($_REQUEST['keyword']) : '';
+<<<<<<< HEAD
         $searchTag = isset($_REQUEST['search_tag']) ? $_REQUEST['search_tag'] : '';
+=======
+        $searchTag = $_REQUEST['search_tag'] ? Security::remove_XSS($_REQUEST['search_tag']) : '';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if ('subscribe_user_with_password' === $action) {
             $action = 'subscribe';

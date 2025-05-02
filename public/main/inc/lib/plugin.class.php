@@ -3,6 +3,10 @@
 
 use Chamilo\CoreBundle\Entity\ResourceLink;
 use Chamilo\CoreBundle\Entity\Tool;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Framework\Container;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CourseBundle\Entity\CTool;
 use Doctrine\ORM\Exception\NotSupported;
 use Doctrine\ORM\Exception\ORMException;
@@ -85,6 +89,11 @@ class Plugin
      */
     public function get_info()
     {
+<<<<<<< HEAD
+=======
+        $pluginRepo = Container::getPluginRepository();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $result = [];
         $result['obj'] = $this;
         $result['title'] = $this->get_title();
@@ -95,6 +104,10 @@ class Plugin
         $result['is_course_plugin'] = $this->isCoursePlugin;
         $result['is_admin_plugin'] = $this->isAdminPlugin;
         $result['is_mail_plugin'] = $this->isMailPlugin;
+<<<<<<< HEAD
+=======
+        $result['entity'] = $pluginRepo->findOneByTitle($this->get_title());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if ($form = $this->getSettingsForm()) {
             $result['settings_form'] = $form;
@@ -333,6 +346,7 @@ class Plugin
 
     /**
      * Returns the value of a given plugin global setting.
+<<<<<<< HEAD
      *
      * @param string $name of the plugin setting
      *
@@ -356,6 +370,24 @@ class Plugin
         }
 
         return false;
+=======
+     */
+    public function get(string $name): mixed
+    {
+        $settings = $this->get_settings();
+
+        if (isset($settings[$name])) {
+            return $settings[$name];
+        }
+
+        foreach ($settings as $setting) {
+            if (is_array($setting) && isset($setting[$name])) {
+                return $setting[$name];
+            }
+        }
+
+        return null;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -364,6 +396,7 @@ class Plugin
      * @param bool $forceFromDB Optional. Force get settings from the database
      *
      * @return array Plugin settings as an array
+<<<<<<< HEAD
      */
     public function get_settings($forceFromDB = false)
     {
@@ -379,6 +412,21 @@ class Plugin
                 ]
             );
             $this->settings = $settings;
+=======
+     *
+     * @throws Exception
+     */
+    public function get_settings(bool $forceFromDB = false): array
+    {
+        $plugin = Container::getPluginRepository()->findOneByTitle($this->get_name());
+
+        if ($plugin && empty($this->settings) || $forceFromDB) {
+            $configByUrl = $plugin->getConfigurationsByAccessUrl(
+                Container::getAccessUrlHelper()->getCurrent()
+            );
+
+            $this->settings = $configByUrl?->getConfiguration() ?? [];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         return $this->settings;
@@ -1113,4 +1161,12 @@ class Plugin
 
         return $cTool;
     }
+<<<<<<< HEAD
+=======
+
+    public function getFieldNames(): array
+    {
+        return array_keys($this->fields);
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

@@ -12,6 +12,13 @@ declare(strict_types=1);
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
 use Chamilo\CoreBundle\Component\Utils\StateIcon;
 use Chamilo\CoreBundle\Component\Utils\ToolIcon;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\AccessUrl;
+use Chamilo\CoreBundle\Entity\CatalogueCourseRelAccessUrlRelUsergroup;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\Repository\CatalogueCourseRelAccessUrlRelUsergroupRepository;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $cidReset = true;
 
@@ -244,7 +251,15 @@ function get_course_data(
                 ICON_SIZE_SMALL,
                 get_lang('Delete')
             ),
+<<<<<<< HEAD
             $path.'admin/course_list.php?delete_course='.$course['col0'],
+=======
+            $path.'admin/course_list.php?'
+            .http_build_query([
+                'delete_course' => $course['col0'],
+                'sec_token' => Security::getTokenFromSession(),
+            ]),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             [
                 'onclick' => "javascript: if (!confirm('"
                     .addslashes(api_htmlentities(get_lang('Please confirm your choice'), \ENT_QUOTES))
@@ -252,6 +267,38 @@ function get_course_data(
             ]
         );
 
+<<<<<<< HEAD
+=======
+        $em = Database::getManager();
+        /** @var CatalogueCourseRelAccessUrlRelUsergroupRepository $repo */
+        $repo = $em->getRepository(CatalogueCourseRelAccessUrlRelUsergroup::class);
+        $record = $repo->findOneBy([
+            'course' => $courseId,
+            'accessUrl' => api_get_current_access_url_id(),
+            'usergroup' => null,
+        ]);
+
+        $isInCatalogue = null !== $record;
+        $catalogueUrl = api_get_self().'?toggle_catalogue='.$course['id'].'&sec_token='.Security::getTokenFromSession();
+
+        $actions[] = Display::url(
+            Display::getMdiIcon(
+                $isInCatalogue ? StateIcon::CATALOGUE_OFF : StateIcon::CATALOGUE_ON,
+                'ch-tool-icon',
+                null,
+                ICON_SIZE_SMALL,
+                $isInCatalogue ? get_lang('Remove from catalogue') : get_lang('Add to catalogue'),
+                [
+                    'class' => $isInCatalogue ? 'text-warning' : 'text-muted',
+                ]
+            ),
+            $catalogueUrl,
+            [
+                'title' => $isInCatalogue ? get_lang('Remove from catalogue') : get_lang('Add to catalogue'),
+            ]
+        );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $courseItem = [
             $course['col0'],
             $course['col1'],
@@ -319,7 +366,11 @@ function get_course_visibility_icon(int $visibility): string
     };
 }
 
+<<<<<<< HEAD
 if (isset($_POST['action'])) {
+=======
+if (isset($_POST['action']) && Security::check_token('get')) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     // Delete selected courses
     if ('delete_courses' == $_POST['action']) {
         if (!empty($_POST['course'])) {
@@ -335,6 +386,43 @@ if (isset($_POST['action'])) {
         api_location(api_get_self());
     }
 }
+<<<<<<< HEAD
+=======
+
+if (isset($_GET['toggle_catalogue']) && Security::check_token('get')) {
+    $courseId = (int) $_GET['toggle_catalogue'];
+    $accessUrlId = api_get_current_access_url_id();
+    $em = Database::getManager();
+    $repo = $em->getRepository(CatalogueCourseRelAccessUrlRelUsergroup::class);
+    $course = api_get_course_entity($courseId);
+    $accessUrl = $em->getRepository(AccessUrl::class)->find($accessUrlId);
+
+    if ($course && $accessUrl) {
+        $record = $repo->findOneBy([
+            'course' => $course,
+            'accessUrl' => $accessUrl,
+            'usergroup' => null,
+        ]);
+
+        if ($record) {
+            $em->remove($record);
+            Display::addFlash(Display::return_message(get_lang('Removed from catalogue')));
+        } else {
+            $newRel = new CatalogueCourseRelAccessUrlRelUsergroup();
+            $newRel->setCourse($course);
+            $newRel->setAccessUrl($accessUrl);
+            $newRel->setUsergroup(null);
+
+            $em->persist($newRel);
+            Display::addFlash(Display::return_message(get_lang('Added to catalogue'), 'success'));
+        }
+
+        $em->flush();
+    }
+
+    api_location(api_get_self());
+}
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $content = '';
 $message = '';
 $actions = '';
@@ -392,7 +480,11 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
     $content .= $form->returnForm();
 } else {
     $tool_name = get_lang('Course list');
+<<<<<<< HEAD
     if (isset($_GET['delete_course'])) {
+=======
+    if (isset($_GET['delete_course']) && Security::check_token('get')) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $result = CourseManager::delete_course($_GET['delete_course']);
         if ($result) {
             Display::addFlash(Display::return_message(get_lang('Deleted')));
@@ -400,6 +492,26 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
 
         api_location(api_get_self());
     }
+<<<<<<< HEAD
+=======
+
+    if (isset($_GET['new_course_id'])) {
+        $courseId = (int) $_GET['new_course_id'];
+        $course = api_get_course_entity($courseId);
+        if ($course) {
+            $link = api_get_course_url($course->getId());
+            $msg = sprintf(
+                get_lang('Course %s added. You can access it directly %shere%s.'),
+                '<strong>'.Security::remove_XSS($course->getTitle()).'</strong>',
+                '<a href="'.$link.'" class="text-primary">',
+                '</a>'
+            );
+
+            $content .=  Display::return_message($msg, 'confirmation', false);
+        }
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     // Create a search-box
     $form = new FormValidator(
         'search_simple',
@@ -416,9 +528,18 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
         ['id' => 'course-search-keyword', 'aria-label' => get_lang('Search courses')]
     );
     $form->addButtonSearch(get_lang('Search courses'));
+<<<<<<< HEAD
     $advanced = '<a class="btn btn--plain" href="'.api_get_path(WEB_CODE_PATH).'admin/course_list.php?search=advanced">
         <em class="pi pi-search"></em> '.
         get_lang('Advanced search').'</a>';
+=======
+    $advanced = Display::toolbarButton(
+        get_lang('Advanced search'),
+        Container::getRouter()->generate('legacy_main', ['name' => 'admin/course_list.php', 'search' => 'advanced']),
+        ActionIcon::SEARCH,
+        'plain'
+    );
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     // Create a filter by session
     $sessionFilter = new FormValidator(
@@ -500,6 +621,10 @@ if (isset($_GET['search']) && 'advanced' === $_GET['search']) {
     );
 
     $parameters = [];
+<<<<<<< HEAD
+=======
+    $parameters['sec_token'] = Security::get_token();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     if (isset($_GET['keyword'])) {
         $parameters = ['keyword' => Security::remove_XSS($_GET['keyword'])];
     } elseif (isset($_GET['keyword_code'])) {

@@ -12,7 +12,10 @@ export default {
     },
     {
       name: "ToolIntroUpdate",
+<<<<<<< HEAD
       //path: ':id/edit',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
       path: "edit",
       component: () => import("../views/ctoolintro/Update.vue"),
     },

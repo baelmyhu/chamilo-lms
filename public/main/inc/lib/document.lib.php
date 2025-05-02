@@ -1029,7 +1029,11 @@ class DocumentManager
 
             $em = Database::getManager();
 
+<<<<<<< HEAD
             $repo = $em->getRepository('ChamiloCourseBundle:CDocument');
+=======
+            $repo = $em->getRepository(CDocument::class);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             /** @var \Chamilo\CourseBundle\Entity\CDocument $document */
             $document = $repo->find($row['iid']);
             if (ResourceLink::VISIBILITY_PUBLISHED === $document->getVisibility()) {
@@ -1146,6 +1150,7 @@ class DocumentManager
             $new_content = '';
             $all_user_info = [];
             if ($doc) {
+<<<<<<< HEAD
                 $my_content_html = $repo->getResourceFileContent($doc);
                 $all_user_info = self::get_all_info_to_certificate(
                     $user_id,
@@ -1160,6 +1165,43 @@ class DocumentManager
                     $info_to_replace_in_content_html,
                     $my_content_html
                 );
+=======
+                try {
+                    // Validate if the document content is not empty
+                    $my_content_html = $repo->getResourceFileContent($doc);
+                    if (empty($my_content_html)) {
+                        throw new Exception("The document content is empty.");
+                    }
+
+                    // Retrieve user information for the certificate
+                    $all_user_info = self::get_all_info_to_certificate(
+                        $user_id,
+                        $course_id,
+                        $is_preview
+                    );
+
+                    // Ensure user info array is properly structured
+                    if (!isset($all_user_info[0]) || !isset($all_user_info[1])) {
+                        throw new Exception("Error retrieving user information for the certificate.");
+                    }
+
+                    $info_to_be_replaced_in_content_html = $all_user_info[0];
+                    $info_to_replace_in_content_html = $all_user_info[1];
+
+                    // Replace placeholders in the certificate template with user info
+                    $new_content = str_replace(
+                        $info_to_be_replaced_in_content_html,
+                        $info_to_replace_in_content_html,
+                        $my_content_html
+                    );
+                } catch (Exception $e) {
+                    error_log("Error in replace_user_info_into_html: " . $e->getMessage());
+                    return [
+                        'content' => '',
+                        'variables' => [],
+                    ];
+                }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
 
             return [
@@ -1264,7 +1306,11 @@ class DocumentManager
             $startDateAndEndDate = get_lang('From').' '.$first;
         } else {
             $startDateAndEndDate = sprintf(
+<<<<<<< HEAD
                 get_lang('FromDateXToDateY'),
+=======
+                get_lang('From %s to %s'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $first,
                 $last
             );
@@ -3206,7 +3252,11 @@ This folder contains all sessions that have been opened in the chat. Although th
             return Display::img($icon, $basename, [], false);
         }
 
+<<<<<<< HEAD
         return Display::return_icon($icon, $basename, [], ICON_SIZE_SMALL);
+=======
+        return Display::return_icon($icon, $basename);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     public static function isBasicCourseFolder($path, $sessionId)

@@ -58,6 +58,11 @@ $categories = $courseCategoryRepo->getCategoriesByCourseIdAndAccessUrlId($course
 
 $formOptionsArray = [];
 
+<<<<<<< HEAD
+=======
+$enableAiHelpers = 'true' === api_get_setting('ai_helpers.enable_ai_helpers');
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 // Build the form
 $form = new FormValidator(
     'update_course',
@@ -180,6 +185,7 @@ if ('true' === api_get_setting('allow_course_theme')) {
 
 $form->addElement('label', get_lang('Space Available'), format_file_size(DocumentManager::get_course_quota()));
 
+<<<<<<< HEAD
 /*$scoreModels = ExerciseLib::getScoreModels();
 if (!empty($scoreModels)) {
     $options = ['' => get_lang('none')];
@@ -189,6 +195,17 @@ if (!empty($scoreModels)) {
     $form->addSelect('score_model_id', get_lang('Score model'), $options);
 }
 */
+=======
+$aiOptions = [
+    'learning_path_generator' => 'Enable Learning Path Generator',
+    'exercise_generator' => 'Enable Exercise Generator',
+    'open_answers_grader' => 'Enable Open Answers Grader',
+    'tutor_chatbot' => 'Enable Tutor Chatbot',
+    'task_grader' => 'Enable Task Grader',
+    'content_analyser' => 'Enable Content Analyser',
+    'image_generator' => 'Enable Image Generator'
+];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $form->addButtonSave(get_lang('Save settings'), 'submit_save');
 
@@ -326,6 +343,26 @@ $globalGroup[get_lang('E-mail teacher when a new user auto-subscribes')] = $grou
 $group = [];
 $group[] = $form->createElement(
     'radio',
+<<<<<<< HEAD
+=======
+    'email_alert_student_on_manual_subscription',
+    get_lang('E-mail student when he is subscribed to the course'),
+    get_lang('Enable'),
+    1
+);
+$group[] = $form->createElement(
+    'radio',
+    'email_alert_student_on_manual_subscription',
+    null,
+    get_lang('Disable'),
+    0
+);
+$globalGroup[get_lang('E-mail student when he is subscribed to the course')] = $group;
+
+$group = [];
+$group[] = $form->createElement(
+    'radio',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     'email_alert_students_on_new_homework',
     get_lang('E-mail students on assignment creation'),
     get_lang('Enable'),
@@ -857,6 +894,36 @@ $form->addPanelOption(
     false
 );
 
+<<<<<<< HEAD
+=======
+// Ai helpers
+if ($enableAiHelpers) {
+    $globalAiGroup = [];
+
+    foreach ($aiOptions as $key => $label) {
+        if (api_get_setting("ai_helpers.$key") === 'true') {
+            $aiGroup = [];
+            $aiGroup[] = $form->createElement('radio', $key, null, get_lang('Yes'), 'true');
+            $aiGroup[] = $form->createElement('radio', $key, null, get_lang('No'), 'false');
+
+            $globalAiGroup[get_lang($label)] = $aiGroup;
+        }
+    }
+
+    if (!empty($globalAiGroup)) {
+        $globalAiGroup[] = $form->addButtonSave(get_lang('Save settings'), 'submit_save', true);
+
+        $form->addPanelOption(
+            'ai_helpers',
+            get_lang('AI Helpers'),
+            $globalAiGroup,
+            ToolIcon::ROBOT,
+            false
+        );
+    }
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $button = Display::toolbarButton(
     get_lang('Configure external tools'),
     $router->generate('chamilo_lti_configure', ['cid' => $courseId]).'?'.api_get_cidreq(),
@@ -894,6 +961,13 @@ if (!isset($values['student_delete_own_publication'])) {
     $values['student_delete_own_publication'] = 0;
 }
 
+<<<<<<< HEAD
+=======
+if (!isset($values['email_alert_student_on_manual_subscription'])) {
+    $values['email_alert_student_on_manual_subscription'] = 0;
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $documentAutoLaunch = api_get_course_setting('enable_document_auto_launch');
 $lpAutoLaunch = api_get_course_setting('enable_lp_auto_launch');
 $exerciseAutoLaunch = api_get_course_setting('enable_exercise_auto_launch');
@@ -916,6 +990,15 @@ if ($documentAutoLaunch == 1) {
 
 $values['auto_launch_option'] = $defaultAutoLaunchOption;
 
+<<<<<<< HEAD
+=======
+if ($enableAiHelpers) {
+    foreach ($aiOptions as $key => $label) {
+        $values[$key] = api_get_course_setting($key);
+    }
+}
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $form->setDefaults($values);
 
 // Validate form
@@ -958,7 +1041,11 @@ if ($form->validate()) {
 
     $access_url_id = api_get_current_access_url_id();
 
+<<<<<<< HEAD
     $limitCourses = get_hosting_limit($access_url_id, 'hosting_limit_active_courses');
+=======
+    $limitCourses = get_hosting_limit($access_url_id, 'active_courses');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     if ($limitCourses !== null && $limitCourses > 0) {
         $courseInfo = api_get_course_info_by_id($courseId);
 
@@ -1047,9 +1134,23 @@ if ($form->validate()) {
     $em->persist($courseEntity);
     $em->flush();
 
+<<<<<<< HEAD
     // Insert/Updates course_settings table
     foreach ($courseSettings as $setting) {
         $value = isset($updateValues[$setting]) ? $updateValues[$setting] : null;
+=======
+    if ($enableAiHelpers) {
+        foreach ($aiOptions as $key => $label) {
+            if (isset($updateValues[$key])) {
+                CourseManager::saveCourseConfigurationSetting($key, $updateValues[$key], api_get_course_int_id());
+            }
+        }
+    }
+
+    // Insert/Updates course_settings table
+    foreach ($courseSettings as $setting) {
+        $value = $updateValues[$setting] ?? null;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         CourseManager::saveCourseConfigurationSetting(
             $setting,
             $value,

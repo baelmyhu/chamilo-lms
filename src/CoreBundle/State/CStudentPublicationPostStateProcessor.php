@@ -23,6 +23,12 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+<<<<<<< HEAD
+=======
+/**
+ * @implements ProcessorInterface<CStudentPublication, CStudentPublication>
+ */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 final class CStudentPublicationPostStateProcessor implements ProcessorInterface
 {
     public function __construct(
@@ -34,8 +40,17 @@ final class CStudentPublicationPostStateProcessor implements ProcessorInterface
         private readonly SettingsManager $settingsManager,
     ) {}
 
+<<<<<<< HEAD
     public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
     {
+=======
+    public function process(
+        $data,
+        Operation $operation,
+        array $uriVariables = [],
+        array $context = []
+    ): CStudentPublication {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $result = $this->persistProcessor->process($data, $operation, $uriVariables, $context);
 
         /** @var CStudentPublication $publication */

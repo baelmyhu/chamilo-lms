@@ -16,6 +16,7 @@ function validate_data($classes)
     $usergroup = new UserGroupModel();
     foreach ($classes as $index => $class) {
         // 1. Check of class name is available.
+<<<<<<< HEAD
         if (!isset($class['name']) || 0 == strlen(trim($class['name']))) {
             $class['line'] = $index + 2;
             $class['error'] = get_lang('Missing class name');
@@ -26,6 +27,18 @@ function validate_data($classes)
                 $class['line'] = $index + 2;
                 $class['error'] = get_lang('Class name exists').
                     ': <strong>'.$class['name'].'</strong>';
+=======
+        if (!isset($class['title']) || 0 == strlen(trim($class['title']))) {
+            $class['line'] = $index + 1;
+            $class['error'] = get_lang('Missing class title');
+            $errors[] = $class;
+        } else {
+            // 2. Check whether class doesn't exist yet.
+            if ($usergroup->usergroup_exists($class['title'])) {
+                $class['line'] = $index + 2;
+                $class['error'] = get_lang('Class title exists').
+                    ': <strong>'.$class['title'].'</strong>';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 $errors[] = $class;
             }
         }
@@ -131,7 +144,11 @@ $form->display();
 <p><?php echo get_lang('The CSV file must look like this').' ('.get_lang('Fields in <strong>bold</strong> are mandatory.').')'; ?> :</p>
 
 <pre>
+<<<<<<< HEAD
 <b>name;description;</b>users
+=======
+<b>title;description;</b>users
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 "User group 1";"Description";admin,username1,username2
 </pre>
 <?php

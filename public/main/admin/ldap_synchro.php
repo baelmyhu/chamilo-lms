@@ -95,7 +95,11 @@ foreach ($Sessions as $session) {
 					$password = $val[0];
 					// Pour faciliter la gestion on ajoute le code "etape-annee"
 					$official_code = $etape."-".$annee;
+<<<<<<< HEAD
 					$auth_source = "ldap";
+=======
+					$auth_source = ["ldap"];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 					// Pas de date d'expiration d'etudiant (a recuperer par rapport au shadow expire LDAP)
 					$expiration_date = '';
 					$active = 1;
@@ -126,7 +130,11 @@ foreach ($Sessions as $session) {
                             $lastname,
                             $username,
                             null,
+<<<<<<< HEAD
                             null,
+=======
+                            [],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                             $email,
                             $status,
                             $official_code,

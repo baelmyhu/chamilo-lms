@@ -3,7 +3,13 @@
 /* For licensing terms, see /license.txt */
 
 use Chamilo\CoreBundle\Entity\User;
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Framework\Container;
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+use Chamilo\CoreBundle\Framework\Container;
+use Chamilo\CoreBundle\ServiceHelper\AuthenticationConfigHelper;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $cidReset = true;
 require_once __DIR__.'/../inc/global.inc.php';
@@ -15,6 +21,14 @@ $this_section = SECTION_PLATFORM_ADMIN;
 api_protect_admin_script(true);
 api_protect_limit_for_session_admin();
 
+<<<<<<< HEAD
+=======
+/** @var AuthenticationConfigHelper $authenticationConfigHelper */
+$authenticationConfigHelper = Container::$container->get(AuthenticationConfigHelper::class);
+
+$accessUrl = Container::getAccessUrlHelper()->getCurrent();
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $is_platform_admin = api_is_platform_admin() ? 1 : 0;
 
 $message = null;
@@ -153,7 +167,11 @@ if ('true' === api_get_setting('login_is_email')) {
 }
 
 // Phone
+<<<<<<< HEAD
 $form->addElement('text', 'phone', get_lang('Phone number'), ['autocomplete' => 'off', 'id' => 'phone']);
+=======
+$form->addText('phone', get_lang('Phone number'), false, ['autocomplete' => 'off', 'id' => 'phone']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 // Picture
 $form->addFile(
     'picture',
@@ -175,23 +193,40 @@ if ('true' !== api_get_setting('login_is_email')) {
 
 // Password
 $group = [];
+<<<<<<< HEAD
 $auth_sources = 0; //make available wider as we need it in case of form reset (see below)
 $nb_ext_auth_source_added = 0;
 if (isset($extAuthSource) && count($extAuthSource) > 0) {
     $auth_sources = [];
     foreach ($extAuthSource as $key => $info) {
+=======
+$extAuthSource = $authenticationConfigHelper->getAuthSourceAuthentications($accessUrl);
+$auth_sources = 0; //make available wider as we need it in case of form reset (see below)
+$nb_ext_auth_source_added = 0;
+if (count($extAuthSource) > 0) {
+    $auth_sources = [];
+    foreach ($extAuthSource as $key) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         // @todo : make uniform external authentification configuration (ex : cas and external_login ldap)
         // Special case for CAS. CAS is activated from Chamilo > Administration > Configuration > CAS
         // extAuthSource always on for CAS even if not activated
         // same action for file user_edit.php
+<<<<<<< HEAD
         if ((CAS_AUTH_SOURCE == $key && 'true' === api_get_setting('cas_activate')) || (CAS_AUTH_SOURCE != $key)) {
+=======
+        if ((UserAuthSource::CAS == $key && 'true' === api_get_setting('cas_activate')) || (UserAuthSource::CAS != $key)) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $auth_sources[$key] = $key;
             $nb_ext_auth_source_added++;
         }
     }
     if ($nb_ext_auth_source_added > 0) {
         $group[] = $form->createElement('radio', 'password_auto', null, get_lang('External authentification').' ', 2);
+<<<<<<< HEAD
         $group[] = $form->createElement('select', 'auth_source', null, $auth_sources);
+=======
+        $group[] = $form->createElement('select', 'auth_source', null, $auth_sources, ['multiple' => 'multiple']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $group[] = $form->createElement('static', '', '', '<br />');
     }
 }
@@ -366,7 +401,11 @@ if ($form->validate()) {
             $auth_source = $user['password']['auth_source'];
             $password = 'PLACEHOLDER';
         } else {
+<<<<<<< HEAD
             $auth_source = PLATFORM_AUTH_SOURCE;
+=======
+            $auth_source = [UserAuthSource::PLATFORM];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $password = '1' === $user['password']['password_auto'] ? api_generate_password() : $user['password']['password'];
         }
 

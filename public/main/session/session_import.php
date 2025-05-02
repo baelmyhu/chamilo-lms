@@ -4,6 +4,10 @@
 
 use Chamilo\CoreBundle\Entity\Session;
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 $cidReset = true;
 
@@ -97,7 +101,11 @@ if (isset($_POST['formSent']) && $_POST['formSent']) {
                                 null,
                                 api_utf8_decode($nodeUser->Phone),
                                 null,
+<<<<<<< HEAD
                                 PLATFORM_AUTH_SOURCE,
+=======
+                                [UserAuthSource::PLATFORM],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                                 null,
                                 1,
                                 0,
@@ -134,7 +142,11 @@ if (isset($_POST['formSent']) && $_POST['formSent']) {
                                     $lastname,
                                     $username,
                                     $password,
+<<<<<<< HEAD
                                     null,
+=======
+                                    [],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                                     $email,
                                     $status,
                                     $officialCode,
@@ -172,10 +184,22 @@ if (isset($_POST['formSent']) && $_POST['formSent']) {
 
                         // Looking up for the teacher.
                         $username = trim(api_utf8_decode($courseNode->CourseTeacher));
+<<<<<<< HEAD
                         $sql = "SELECT id, lastname, firstname FROM $tblUser WHERE username='$username'";
                         $rs = Database::query($sql);
                         if (Database::num_rows($rs) > 0) {
                             [$userId, $lastname, $firstname] = Database::fetch_array($rs);
+=======
+                        $rs = Database::select(
+                            ['id', 'lastname', 'firstname'],
+                            $tblUser,
+                            ['where' => ['username = ?' => $username]],
+                            'first',
+                            'NUM'
+                        );
+                        [$userId, $lastname, $firstname] = $rs;
+                        if ($userId > 0) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                             $params['teachers'] = $userId;
                         } else {
                             $params['teachers'] = api_get_user_id();

@@ -193,7 +193,11 @@
 
       <div class="formgroup-inline">
         <div
+<<<<<<< HEAD
           v-t="'Database Login'"
+=======
+          v-t="'Database user'"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
           class="field text-body-2 font-semibold"
         />
         <div
@@ -295,7 +299,11 @@
       severity="success"
     >
       <p
+<<<<<<< HEAD
         v-t="'Please wait. This could take a while...'"
+=======
+        v-t="'Please wait, this could take a while...'"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         class="mb-3"
       />
     </Message>

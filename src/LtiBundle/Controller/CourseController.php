@@ -9,6 +9,10 @@ namespace Chamilo\LtiBundle\Controller;
 use Category;
 use Chamilo\CoreBundle\Component\Utils\ToolIcon;
 use Chamilo\CoreBundle\Entity\Course;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\GradebookEvaluation;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\Session;
 use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\ServiceHelper\UserHelper;
@@ -575,7 +579,11 @@ class CourseController extends ToolBaseController
         $eval->set_visible(empty($values['visible']) ? 0 : 1);
         $eval->add();
 
+<<<<<<< HEAD
         $gradebookEval = $em->find('ChamiloCoreBundle:GradebookEvaluation', $eval->get_id());
+=======
+        $gradebookEval = $em->find(GradebookEvaluation::class, $eval->get_id());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $tool->setGradebookEval($gradebookEval);
 

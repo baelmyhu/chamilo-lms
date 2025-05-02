@@ -318,7 +318,11 @@ class PageRepositoryTest extends AbstractApiTest
         $this->assertTrue($result);
         $this->assertSame(2, $pageRepo->count([]));
         $this->assertSame(
+<<<<<<< HEAD
             7 + \count(CreateDefaultPages::getCategoriesForAdminBlocks()),
+=======
+            8 + \count(CreateDefaultPages::getCategoriesForAdminBlocks()),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $pageCategoryRepo->count([])
         );
 

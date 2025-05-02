@@ -6,6 +6,11 @@ declare(strict_types=1);
 
 namespace Chamilo\CoreBundle\Repository\Node;
 
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\Course;
+use Chamilo\CoreBundle\Entity\Session;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Entity\User;
 use Chamilo\CoreBundle\Entity\Usergroup;
 use Chamilo\CoreBundle\Entity\UsergroupRelUser;
@@ -24,6 +29,48 @@ class UsergroupRepository extends ResourceRepository
         parent::__construct($registry, Usergroup::class);
     }
 
+<<<<<<< HEAD
+=======
+    public function findBySession(Session $session, bool $checkAccessUrl = false): array
+    {
+        $qb = $this->createQueryBuilder('ug')
+            ->innerJoin('ug.sessions', 'ugs')
+            ->where('ugs.session = :session')
+            ->setParameter('session', $session)
+        ;
+
+        if ($checkAccessUrl && $this->accessUrlHelper->isMultiple()) {
+            $accessUrl = $this->accessUrlHelper->getCurrent();
+            $qb->innerJoin('ug.urls', 'url')
+                ->andWhere('url.url = :urlId')
+                ->setParameter('urlId', $accessUrl->getId())
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByCourse(Course $course, bool $checkAccessUrl = false): array
+    {
+        $qb = $this->createQueryBuilder('ug')
+            ->innerJoin('ug.courses', 'ugc')
+            ->where('ugc.course = :course')
+            ->setParameter('course', $course)
+        ;
+
+        if ($checkAccessUrl && $this->accessUrlHelper->isMultiple()) {
+            $accessUrl = $this->accessUrlHelper->getCurrent();
+
+            $qb->innerJoin('ug.urls', 'url')
+                ->andWhere('url.url = :urlId')
+                ->setParameter('urlId', $accessUrl->getId())
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     /**
      * @param int|array $relationType
      */
@@ -156,13 +203,18 @@ class UsergroupRepository extends ResourceRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
+<<<<<<< HEAD
     public function getUsersByGroup(int $groupID)
+=======
+    public function getUsersByGroup(int $groupID, bool $includeNormalClass = false): array
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $qb = $this->createQueryBuilder('g')
             ->innerJoin('g.users', 'gu')
             ->innerJoin('gu.user', 'u')
             ->where('g.id = :groupID')
             ->setParameter('groupID', $groupID)
+<<<<<<< HEAD
             ->andWhere('gu.relationType IN (:relationTypes)')
             ->setParameter('relationTypes', [
                 Usergroup::GROUP_USER_PERMISSION_ADMIN,
@@ -170,6 +222,23 @@ class UsergroupRepository extends ResourceRepository
                 Usergroup::GROUP_USER_PERMISSION_PENDING_INVITATION,
             ])
             ->select('u.id, u.username, u.email, gu.relationType, u.pictureUri')
+=======
+        ;
+
+        $relationTypes = [
+            Usergroup::GROUP_USER_PERMISSION_ADMIN,
+            Usergroup::GROUP_USER_PERMISSION_READER,
+            Usergroup::GROUP_USER_PERMISSION_PENDING_INVITATION,
+        ];
+
+        if ($includeNormalClass) {
+            $relationTypes[] = 0;
+        }
+
+        $qb->andWhere('gu.relationType IN (:relationTypes)')
+            ->setParameter('relationTypes', $relationTypes)
+            ->select('u.id, u.username, u.email, gu.relationType, u.pictureUri, u.firstname, u.lastname')
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ;
 
         $results = $qb->getQuery()->getResult();

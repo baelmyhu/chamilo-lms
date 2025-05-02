@@ -85,7 +85,10 @@ class CourseSettingsSchema extends AbstractSettingsSchema
                     'course_images_in_courses_list' => 'true',
                     'teacher_can_select_course_template' => 'true',
                     'show_toolshortcuts' => '',
+<<<<<<< HEAD
                     'enable_record_audio' => 'false',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'lp_show_reduced_report' => 'false',
                     'course_creation_splash_screen' => 'true',
                     'block_registered_users_access_to_open_course_contents' => 'false',
@@ -125,6 +128,10 @@ class CourseSettingsSchema extends AbstractSettingsSchema
                     'course_creation_user_course_extra_field_relation_to_prefill' => '',
                     'allow_edit_tool_visibility_in_session' => 'true',
                     'show_course_duration' => 'false',
+<<<<<<< HEAD
+=======
+                    'access_url_specific_files' => 'false',
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 ]
             )
             ->setTransformer(
@@ -246,7 +253,10 @@ class CourseSettingsSchema extends AbstractSettingsSchema
             ->add('course_images_in_courses_list', YesNoType::class)
             ->add('teacher_can_select_course_template', YesNoType::class)
             ->add('show_toolshortcuts', YesNoType::class)
+<<<<<<< HEAD
             ->add('enable_record_audio', YesNoType::class)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add('lp_show_reduced_report', YesNoType::class)
             ->add('course_creation_splash_screen', YesNoType::class)
             ->add('block_registered_users_access_to_open_course_contents', YesNoType::class)
@@ -261,6 +271,7 @@ class CourseSettingsSchema extends AbstractSettingsSchema
             ->add('hide_course_sidebar', YesNoType::class)
             ->add('allow_course_extra_field_in_catalog', YesNoType::class)
             ->add('multiple_access_url_show_shared_course_marker', YesNoType::class)
+<<<<<<< HEAD
             ->add(
                 'course_category_code_to_use_as_model',
                 TextType::class,
@@ -279,6 +290,12 @@ class CourseSettingsSchema extends AbstractSettingsSchema
                     'help' => 'CourseCreationDonateLinkComment',
                 ]
             )
+=======
+            ->add('course_category_code_to_use_as_model', TextType::class)
+            ->add('enable_unsubscribe_button_on_my_course_page', YesNoType::class)
+            ->add('course_creation_donate_message_show', YesNoType::class)
+            ->add('course_creation_donate_link', TextType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->add(
                 'courses_list_session_title_link',
                 ChoiceType::class,
@@ -374,6 +391,10 @@ class CourseSettingsSchema extends AbstractSettingsSchema
             )
             ->add('allow_edit_tool_visibility_in_session', YesNoType::class)
             ->add('show_course_duration', YesNoType::class)
+<<<<<<< HEAD
+=======
+            ->add('access_url_specific_files', YesNoType::class)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ;
 
         $this->updateFormFieldsFromSettingsInfo($builder);

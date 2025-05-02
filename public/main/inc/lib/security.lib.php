@@ -13,13 +13,21 @@ use ChamiloSession as Session;
  * http://www.phpsec.org/
  * The principles here are that all data is tainted (most scripts of Chamilo are
  * open to the public or at least to a certain public that could be malicious
+<<<<<<< HEAD
  * under specific circumstances). We use the white list approach, where as we
+=======
+ * under specific circumstances). We use the white list approach, whereas we
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
  * consider that data can only be used in the database or in a file if it has
  * been filtered.
  *
  * For session fixation, use ...
  * For session hijacking, use get_ua() and check_ua()
+<<<<<<< HEAD
  * For Cross-Site Request Forgeries, use get_token() and check_tocken()
+=======
+ * For Cross-Site Request Forgeries, use get_token() and check_token()
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
  * For basic filtering, use filter()
  * For files inclusions (using dynamic paths) use check_rel_path() and check_abs_path()
  *
@@ -45,6 +53,7 @@ class Security
      * Checks if the absolute path (directory) given is really under the
      * checker path (directory).
      *
+<<<<<<< HEAD
      * @param string    Absolute path to be checked (with trailing slash)
      * @param string    Checker path under which the path
      * should be (absolute path, with trailing slash, get it from api_get_path(SYS_COURSE_PATH))
@@ -52,6 +61,15 @@ class Security
      * @return bool True if the path is under the checker, false otherwise
      */
     public static function check_abs_path($abs_path, $checker_path)
+=======
+     * @param string $abs_path     Absolute path to be checked (with trailing slash)
+     * @param string $checker_path Checker path under which the path
+     *                             should be (absolute path, with trailing slash, get it from api_get_path(SYS_COURSE_PATH))
+     *
+     * @return bool True if the path is under the checker, false otherwise
+     */
+    public static function check_abs_path(string $abs_path, string $checker_path): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         // The checker path must be set.
         if (empty($checker_path)) {
@@ -59,8 +77,12 @@ class Security
         }
 
         // Clean $abs_path.
+<<<<<<< HEAD
         $abs_path = str_replace(['//', '../'], ['/', ''], $abs_path);
         $true_path = str_replace("\\", '/', realpath($abs_path));
+=======
+        $true_path = self::cleanPath($abs_path);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $checker_path = str_replace("\\", '/', realpath($checker_path));
 
         if (empty($checker_path)) {
@@ -84,10 +106,21 @@ class Security
         return false;
     }
 
+<<<<<<< HEAD
+=======
+    public static function cleanPath(string $absPath): string
+    {
+        $absPath = str_replace(['//', '../'], ['/', ''], $absPath);
+
+        return str_replace("\\", '/', realpath($absPath));
+    }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     /**
      * Checks if the relative path (directory) given is really under the
      * checker path (directory).
      *
+<<<<<<< HEAD
      * @param string    Relative path to be checked (relative to the current directory) (with trailing slash)
      * @param string    Checker path under which the path
      * should be (absolute path, with trailing slash, get it from api_get_path(SYS_COURSE_PATH))
@@ -95,6 +128,15 @@ class Security
      * @return bool True if the path is under the checker, false otherwise
      */
     public static function check_rel_path($rel_path, $checker_path)
+=======
+     * @param string $rel_path     Relative path to be checked (relative to the current directory) (with trailing slash)
+     * @param string $checker_path Checker path under which the path
+     *                             should be (absolute path, with trailing slash, get it from api_get_path(SYS_COURSE_PATH))
+     *
+     * @return bool True if the path is under the checker, false otherwise
+     */
+    public static function check_rel_path(string $rel_path, string $checker_path): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         // The checker path must be set.
         if (empty($checker_path)) {
@@ -120,26 +162,40 @@ class Security
      * other languages' files extensions).
      *
      * @param string $filename Unfiltered filename
+<<<<<<< HEAD
      *
      * @return string
      */
     public static function filter_filename($filename)
+=======
+     */
+    public static function filter_filename(string $filename): string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         return disable_dangerous_file($filename);
     }
 
+<<<<<<< HEAD
     /**
      * @return string
      */
     public static function getTokenFromSession()
     {
         return Session::read('sec_token');
+=======
+    public static function getTokenFromSession(string $prefix = ''): string
+    {
+        $secTokenVariable = self::generateSecTokenVariable($prefix);
+
+        return Session::read($secTokenVariable);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
      * This function checks that the token generated in get_token() has been kept (prevents
      * Cross-Site Request Forgeries attacks).
      *
+<<<<<<< HEAD
      * @param    string    The array in which to get the token ('get' or 'post')
      *
      * @return bool True if it's the right token, false otherwise
@@ -150,18 +206,40 @@ class Security
         switch ($request_type) {
             case 'request':
                 if (!empty($sessionToken) && isset($_REQUEST['sec_token']) && $sessionToken === $_REQUEST['sec_token']) {
+=======
+     * @param string         $requestType The array in which to get the token ('get' or 'post')
+     * @param ?FormValidator $form
+     *
+     * @return bool True if it's the right token, false otherwise
+     */
+    public static function check_token(string $requestType = 'post', FormValidator $form = null, string $prefix = ''): bool
+    {
+        $secTokenVariable = self::generateSecTokenVariable($prefix);
+        $sessionToken = Session::read($secTokenVariable);
+        switch ($requestType) {
+            case 'request':
+                if (!empty($sessionToken) && isset($_REQUEST[$secTokenVariable]) && $sessionToken === $_REQUEST[$secTokenVariable]) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     return true;
                 }
 
                 return false;
             case 'get':
+<<<<<<< HEAD
                 if (!empty($sessionToken) && isset($_GET['sec_token']) && $sessionToken === $_GET['sec_token']) {
+=======
+                if (!empty($sessionToken) && isset($_GET[$secTokenVariable]) && $sessionToken === $_GET[$secTokenVariable]) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     return true;
                 }
 
                 return false;
             case 'post':
+<<<<<<< HEAD
                 if (!empty($sessionToken) && isset($_POST['sec_token']) && $sessionToken === $_POST['sec_token']) {
+=======
+                if (!empty($sessionToken) && isset($_POST[$secTokenVariable]) && $sessionToken === $_POST[$secTokenVariable]) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     return true;
                 }
 
@@ -175,11 +253,17 @@ class Security
 
                 return false;
             default:
+<<<<<<< HEAD
                 if (!empty($sessionToken) && isset($request_type) && $sessionToken === $request_type) {
                     return true;
                 }
 
                 return false;
+=======
+                if (!empty($sessionToken) && isset($requestType) && $sessionToken === $requestType) {
+                    return true;
+                }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         return false; // Just in case, don't let anything slip.
@@ -191,12 +275,20 @@ class Security
      *
      * @return bool True if the user agent is the same, false otherwise
      */
+<<<<<<< HEAD
     public static function check_ua()
+=======
+    public static function check_ua(): bool
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $security = Session::read('sec_ua');
         $securitySeed = Session::read('sec_ua_seed');
 
+<<<<<<< HEAD
         if ($_SERVER['HTTP_USER_AGENT'].$securitySeed === $security) {
+=======
+        if ($security === $_SERVER['HTTP_USER_AGENT'].$securitySeed) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             return true;
         }
 
@@ -206,9 +298,17 @@ class Security
     /**
      * Clear the security token from the session.
      */
+<<<<<<< HEAD
     public static function clear_token()
     {
         Session::erase('sec_token');
+=======
+    public static function clear_token(string $prefix = ''): void
+    {
+        $secTokenVariable = self::generateSecTokenVariable($prefix);
+
+        Session::erase($secTokenVariable);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -221,11 +321,20 @@ class Security
      *
      * @return string Hidden-type input ready to insert into a form
      */
+<<<<<<< HEAD
     public static function get_HTML_token()
     {
         $token = md5(uniqid(rand(), true));
         $string = '<input type="hidden" name="sec_token" value="'.$token.'" />';
         Session::write('sec_token', $token);
+=======
+    public static function get_HTML_token(string $prefix = ''): string
+    {
+        $secTokenVariable = self::generateSecTokenVariable($prefix);
+        $token = md5(uniqid(rand(), true));
+        $string = '<input type="hidden" name="'.$secTokenVariable.'" value="'.$token.'" />';
+        Session::write($secTokenVariable, $token);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         return $string;
     }
@@ -240,14 +349,23 @@ class Security
      *
      * @return string Token
      */
+<<<<<<< HEAD
     public static function get_token()
     {
         $token = md5(uniqid(rand(), true));
         Session::write('sec_token', $token);
+=======
+    public static function get_token($prefix = ''): string
+    {
+        $secTokenVariable = self::generateSecTokenVariable($prefix);
+        $token = md5(uniqid(rand(), true));
+        Session::write($secTokenVariable, $token);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         return $token;
     }
 
+<<<<<<< HEAD
     /**
      * @return string
      */
@@ -258,6 +376,16 @@ class Security
             return $token;
         } else {
             return self::get_token();
+=======
+    public static function get_existing_token(string $prefix = ''): string
+    {
+        $secTokenVariable = self::generateSecTokenVariable($prefix);
+        $token = Session::read($secTokenVariable);
+        if (!empty($token)) {
+            return $token;
+        } else {
+            return self::get_token($prefix);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
     }
 
@@ -276,11 +404,19 @@ class Security
      * This function returns a variable from the clean array. If the variable doesn't exist,
      * it returns null.
      *
+<<<<<<< HEAD
      * @param string    Variable name
      *
      * @return mixed Variable or NULL on error
      */
     public static function get($varname)
+=======
+     * @param string $varname Variable name
+     *
+     * @return mixed Variable or NULL on error
+     */
+    public static function get(string $varname)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         if (isset(self::$clean[$varname])) {
             return self::$clean[$varname];
@@ -294,6 +430,7 @@ class Security
      * Filtering for XSS is very easily done by using the htmlentities() function.
      * This kind of filtering prevents JavaScript snippets to be understood as such.
      *
+<<<<<<< HEAD
      * @param string The variable to filter for XSS, this params can be a string or an array (example : array(x,y))
      * @param int The user status,constant allowed (STUDENT, COURSEMANAGER, ANONYMOUS, COURSEMANAGERLOWSECURITY)
      * @param bool $filter_terms
@@ -301,6 +438,14 @@ class Security
      * @return string|array Filtered string or array
      */
     public static function remove_XSS($var, $user_status = null, $filter_terms = false)
+=======
+     * @param string|array $var         The variable to filter for XSS, this params can be a string or an array (example : array(x,y))
+     * @param ?int         $user_status The user status,constant allowed (STUDENT, COURSEMANAGER, ANONYMOUS, COURSEMANAGERLOWSECURITY)
+     *
+     * @return mixed Filtered string or array
+     */
+    public static function remove_XSS($var, int $user_status = null, bool $filter_terms = false)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         if ($filter_terms) {
             $var = self::filter_terms($var);
@@ -443,11 +588,17 @@ class Security
     /**
      * Filter content.
      *
+<<<<<<< HEAD
      * @param string $text to be filter
      *
      * @return string
      */
     public static function filter_terms($text)
+=======
+     * @param string $text to be filtered
+     */
+    public static function filter_terms(string $text): string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         static $bad_terms = [];
 
@@ -459,7 +610,11 @@ class Security
                 if (!empty($list)) {
                     foreach ($list as $term) {
                         $term = str_replace(["\r\n", "\r", "\n", "\t"], '', $term);
+<<<<<<< HEAD
                         $html_entities_value = api_htmlentities($term, ENT_QUOTES);
+=======
+                        $html_entities_value = api_htmlentities($term, ENT_QUOTES, api_get_system_encoding());
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         $bad_terms[] = $term;
                         if ($term != $html_entities_value) {
                             $bad_terms[] = $html_entities_value;
@@ -473,7 +628,11 @@ class Security
         $replace = '***';
         if (!empty($bad_terms)) {
             // Fast way
+<<<<<<< HEAD
             $new_text = str_ireplace($bad_terms, $replace, $text, $count);
+=======
+            $new_text = str_ireplace($bad_terms, $replace, $text);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $text = $new_text;
         }
 
@@ -487,11 +646,20 @@ class Security
      * this method encourages a safe practice for generating icon paths, without using heavy solutions
      * based on HTMLPurifier for example.
      *
+<<<<<<< HEAD
+=======
+     * @param string $image_path the input path of the image, it could be relative or absolute URL
+     *
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      * @return string returns sanitized image path or an empty string when the image path is not secure
      *
      * @author Ivan Tcholakov, March 2011
      */
+<<<<<<< HEAD
     public static function filter_img_path($image_path)
+=======
+    public static function filter_img_path(string $image_path): string
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         static $allowed_extensions = ['png', 'gif', 'jpg', 'jpeg', 'svg', 'webp'];
         $image_path = htmlspecialchars(trim($image_path)); // No html code is allowed.
@@ -532,10 +700,15 @@ class Security
      * Get password requirements
      * It checks config value 'password_requirements' or uses the "classic"
      * Chamilo password requirements.
+<<<<<<< HEAD
      *
      * @return array
      */
     public static function getPasswordRequirements()
+=======
+     */
+    public static function getPasswordRequirements(): array
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         // Default
         $requirements = [
@@ -553,7 +726,11 @@ class Security
             $requirements = $passwordRequirements;
         }
 
+<<<<<<< HEAD
         return $requirements;
+=======
+        return ['min' => $requirements['min']];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -583,4 +760,29 @@ class Security
 
         return $output;
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Sanitize a string, so it can be used in the exec() command without
+     * "jail-breaking" to execute other commands.
+     *
+     * @param string $param The string to filter
+     */
+    public static function sanitizeExecParam(string $param): string
+    {
+        $param = preg_replace('/[`;&|]/', '', $param);
+
+        return escapeshellarg($param);
+    }
+
+    private static function generateSecTokenVariable(string $prefix = ''): string
+    {
+        if (empty($prefix)) {
+            return 'sec_token';
+        }
+
+        return $prefix.'_sec_token';
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

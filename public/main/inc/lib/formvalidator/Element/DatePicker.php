@@ -2,7 +2,12 @@
 
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Component\Utils\ToolIcon;
+=======
+use Chamilo\CoreBundle\Component\Utils\ActionIcon;
+use Chamilo\CoreBundle\Component\Utils\ObjectIcon;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Framework\Container;
 
 /**
@@ -20,7 +25,11 @@ class DatePicker extends HTML_QuickForm_text
         if (!isset($attributes['id'])) {
             $attributes['id'] = $elementName;
         }
+<<<<<<< HEAD
         $attributes['class'] = 'form-control border flex-grow';
+=======
+        $attributes['class'] = 'p-component p-inputtext p-filled';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         parent::__construct($elementName, $elementLabel, $attributes);
         $this->_appendName = true;
@@ -57,6 +66,7 @@ class DatePicker extends HTML_QuickForm_text
             $requiredSymbol = '<span class="form_required">*</span>';
         }
 
+<<<<<<< HEAD
         $attrs = $this->_attributes;
         unset($attrs['id']);
 
@@ -71,6 +81,20 @@ class DatePicker extends HTML_QuickForm_text
                 </button>
                 <button class="btn btn--secondary-outline" type="button" data-clear>
                     <i class="pi pi-times pi-lg"></i>
+=======
+        $this->setAttribute('placeholder', get_lang('Select date'));
+
+        return '
+        <label>'.$requiredSymbol.$label.'</label>
+        <div id="'.$id.'_container" class="flex items-center mt-1 flatpickr-wrapper" data-wrap="true">
+            <input '.$this->_getAttrString($this->_attributes).' value="'.$value.'" data-input>
+            <div class="flex space-x-1 ml-2" id="button-addon3">
+                <button class="btn btn--secondary-outline mr-2" type="button" data-toggle>
+                  '.Display::getMdiIcon(ObjectIcon::AGENDA).'
+                </button>
+                <button class="btn btn--secondary-outline" type="button" data-clear>
+                  '.Display::getMdiIcon(ActionIcon::CLOSE).'
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 </button>
             </div>
         </div>
@@ -109,7 +133,11 @@ class DatePicker extends HTML_QuickForm_text
         return "<script>
         document.addEventListener('DOMContentLoaded', function () {
             function initializeFlatpickr() {
+<<<<<<< HEAD
                 const fp = flatpickr('#{$id}', {
+=======
+                const fp = flatpickr('#{$id}_container', {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     locale: '{$localeCode}',
                     altInput: true,
                     altFormat: '{$altFormat}',
@@ -119,11 +147,15 @@ class DatePicker extends HTML_QuickForm_text
                     wrap: true
                 });
 
+<<<<<<< HEAD
                 if ($('label[for=\"".$id."\"]').length > 0) {
                     $('label[for=\"".$id."\"]').hide();
                 }
 
                 document.querySelector('label[for=\"' + '{$id}' + '\"]').classList.add('datepicker-label');
+=======
+                $('label[for=\"".$id."\"]').hide().addClass('datepicker-label');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
 
             function loadLocale() {

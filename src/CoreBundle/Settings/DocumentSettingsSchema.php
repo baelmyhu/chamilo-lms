@@ -39,8 +39,11 @@ class DocumentSettingsSchema extends AbstractSettingsSchema
                     'students_export2pdf' => 'true',
                     'show_users_folders' => 'true',
                     'show_default_folders' => 'true',
+<<<<<<< HEAD
                     'enabled_text2audio' => 'false',
                     // 'enable_nanogong' => 'false',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'show_documents_preview' => 'false',
                     'enable_webcam_clip' => 'false',
                     'tool_visible_by_default_at_creation' => [
@@ -121,7 +124,10 @@ class DocumentSettingsSchema extends AbstractSettingsSchema
             ->add('students_export2pdf', YesNoType::class)
             ->add('show_users_folders', YesNoType::class)
             ->add('show_default_folders', YesNoType::class)
+<<<<<<< HEAD
             ->add('enabled_text2audio', YesNoType::class)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             // ->add('enable_nanogong', YesNoType::class)
             ->add('show_documents_preview', YesNoType::class)
             ->add('enable_webcam_clip', YesNoType::class)

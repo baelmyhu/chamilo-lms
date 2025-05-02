@@ -1,8 +1,15 @@
 <?php
 /* See license terms in /license.txt */
 
+<<<<<<< HEAD
 use ChamiloSession as Session;
 use Chamilo\CoreBundle\Component\Utils\ToolIcon;
+=======
+use Chamilo\CoreBundle\Framework\Container;
+use ChamiloSession as Session;
+use Chamilo\CoreBundle\Component\Utils\ToolIcon;
+use Symfony\Component\Finder\Finder;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  * Class AppPlugin.
@@ -55,6 +62,7 @@ class AppPlugin
 
     /**
      * Read plugin from path.
+<<<<<<< HEAD
      *
      * @return array
      */
@@ -71,6 +79,20 @@ class AppPlugin
         }
         @closedir($handle);
         sort($plugins);
+=======
+     */
+    public function read_plugins_from_path(): array
+    {
+        /* We scan the plugin directory. Each folder is a potential plugin. */
+        $pluginPath = api_get_path(SYS_PLUGIN_PATH);
+        $finder = (new Finder())->directories()->depth('== 0')->sortByName()->in($pluginPath);
+
+        $plugins = [];
+
+        foreach ($finder as $file) {
+            $plugins[] = $file->getFilename();
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         return $plugins;
     }
@@ -126,6 +148,7 @@ class AppPlugin
         return in_array($plugin, $list);
     }
 
+<<<<<<< HEAD
     /**
      * @deprecated
      */
@@ -147,10 +170,19 @@ class AppPlugin
             if (is_array($installedPlugins)) {
                 return $installedPlugins;
             }
+=======
+    public function getInstalledPlugins(bool $fromDatabase = true): array
+    {
+        static $installedPlugins = null;
+
+        if (false === $fromDatabase && is_array($installedPlugins)) {
+            return $installedPlugins;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
 
         if ($fromDatabase || null === $installedPlugins) {
             $installedPlugins = [];
+<<<<<<< HEAD
             $plugins = api_get_settings_params(
                 [
                     'variable = ? AND selected_value = ? AND category = ? ' => ['status', 'installed', 'Plugins'],
@@ -162,6 +194,13 @@ class AppPlugin
                     $installedPlugins[$row['subkey']] = true;
                 }
                 $installedPlugins = array_keys($installedPlugins);
+=======
+
+            $plugins = Container::getPluginRepository()->getInstalledPlugins();
+
+            foreach ($plugins as $plugin) {
+                $installedPlugins[] = $plugin->getTitle();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
         }
 
@@ -195,6 +234,7 @@ class AppPlugin
      *
      * @return array
      */
+<<<<<<< HEAD
     public function getOfficialPlugins()
     {
         static $officialPlugins = null;
@@ -284,6 +324,74 @@ class AppPlugin
             1
         );
 
+=======
+    public static function getOfficialPlugins(): array
+    {
+        // Please keep this list alphabetically sorted
+        return [
+            'AzureActiveDirectory',
+            'Bbb',
+            'BeforeLogin',
+            'BuyCourses',
+            'CardGame',
+            'CheckExtraFieldAuthorCompany',
+            'CleanDeletedFiles',
+            'CourseBlock',
+            'CourseHomeNotify',
+            'CourseLegal',
+            'CustomCertificate',
+            'CustomFooter',
+            'Dashboard',
+            'Dictionary',
+            'EmbedRegistry',
+            'ExerciseSignature',
+            'ExtAuthChamiloLogoutButtonBehaviour',
+            'ExternalNotificationConnect',
+            'ExtraMenuFromWebservice',
+            'GoogleMaps',
+            'GradingElectronic',
+            'H5pImport',
+            'HelloWorld',
+            'ImsLti',
+            'Justification',
+            'LearningCalendar',
+            'LtiProvider',
+            'MaintenanceMode',
+            'MigrationMoodle',
+            'Mobidico',
+            'NoSearchIndex',
+            'NotebookTeacher',
+            'PauseTraining',
+            'Pens',
+            'Positioning',
+            'QuestionOptionsEvaluation',
+            'Redirection',
+            'Resubscription',
+            'Rss',
+            'SearchCourse',
+            'ShowRegions',
+            'ShowUserInfo',
+            'Static',
+            'StudentFollowUp',
+            'SurveyExportCsv',
+            'SurveyExportTxt',
+            'Test2Pdf',
+            'TopLinks',
+            'Tour',
+            'UserRemoteService',
+            'XApi',
+            'Zoom',
+        ];
+    }
+
+    public static function isOfficial(string $title): bool
+    {
+        return in_array($title, self::getOfficialPlugins());
+    }
+
+    public function install(string $pluginName): void
+    {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $pluginPath = api_get_path(SYS_PLUGIN_PATH).$pluginName.'/install.php';
 
         if (is_file($pluginPath) && is_readable($pluginPath)) {
@@ -293,6 +401,7 @@ class AppPlugin
         }
     }
 
+<<<<<<< HEAD
     /**
      * @param string $pluginName
      * @param int    $urlId
@@ -305,17 +414,25 @@ class AppPlugin
         }
 
         // First call the custom uninstall to allow full access to global settings
+=======
+    public function uninstall(string $pluginName): void
+    {
+        // First call the custom uninstallation to allow full access to global settings
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $pluginPath = api_get_path(SYS_PLUGIN_PATH).$pluginName.'/uninstall.php';
         if (is_file($pluginPath) && is_readable($pluginPath)) {
             // Execute the uninstall procedure.
 
             require $pluginPath;
         }
+<<<<<<< HEAD
 
         // Second remove all remaining global settings
         api_delete_settings_params(
             ['category = ? AND access_url = ? AND subkey = ? ' => ['Plugins', $urlId, $pluginName]]
         );
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     }
 
     /**
@@ -523,6 +640,7 @@ class AppPlugin
                 require $plugin_file;
             }
 
+<<<<<<< HEAD
             // @todo check if settings are already added
             // Extra options
             $plugin_settings = api_get_settings_params(
@@ -549,6 +667,19 @@ class AppPlugin
             $plugin_info['settings'] = $settings_filtered;
             $pluginData[$pluginName] = $plugin_info;
             //Session::write('plugin_data', $pluginData);
+=======
+            $plugin = Container::getPluginRepository()->findOneByTitle($pluginName);
+
+            if (!$plugin) {
+                return [];
+            }
+
+            $configByUrl = $plugin->getConfigurationsByAccessUrl(
+                Container::getAccessUrlHelper()->getCurrent()
+            );
+
+            $plugin_info['settings'] = $configByUrl?->getConfiguration() ?? [];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
             return $plugin_info;
         }

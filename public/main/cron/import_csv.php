@@ -1,9 +1,17 @@
 <?php
 /* For licensing terms, see /license.txt */
 
+<<<<<<< HEAD
 use Chamilo\CourseBundle\Entity\CCalendarEvent;
 use Chamilo\CourseBundle\Entity\CItemProperty;
 use Chamilo\PluginBundle\Entity\StudentFollowUp\CarePost;
+=======
+use Chamilo\CoreBundle\Entity\Course;
+use Chamilo\CoreBundle\Entity\UserAuthSource;
+use Chamilo\CourseBundle\Entity\CCalendarEvent;
+use Chamilo\CourseBundle\Entity\CItemProperty;
+use Chamilo\PluginBundle\StudentFollowUp\Entity\CarePost;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Fhaculty\Graph\Graph;
 use Monolog\Handler\BufferHandler;
 use Monolog\Handler\ErrorLogHandler;
@@ -557,7 +565,11 @@ class ImportCsv
         $row['email'] = $row['Email'];
         $row['username'] = $row['UserName'];
         $row['password'] = $row['Password'];
+<<<<<<< HEAD
         $row['auth_source'] = isset($row['AuthSource']) ? $row['AuthSource'] : PLATFORM_AUTH_SOURCE;
+=======
+        $row['auth_source'] = $row['AuthSource'] ?? UserAuthSource::PLATFORM;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $row['official_code'] = $row['OfficialCode'];
         $row['phone'] = isset($row['PhoneNumber']) ? $row['PhoneNumber'] : '';
 
@@ -678,7 +690,11 @@ class ImportCsv
                         $language, //$row['language'],
                         $row['phone'],
                         null, //$row['picture'], //picture
+<<<<<<< HEAD
                         $row['auth_source'], // ?
+=======
+                        [$row['auth_source']], // ?
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         $expirationDateOnCreation, //'0000-00-00 00:00:00', //$row['expiration_date'], //$expiration_date = '0000-00-00 00:00:00',
                         1, //active
                         0,
@@ -721,7 +737,11 @@ class ImportCsv
                         $row['lastname'], // <<-- changed
                         $userInfo['username'],
                         null, //$password = null,
+<<<<<<< HEAD
                         $row['auth_source'],
+=======
+                        [$row['auth_source']],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         $userInfo['email'],
                         COURSEMANAGER,
                         $userInfo['official_code'],
@@ -880,7 +900,11 @@ class ImportCsv
                         $language, //$row['language'],
                         $row['phone'],
                         null, //$row['picture'], //picture
+<<<<<<< HEAD
                         $row['auth_source'], // ?
+=======
+                        [$row['auth_source']], // ?
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         $expirationDateOnCreate,
                         1, //active
                         0,
@@ -983,7 +1007,11 @@ class ImportCsv
                         $row['lastname'], // <<-- changed
                         $row['username'], // <<-- changed
                         $password, //$password = null,
+<<<<<<< HEAD
                         $row['auth_source'],
+=======
+                        [$row['auth_source']],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         $email,
                         STUDENT,
                         $userInfo['official_code'],
@@ -1269,7 +1297,11 @@ class ImportCsv
                 /* Check if event changed of course code */
                 if (!empty($item) && isset($item['item_id']) && !empty($item['item_id'])) {
                     /** @var CCalendarEvent $calendarEvent */
+<<<<<<< HEAD
                     $calendarEvent = $em->getRepository('ChamiloCourseBundle:CCalendarEvent')->find($item['item_id']);
+=======
+                    $calendarEvent = $em->getRepository(CCalendarEvent::class)->find($item['item_id']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 }
 
                 if ($calendarEvent) {
@@ -1287,7 +1319,11 @@ class ImportCsv
                         ];
                         /** @var CItemProperty $itemProperty */
                         $itemProperty = $em->getRepository('ChamiloCourseBundle:CItemProperty')->findOneBy($criteria);
+<<<<<<< HEAD
                         $courseEntity = $em->getRepository('ChamiloCoreBundle:Course')->find($courseInfo['real_id']);
+=======
+                        $courseEntity = $em->getRepository(Course::class)->find($courseInfo['real_id']);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                         if ($itemProperty && $courseEntity) {
                             $itemProperty->setCourse($courseEntity);
                             $em->persist($itemProperty);

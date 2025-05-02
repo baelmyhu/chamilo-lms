@@ -6,7 +6,11 @@
     >
       <img
         :alt="shortcut.title"
+<<<<<<< HEAD
         :src="`/img/tools/${shortcut.type}.png`"
+=======
+        :src="shortcut.customImageUrl || `/img/tools/${shortcut.type}.png`"
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         class="course-tool__icon"
       />
     </BaseAppLink>

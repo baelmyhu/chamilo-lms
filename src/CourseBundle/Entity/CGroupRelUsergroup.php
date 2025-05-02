@@ -10,13 +10,20 @@ use Chamilo\CoreBundle\Entity\Course;
 use Chamilo\CoreBundle\Entity\Session;
 use Chamilo\CoreBundle\Entity\Usergroup;
 use Doctrine\ORM\Mapping as ORM;
+<<<<<<< HEAD
 use Chamilo\CourseBundle\Repository\CGroupRelUsergroupRepository;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  * CGroupRelUsergroup.
  */
 #[ORM\Table(name: 'c_group_rel_usergroup')]
+<<<<<<< HEAD
 #[ORM\Entity(repositoryClass: CGroupRelUsergroupRepository::class)]
+=======
+#[ORM\Entity]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 class CGroupRelUsergroup
 {
     #[ORM\Id]
@@ -56,6 +63,10 @@ class CGroupRelUsergroup
     public function setGroup(CGroup $group): self
     {
         $this->group = $group;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $this;
     }
 
@@ -67,6 +78,10 @@ class CGroupRelUsergroup
     public function setUsergroup(Usergroup $usergroup): self
     {
         $this->usergroup = $usergroup;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $this;
     }
 
@@ -78,6 +93,10 @@ class CGroupRelUsergroup
     public function setSession(?Session $session): self
     {
         $this->session = $session;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $this;
     }
 
@@ -89,6 +108,10 @@ class CGroupRelUsergroup
     public function setCourse(?Course $course): self
     {
         $this->course = $course;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $this;
     }
 
@@ -100,6 +123,10 @@ class CGroupRelUsergroup
     public function setReadyAutogroup(bool $readyAutogroup): self
     {
         $this->readyAutogroup = $readyAutogroup;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $this;
     }
 }

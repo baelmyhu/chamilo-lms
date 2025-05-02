@@ -41,7 +41,11 @@ if ('true' === $hideExportLink ||
     $allowExport = false;
 }
 
+<<<<<<< HEAD
 $template = new Template(get_lang('MyCertificates'));
+=======
+$template = new Template(get_lang('My certificates'));
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $template->assign('course_list', $courseList);
 $template->assign('session_list', $sessionList);
 $template->assign('allow_export', $allowExport);

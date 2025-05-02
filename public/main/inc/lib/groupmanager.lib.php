@@ -11,9 +11,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Chamilo\CoreBundle\Component\Utils\ActionIcon;
 use Chamilo\CoreBundle\Component\Utils\ToolIcon;
+<<<<<<< HEAD
 use Chamilo\CourseBundle\Entity\CGroupRelUsergroup;
 use Chamilo\CoreBundle\Entity\Usergroup;
 use Chamilo\CoreBundle\Entity\Session;
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 /**
  * This library contains some functions for group-management.
@@ -68,6 +71,7 @@ class GroupManager
     public const DOCUMENT_MODE_READ_ONLY = 1;
     public const DOCUMENT_MODE_COLLABORATION = 2;
 
+<<<<<<< HEAD
     /**
      * Constant for the group category's naming rules
      */
@@ -83,6 +87,8 @@ class GroupManager
     public const GROUP_ONLY_FOR_THOSE_JOINED_WITHOUT_MEMBERS_INFOS = 2;
 
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct()
     {
     }
@@ -408,7 +414,11 @@ class GroupManager
      *
      * @return array
      */
+<<<<<<< HEAD
     public static function create_class_groups($categoryId, $classIds = [])
+=======
+    public static function create_class_groups($categoryId)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $options['where'] = [' usergroup.course_id = ? ' => api_get_course_int_id()];
         $obj = new UserGroupModel();
@@ -416,6 +426,7 @@ class GroupManager
         $group_ids = [];
 
         foreach ($classes as $class) {
+<<<<<<< HEAD
             if (in_array((int)$class['id'], $classIds)) {
                 $userList = $obj->get_users_by_usergroup($class['id']);
                 $groupId = self::create_group(
@@ -501,10 +512,17 @@ class GroupManager
             $groupId = self::create_group(
                 $usergroup->getTitle(), // name of class (usergroup)
                 $category_id, // category_id
+=======
+            $userList = $obj->get_users_by_usergroup($class['id']);
+            $groupId = self::create_group(
+                $class['name'],
+                $categoryId,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 0,
                 null
             );
 
+<<<<<<< HEAD
             $group = Database::getManager()->getRepository(CGroup::class)->find($groupId);
 
             // fill the group from usergroup
@@ -528,10 +546,19 @@ class GroupManager
 
             $group_ids[] = $groupRelUsergroup->getId();
         }
+=======
+            if ($groupId) {
+                self::subscribeUsers($userList, api_get_group_entity($groupId));
+                $group_ids[] = $groupId;
+            }
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         return $group_ids;
     }
 
     /**
+<<<<<<< HEAD
      * Get the usergroup linked to the group if it exists.
      *
      * @author Esteban Ristich <esteban.ristich@protonmail.com>
@@ -586,6 +613,8 @@ class GroupManager
     }
 
     /**
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      * Deletes groups and their data.
      *
      * @author Christophe Gesche <christophe.gesche@claroline.net>
@@ -1059,6 +1088,7 @@ class GroupManager
      */
     public static function create_category(
         $title,
+<<<<<<< HEAD
         $description,
         $docState,
         $workState,
@@ -1066,14 +1096,27 @@ class GroupManager
         $anonuncementState,
         $forumState,
         $wikiState,
+=======
+        $description = '',
+        $docState = 1,
+        $workState = 1,
+        $calendarState = 1,
+        $anonuncementState = 1,
+        $forumState = 1,
+        $wikiState = 1,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $chatState = 1,
         $selfRegistrationAllowed = 0,
         $selfUnRegistrationAllowed = 0,
         $maxStudent = 8,
         $groupsPerUser = 0,
+<<<<<<< HEAD
         $documentAccess = 0,
         $namingRule = GroupManager::GROUP_ONLY_TEACHER_CAN_RENAME,
         $visibilityRule = GroupManager::GROUP_VISIBILITY_DEFAULT
+=======
+        $documentAccess = 0
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ) {
         if (empty($title)) {
             return false;
@@ -1100,8 +1143,11 @@ class GroupManager
             ->setGroupsPerUser($groupsPerUser)
             ->setParent($course)
             ->addCourseLink($course, $session)
+<<<<<<< HEAD
             ->setAllowChangeGroupName($namingRule)
             ->setOnlyMe($visibilityRule)
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ;
 
         $repo = Container::getGroupCategoryRepository();
@@ -1144,9 +1190,13 @@ class GroupManager
         $selfUnRegistrationAllowed,
         $maximum_number_of_students,
         $groups_per_user,
+<<<<<<< HEAD
         $documentAccess,
         $namingRule = GroupManager::GROUP_ONLY_TEACHER_CAN_RENAME,
         $visibilityRule = GroupManager::GROUP_VISIBILITY_DEFAULT
+=======
+        $documentAccess
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     ) {
         $table = Database::get_course_table(TABLE_GROUP_CATEGORY);
         $id = (int) $id;
@@ -1171,8 +1221,11 @@ class GroupManager
                     groups_per_user   = '".Database::escape_string($groups_per_user)."',
                     self_reg_allowed = '".Database::escape_string($selfRegistrationAllowed)."',
                     self_unreg_allowed = '".Database::escape_string($selfUnRegistrationAllowed)."',
+<<<<<<< HEAD
                     allow_change_group_name = '".Database::escape_string($namingRule)."',
                     only_me = '".Database::escape_string($visibilityRule)."',
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     $documentCondition
                     max_student = ".intval($maximum_number_of_students)."
                 WHERE iid = $id";
@@ -2414,12 +2467,15 @@ class GroupManager
                 }
             }
 
+<<<<<<< HEAD
             // linked class
             if (api_get_setting('allow_group_categories') === 'true') {
                 $usergroup = GroupManager::get_usergroup_link($group);
                 isset($usergroup) ? $row[] = $usergroup->getTitle() : $row[] = '-';
             }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             // @todo fix group session access.
             $groupSessionId = null;
 
@@ -2501,9 +2557,12 @@ class GroupManager
         $table->set_header($column++, get_lang('Groups'));
         $table->set_header($column++, get_lang('Group tutor'));
         $table->set_header($column++, get_lang('Registered'), false);
+<<<<<<< HEAD
         if (api_get_setting('allow_group_categories') === 'true') {
             $table->set_header($column++, get_lang('Classe liée'), false);
         }
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         if (!api_is_allowed_to_edit(false, true)) {
             // If self-registration allowed
@@ -2572,9 +2631,13 @@ class GroupManager
                         $data['self_unreg_allowed'],
                         $data['max_student'],
                         $data['groups_per_user'],
+<<<<<<< HEAD
                         $data['document_access'],
                         $data['allow_change_group_name'],
                         $data['only_me']
+=======
+                        $data['document_access']
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     );
                     $data['category_id'] = $categoryId;
                     $result['updated']['category'][] = $data;
@@ -2593,10 +2656,14 @@ class GroupManager
                         $data['self_reg_allowed'],
                         $data['self_unreg_allowed'],
                         $data['max_student'],
+<<<<<<< HEAD
                         $data['groups_per_user'],
                         $data['document_access'] ?? 0,
                         $data['allow_change_group_name'],
                         $data['only_me']
+=======
+                        $data['groups_per_user']
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     );
 
                     if ($categoryId) {

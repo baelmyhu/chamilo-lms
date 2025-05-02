@@ -3,9 +3,12 @@
 /* For licensing terms, see /license.txt */
 
 require_once __DIR__.'/../inc/global.inc.php';
+<<<<<<< HEAD
 
 use Chamilo\CoreBundle\Framework\Container;
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $this_section = SECTION_COURSES;
 $current_course_tool = TOOL_GROUP;
 
@@ -17,7 +20,11 @@ $current_group = GroupManager::get_group_properties($group_id);
 $groupEntity = api_get_group_entity($group_id);
 
 $nameTools = get_lang('Edit this group');
+<<<<<<< HEAD
 $interbreadcrumb[] = ['url' => 'group.php?'.api_get_cidreq(), 'name' => get_lang('Groups')];
+=======
+$interbreadcrumb[] = ['url' => 'group.php', 'name' => get_lang('Groups')];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $interbreadcrumb[] = ['url' => 'group_space.php?'.api_get_cidreq(), 'name' => $groupEntity->getTitle()];
 
 $is_group_member = GroupManager::isTutorOfGroup(api_get_user_id(), $groupEntity);
@@ -230,6 +237,7 @@ Display::display_header($nameTools, 'Group');
 
 $form->setDefaults($defaults);
 echo GroupManager::getSettingBar('member');
+<<<<<<< HEAD
 
 // check if group has a CGroupRelUsergroup
 $courseInfo = api_get_course_info_by_id(api_get_course_int_id());
@@ -250,5 +258,8 @@ if (GroupManager::is_group_linked_to_usergroup($groupEntity)) {
 } else {
     $form->display();
 }
+=======
+$form->display();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 Display::display_footer();

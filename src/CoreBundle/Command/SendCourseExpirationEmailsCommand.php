@@ -12,6 +12,10 @@ use Chamilo\CoreBundle\Settings\SettingsManager;
 use DateTime;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
+<<<<<<< HEAD
+=======
+use Symfony\Component\Console\Attribute\AsCommand;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,6 +26,7 @@ use Symfony\Component\Mime\Email;
 use Twig\Environment;
 use UserManager;
 
+<<<<<<< HEAD
 class SendCourseExpirationEmailsCommand extends Command
 {
     /**
@@ -29,6 +34,14 @@ class SendCourseExpirationEmailsCommand extends Command
      */
     protected static $defaultName = 'app:send-course-expiration-emails';
 
+=======
+#[AsCommand(
+    name: 'app:send-course-expiration-emails',
+    description: 'Send an email to users when their course is finished.',
+)]
+class SendCourseExpirationEmailsCommand extends Command
+{
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly SettingsManager $settingsManager,
@@ -41,7 +54,10 @@ class SendCourseExpirationEmailsCommand extends Command
     protected function configure(): void
     {
         $this
+<<<<<<< HEAD
             ->setDescription('Send an email to users when their course is finished.')
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             ->addOption('debug', null, InputOption::VALUE_NONE, 'Enable debug mode')
             ->setHelp('This command sends an email to users whose course session is expiring today.')
         ;

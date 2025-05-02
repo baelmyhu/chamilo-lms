@@ -212,7 +212,11 @@ switch ($action) {
             'category_code',
             get_lang('CourseCategories'),
             [],
+<<<<<<< HEAD
             ['placeholder' => get_lang('SelectAnOption')]
+=======
+            ['placeholder' => get_lang('Please select an option')]
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         );
 
         $defaults = [];
@@ -464,7 +468,11 @@ switch ($action) {
                     );
 
                     // Start buy course validation
+<<<<<<< HEAD
                     // display the course price and buy button if the buycourses plugin is enabled and this course is configured
+=======
+                    // display the course price and buy button if the BuyCourses plugin is enabled and this course is configured
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     $plugin = BuyCoursesPlugin::create();
                     $isThisCourseInSale = $plugin->buyCoursesForGridCatalogValidator(
                         $courseId,

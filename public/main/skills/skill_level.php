@@ -54,7 +54,11 @@ if (!empty($item)) {
 
 $formToDisplay = '';
 
+<<<<<<< HEAD
 $interbreadcrumb[] = ['url' => 'index.php', 'name' => get_lang('Administration')];
+=======
+$interbreadcrumb[] = ['url' => api_get_path(WEB_CODE_PATH).'admin/index.php', 'name' => get_lang('Administration')];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 $interbreadcrumb[] = ['url' => api_get_path(WEB_CODE_PATH).'skills/skill.php', 'name' => get_lang('Manage skills levels')];
 $interbreadcrumb[] = ['url' => api_get_self(), 'name' => get_lang('Skill level')];
 

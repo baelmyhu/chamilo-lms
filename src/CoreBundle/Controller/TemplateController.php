@@ -134,11 +134,41 @@ class TemplateController extends AbstractController
                 $imageUrl = $assetRepository->getAssetUrl($template->getImage());
             }
 
+<<<<<<< HEAD
+=======
+            $content = $template->getContent();
+            $content = str_replace('<table', '<table class="responsive-table"', $content);
+            $content = str_replace(
+                '{CSS}',
+                '<style>
+                .responsive-table {
+                    width: 100%;
+                    max-width: 100%;
+                    overflow-x: auto;
+                    display: block;
+                    border-collapse: collapse;
+                }
+                .responsive-table th,
+                .responsive-table td {
+                    padding: 8px;
+                    text-align: left;
+                    word-wrap: break-word;
+                    border: 1px solid #ccc;
+                }
+            </style>',
+                $content
+            );
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             return [
                 'id' => $template->getId(),
                 'title' => $template->getTitle(),
                 'comment' => $template->getComment(),
+<<<<<<< HEAD
                 'content' => $template->getContent(),
+=======
+                'content' => $content,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'image' => $imageUrl,
             ];
         }, $systemTemplates);

@@ -6,7 +6,14 @@ declare(strict_types=1);
 
 namespace Chamilo\CoreBundle\Form;
 
+<<<<<<< HEAD
 use Chamilo\CoreBundle\Entity\Session;
+=======
+use Chamilo\CoreBundle\Entity\Promotion;
+use Chamilo\CoreBundle\Entity\Session;
+use Chamilo\CoreBundle\Entity\SessionCategory;
+use Chamilo\CoreBundle\Entity\User;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,7 +31,11 @@ class SessionType extends AbstractType
                 'general_coach',
                 'entity',
                 [
+<<<<<<< HEAD
                     'class' => 'ChamiloCoreBundle:User',
+=======
+                    'class' => User::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'property' => 'username',
                 ]
             )
@@ -32,7 +43,11 @@ class SessionType extends AbstractType
                 'session_admin_id',
                 'entity',
                 [
+<<<<<<< HEAD
                     'class' => 'ChamiloCoreBundle:User',
+=======
+                    'class' => User::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'property' => 'username',
                 ]
             )
@@ -47,7 +62,11 @@ class SessionType extends AbstractType
                 'session_category_id',
                 'entity',
                 [
+<<<<<<< HEAD
                     'class' => 'ChamiloCoreBundle:SessionCategory',
+=======
+                    'class' => SessionCategory::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'property' => 'name',
                 ]
             )
@@ -55,7 +74,11 @@ class SessionType extends AbstractType
                 'promotion_id',
                 'entity',
                 [
+<<<<<<< HEAD
                     'class' => 'ChamiloCoreBundle:Promotion',
+=======
+                    'class' => Promotion::class,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     'property' => 'name',
                 ]
             )

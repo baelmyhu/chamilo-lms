@@ -46,6 +46,7 @@ class StudentPublicationLink extends AbstractLink
 
         $sessionId = $this->get_session_id();
         $session = api_get_session_entity($sessionId);
+<<<<<<< HEAD
         /*
         if (empty($session_id)) {
             $session_condition = api_get_session_condition(0, true);
@@ -68,6 +69,11 @@ class StudentPublicationLink extends AbstractLink
                 'filetype' => 'folder',
                 'session' => $session,
             ]);*/
+=======
+        $repo = Container::getStudentPublicationRepository();
+        $qb = $repo->findAllByCourse(api_get_course_entity($this->course_id), $session, null, 1, 'folder');
+        $links = $qb->getQuery()->getResult();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $cats = [];
         foreach ($links as $data) {
             $work_name = $data->getTitle();
@@ -93,10 +99,15 @@ class StudentPublicationLink extends AbstractLink
         $id = $studentPublication->getIid();
         $session = api_get_session_entity($this->get_session_id());
         $results = Container::getStudentPublicationRepository()
+<<<<<<< HEAD
             ->findBy([
                 'parentId' => $id,
                 'session' => $session,
             ]);
+=======
+            ->getStudentAssignments($studentPublication, api_get_course_entity($this->course_id), $session);
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         return 0 !== count($results);
     }
@@ -109,13 +120,17 @@ class StudentPublicationLink extends AbstractLink
     public function calc_score($studentId = null, $type = null)
     {
         $studentId = (int) $studentId;
+<<<<<<< HEAD
         $em = Database::getManager();
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $assignment = $this->getStudentPublication();
 
         if (empty($assignment)) {
             return [];
         }
         $session = api_get_session_entity($this->get_session_id());
+<<<<<<< HEAD
 
         // @todo check session id / course id access
         /*$id = $studentPublication->getIid();
@@ -163,11 +178,18 @@ class StudentPublicationLink extends AbstractLink
             $dql .= ' AND a.userId = :student ';
             $params['student'] = $studentId;
         }
+=======
+        $course = api_get_course_entity($this->course_id);
+
+        $qb = Container::getStudentPublicationRepository()
+            ->getStudentAssignments($assignment, $course, $session, null, $studentId ? api_get_user_entity($studentId) : null);
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $order = api_get_setting('student_publication_to_take_in_gradebook');
 
         switch ($order) {
             case 'last':
+<<<<<<< HEAD
                 // latest attempt
                 $dql .= ' ORDER BY a.sentDate DESC';
                 break;
@@ -179,6 +201,17 @@ class StudentPublicationLink extends AbstractLink
         }
 
         $scores = $em->createQuery($dql)->execute($params);
+=======
+                $qb->orderBy('resource.sentDate', 'DESC');
+                break;
+            case 'first':
+            default:
+                $qb->orderBy('resource.iid', 'ASC');
+                break;
+        }
+
+        $scores = $qb->getQuery()->getResult();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         // for 1 student
         if (!empty($studentId)) {
@@ -196,8 +229,13 @@ class StudentPublicationLink extends AbstractLink
             ];
         }
 
+<<<<<<< HEAD
         $students = []; // user list, needed to make sure we only
         // take first attempts into account
+=======
+        // multiple students
+        $students = [];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $rescount = 0;
         $sum = 0;
         $bestResult = 0;
@@ -205,9 +243,15 @@ class StudentPublicationLink extends AbstractLink
         $sumResult = 0;
 
         foreach ($scores as $data) {
+<<<<<<< HEAD
             if (!(array_key_exists($data->getUserId(), $students))) {
                 if (0 != $assignment->getQualification()) {
                     $students[$data->getUserId()] = $data->getQualification();
+=======
+            if (!array_key_exists($data->getUser()->getId(), $students)) {
+                if (0 != $assignment->getQualification()) {
+                    $students[$data->getUser()->getId()] = $data->getQualification();
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                     $rescount++;
                     $sum += $data->getQualification() / $assignment->getQualification();
                     $sumResult += $data->getQualification();
@@ -227,6 +271,7 @@ class StudentPublicationLink extends AbstractLink
         switch ($type) {
             case 'best':
                 return [$bestResult, $weight];
+<<<<<<< HEAD
                 break;
             case 'average':
                 return [$sumResult / $rescount, $weight];
@@ -237,6 +282,14 @@ class StudentPublicationLink extends AbstractLink
             default:
                 return [$sum, $rescount];
                 break;
+=======
+            case 'average':
+                return [$sumResult / $rescount, $weight];
+            case 'ranking':
+                return AbstractLink::getCurrentUserRanking($studentId, $students);
+            default:
+                return [$sum, $rescount];
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         }
     }
 

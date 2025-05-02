@@ -141,6 +141,7 @@ if (api_is_allowed_to_edit(false, true) ||
         }
     }
 
+<<<<<<< HEAD
     // add edit tool
     if (true) {
         $actions_array[] = [
@@ -149,6 +150,8 @@ if (api_is_allowed_to_edit(false, true) ||
         ];
     }
 
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     if (GroupManager::TOOL_NOT_AVAILABLE != $groupEntity->getDocState()) {
         $params = [
             'toolName' => 'document',
@@ -222,10 +225,17 @@ if (api_is_allowed_to_edit(false, true) ||
 
     $enabled = api_get_plugin_setting('bbb', 'tool_enable');
     if ('true' === $enabled) {
+<<<<<<< HEAD
         $bbb = new bbb();
         if ($bbb->hasGroupSupport()) {
             $actions_array[] = [
                 'url' => api_get_path(WEB_PLUGIN_PATH).'bbb/start.php?'.api_get_cidreq(),
+=======
+        $bbb = new Bbb();
+        if ($bbb->hasGroupSupport()) {
+            $actions_array[] = [
+                'url' => api_get_path(WEB_PLUGIN_PATH).'Bbb/start.php?'.api_get_cidreq(),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'content' => Display::getMdiIcon(ToolIcon::VIDEOCONFERENCE, 'ch-tool-icon', null, ICON_SIZE_MEDIUM, get_lang('Videoconference')),
             ];
         }

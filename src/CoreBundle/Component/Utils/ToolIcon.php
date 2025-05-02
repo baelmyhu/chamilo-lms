@@ -88,4 +88,9 @@ enum ToolIcon: string
     case SHARED_PROFILE = 'account-box-outline';
     // Dropbox
     case DROPBOX = 'dropbox';
+<<<<<<< HEAD
+=======
+    // Ai helpers
+    case ROBOT = 'robot';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

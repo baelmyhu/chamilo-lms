@@ -179,6 +179,10 @@ if ($action_todo) {
     $form = new FormValidator('system_announcement', 'post', $url);
     $form->addHeader($form_title);
     $form->addText('title', get_lang('Title'), true);
+<<<<<<< HEAD
+=======
+    $form->applyFilter('title', 'html_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
     $extraOption = [];
     $extraOption['all'] = get_lang('All');
@@ -218,7 +222,11 @@ if ($action_todo) {
             $list,
             [
                 'onchange' => 'javascript: showCareer();',
+<<<<<<< HEAD
                 'placeholder' => get_lang('SelectAnOption'),
+=======
+                'placeholder' => get_lang('Please select an option'),
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
                 'id' => 'career_id',
             ]
         );

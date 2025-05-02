@@ -24,7 +24,11 @@ trait CourseTrait
     /**
      * @return $this
      */
+<<<<<<< HEAD
     public function setCourse(Course $course): self
+=======
+    public function setCourse(?Course $course): self
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         $this->course = $course;
 

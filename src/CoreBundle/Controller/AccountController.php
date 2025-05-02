@@ -14,6 +14,14 @@ use Chamilo\CoreBundle\Repository\Node\UserRepository;
 use Chamilo\CoreBundle\ServiceHelper\UserHelper;
 use Chamilo\CoreBundle\Settings\SettingsManager;
 use Chamilo\CoreBundle\Traits\ControllerTrait;
+<<<<<<< HEAD
+=======
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh;
+use Endroid\QrCode\Writer\PngWriter;
+use OTPHP\TOTP;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Security;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -61,6 +69,16 @@ class AccountController extends BaseController
                 }
             }
 
+<<<<<<< HEAD
+=======
+            if ($form->has('password')) {
+                $password = $form['password']->getData();
+                if ($password) {
+                    $user->setPlainPassword($password);
+                }
+            }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             $showTermsIfProfileCompleted = ('true' === $settingsManager->getSetting('show_terms_if_profile_completed'));
             $user->setProfileCompleted($showTermsIfProfileCompleted);
 
@@ -82,15 +100,46 @@ class AccountController extends BaseController
     #[Route('/change-password', name: 'chamilo_core_account_change_password', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, UserRepository $userRepository, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
+<<<<<<< HEAD
+=======
+        /** @var User $user */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $user = $this->getUser();
 
         if (!\is_object($user) || !$user instanceof UserInterface) {
             throw $this->createAccessDeniedException('This user does not have access to this section');
         }
 
+<<<<<<< HEAD
         $form = $this->createForm(ChangePasswordType::class);
         $form->handleRequest($request);
 
+=======
+        $form = $this->createForm(ChangePasswordType::class, [
+            'enable2FA' => $user->getMfaEnabled(),
+        ]);
+        $form->handleRequest($request);
+
+        $qrCodeBase64 = null;
+        if ($user->getMfaEnabled() && 'TOTP' === $user->getMfaService() && $user->getMfaSecret()) {
+            $decryptedSecret = $this->decryptTOTPSecret($user->getMfaSecret(), $_ENV['APP_SECRET']);
+            $totp = TOTP::create($decryptedSecret);
+            $totp->setLabel($user->getEmail());
+
+            $qrCodeResult = Builder::create()
+                ->writer(new PngWriter())
+                ->data($totp->getProvisioningUri())
+                ->encoding(new Encoding('UTF-8'))
+                ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+                ->size(300)
+                ->margin(10)
+                ->build()
+            ;
+
+            $qrCodeBase64 = base64_encode($qrCodeResult->getString());
+        }
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         if ($form->isSubmitted() && $form->isValid()) {
             $submittedToken = $request->request->get('_token');
 
@@ -100,6 +149,7 @@ class AccountController extends BaseController
                 $currentPassword = $form->get('currentPassword')->getData();
                 $newPassword = $form->get('newPassword')->getData();
                 $confirmPassword = $form->get('confirmPassword')->getData();
+<<<<<<< HEAD
 
                 if (!$userRepository->isPasswordValid($user, $currentPassword)) {
                     $form->get('currentPassword')->addError(new FormError($this->translator->trans('Current password is incorrect.')));
@@ -119,15 +169,97 @@ class AccountController extends BaseController
                         return $this->redirectToRoute('chamilo_core_account_home');
                     }
                 }
+=======
+                $enable2FA = $form->get('enable2FA')->getData();
+
+                if ($enable2FA && !$user->getMfaSecret()) {
+                    $totp = TOTP::create();
+                    $totp->setLabel($user->getEmail());
+                    $encryptedSecret = $this->encryptTOTPSecret($totp->getSecret(), $_ENV['APP_SECRET']);
+                    $user->setMfaSecret($encryptedSecret);
+                    $user->setMfaEnabled(true);
+                    $user->setMfaService('TOTP');
+                    $userRepository->updateUser($user);
+
+                    $qrCodeResult = Builder::create()
+                        ->writer(new PngWriter())
+                        ->data($totp->getProvisioningUri())
+                        ->encoding(new Encoding('UTF-8'))
+                        ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
+                        ->size(300)
+                        ->margin(10)
+                        ->build()
+                    ;
+
+                    $qrCodeBase64 = base64_encode($qrCodeResult->getString());
+
+                    return $this->render('@ChamiloCore/Account/change_password.html.twig', [
+                        'form' => $form->createView(),
+                        'qrCode' => $qrCodeBase64,
+                        'user' => $user,
+                    ]);
+                }
+                if (!$enable2FA) {
+                    $user->setMfaEnabled(false);
+                    $user->setMfaSecret(null);
+                    $userRepository->updateUser($user);
+                    $this->addFlash('success', '2FA disabled successfully.');
+                }
+
+                if ($newPassword || $confirmPassword || $currentPassword) {
+                    if (!$userRepository->isPasswordValid($user, $currentPassword)) {
+                        $form->get('currentPassword')->addError(new FormError($this->translator->trans('The current password is incorrect')));
+                    } elseif ($newPassword !== $confirmPassword) {
+                        $form->get('confirmPassword')->addError(new FormError($this->translator->trans('Passwords do not match')));
+                    } else {
+                        $user->setPlainPassword($newPassword);
+                        $userRepository->updateUser($user);
+                        $this->addFlash('success', 'Password updated successfully');
+                    }
+                }
+
+                return $this->redirectToRoute('chamilo_core_account_home');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
             }
         }
 
         return $this->render('@ChamiloCore/Account/change_password.html.twig', [
             'form' => $form->createView(),
+<<<<<<< HEAD
+=======
+            'qrCode' => $qrCodeBase64,
+            'user' => $user,
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         ]);
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Encrypts the TOTP secret using AES-256-CBC encryption.
+     */
+    private function encryptTOTPSecret(string $secret, string $encryptionKey): string
+    {
+        $cipherMethod = 'aes-256-cbc';
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipherMethod));
+        $encryptedSecret = openssl_encrypt($secret, $cipherMethod, $encryptionKey, 0, $iv);
+
+        return base64_encode($iv.'::'.$encryptedSecret);
+    }
+
+    /**
+     * Decrypts the TOTP secret using AES-256-CBC decryption.
+     */
+    private function decryptTOTPSecret(string $encryptedSecret, string $encryptionKey): string
+    {
+        $cipherMethod = 'aes-256-cbc';
+        list($iv, $encryptedData) = explode('::', base64_decode($encryptedSecret), 2);
+
+        return openssl_decrypt($encryptedData, $cipherMethod, $encryptionKey, 0, $iv);
+    }
+
+    /**
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
      * Validate the password against the same requirements as the client-side validation.
      */
     private function validatePassword(string $password): array

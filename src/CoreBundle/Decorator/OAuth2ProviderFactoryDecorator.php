@@ -40,6 +40,7 @@ readonly class OAuth2ProviderFactoryDecorator
             Azure::class => $this->authenticationConfigHelper->getProviderConfig('azure'),
             default => throw new InvalidArgumentException("Unsupported provider class: $class"),
         };
+<<<<<<< HEAD
 
         $redirectParams = $customConfig['redirect_params'] ?? [];
 
@@ -57,6 +58,54 @@ readonly class OAuth2ProviderFactoryDecorator
             Azure::class => $this->authenticationConfigHelper->getProviderOptions('azure', $customConfig),
             default => throw new InvalidArgumentException("Unsupported provider class: $class"),
         };
+=======
+        $customConfig['client_id'] ??= '';
+        $customConfig['client_secret'] ??= '';
+
+        $redirectParams = $customConfig['redirect_params'] ?? [];
+
+        switch ($class) {
+            case GenericProvider::class:
+                $customConfig['provider_options'] ??= [
+                    'urlAuthorize' => '',
+                    'urlAccessToken' => '',
+                    'urlResourceOwnerDetails' => '',
+                    'responseResourceOwnerId' => 'sub',
+                ];
+
+                $customOptions = $this->authenticationConfigHelper->getOAuthProviderOptions(
+                    'generic',
+                    [
+                        'client_id' => $customConfig['client_id'],
+                        'client_secret' => $customConfig['client_secret'],
+                        ...$customConfig['provider_options'],
+                    ],
+                );
+
+                break;
+
+            case Facebook::class:
+                $customOptions = $this->authenticationConfigHelper->getOAuthProviderOptions('facebook', $customConfig);
+
+                break;
+
+            case Keycloak::class:
+                $customConfig['auth_server_url'] ??= '';
+                $customConfig['realm'] ??= '';
+
+                $customOptions = $this->authenticationConfigHelper->getOAuthProviderOptions('keycloak', $customConfig);
+
+                break;
+
+            case Azure::class:
+                $customOptions = $this->authenticationConfigHelper->getOAuthProviderOptions('azure', $customConfig);
+
+                break;
+
+            default:
+                throw new InvalidArgumentException("Unsupported provider class: $class");
+        }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
         $options = $customOptions + $options;
 

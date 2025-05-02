@@ -6,7 +6,11 @@ declare(strict_types=1);
 
 namespace Chamilo\CoreBundle\Entity;
 
+<<<<<<< HEAD
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+=======
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;

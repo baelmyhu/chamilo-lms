@@ -29,6 +29,13 @@ class TicketStatus
     #[ORM\Column(name: 'description', type: 'text', nullable: true)]
     protected ?string $description = null;
 
+<<<<<<< HEAD
+=======
+    #[ORM\ManyToOne(targetEntity: AccessUrl::class)]
+    #[ORM\JoinColumn(name: 'access_url_id', referencedColumnName: 'id', nullable: true)]
+    protected ?AccessUrl $accessUrl = null;
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     /**
      * @return int
      */
@@ -81,4 +88,19 @@ class TicketStatus
 
         return $this;
     }
+<<<<<<< HEAD
+=======
+
+    public function getAccessUrl(): ?AccessUrl
+    {
+        return $this->accessUrl;
+    }
+
+    public function setAccessUrl(?AccessUrl $accessUrl): self
+    {
+        $this->accessUrl = $accessUrl;
+
+        return $this;
+    }
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 }

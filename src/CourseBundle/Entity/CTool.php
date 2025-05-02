@@ -28,11 +28,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
+<<<<<<< HEAD
         new GetCollection(),
     ],
     normalizationContext: ['groups' => ['ctool:read']],
     output: CourseTool::class,
     provider: CToolStateProvider::class,
+=======
+        new GetCollection(
+            output: CourseTool::class,
+            provider: CToolStateProvider::class,
+        ),
+    ],
+    normalizationContext: ['groups' => ['ctool:read']],
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 )]
 #[ORM\Table(name: 'c_tool')]
 #[ORM\Index(columns: ['c_id'], name: 'course')]

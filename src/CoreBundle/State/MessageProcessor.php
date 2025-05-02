@@ -12,11 +12,16 @@ use ApiPlatform\State\ProcessorInterface;
 use Chamilo\CoreBundle\Entity\Message;
 use Chamilo\CoreBundle\Entity\MessageAttachment;
 use Chamilo\CoreBundle\Entity\MessageRelUser;
+<<<<<<< HEAD
+=======
+use Chamilo\CoreBundle\Entity\User;
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 use Chamilo\CoreBundle\Repository\ResourceNodeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
 use Notification;
 use Symfony\Bundle\SecurityBundle\Security;
+<<<<<<< HEAD
 use Symfony\Component\HttpFoundation\RequestStack;
 use Vich\UploaderBundle\Storage\FlysystemStorage;
 
@@ -33,6 +38,23 @@ final class MessageProcessor implements ProcessorInterface
     ) {}
 
     public function process($data, Operation $operation, array $uriVariables = [], array $context = [])
+=======
+
+/**
+ * @implements ProcessorInterface<Message, Message|void>
+ */
+final readonly class MessageProcessor implements ProcessorInterface
+{
+    public function __construct(
+        private ProcessorInterface $persistProcessor,
+        private ProcessorInterface $removeProcessor,
+        private EntityManagerInterface $entityManager,
+        private ResourceNodeRepository $resourceNodeRepository,
+        private Security $security,
+    ) {}
+
+    public function process($data, Operation $operation, array $uriVariables = [], array $context = []): ?Message
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     {
         if ($operation instanceof DeleteOperationInterface) {
             return $this->removeProcessor->process($data, $operation, $uriVariables, $context);
@@ -51,6 +73,10 @@ final class MessageProcessor implements ProcessorInterface
             }
         }
 
+<<<<<<< HEAD
+=======
+        /** @var User $user */
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $user = $this->security->getUser();
         if (!$user) {
             throw new LogicException('User not found.');

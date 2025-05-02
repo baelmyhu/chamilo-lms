@@ -39,7 +39,10 @@ parameters:
 
 		- public/main/admin/ldap*
 		- public/main/lp/openoffice_presentation.class.php
+<<<<<<< HEAD
 		- public/main/lp/openoffice_document.class.php
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 		- public/main/lp/openoffice_text.class.php
 		- public/main/lp/openoffice_text_document.class.php
 		- public/main/lp/scorm*
@@ -54,7 +57,10 @@ parameters:
 		- public/main/cron/*
 		- public/main/webservices/*
 
+<<<<<<< HEAD
 		- src/CoreBundle/Hook/*
+=======
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 		- src/CoreBundle/Migrations/*
 		- src/CoreBundle/Twig/SettingsHelper.php
 		- src/CoreBundle/Settings/SettingsResolver.php
@@ -73,4 +79,8 @@ parameters:
 	checkMissingIterableValueType: false
 includes:
     - vendor/phpstan/phpstan-doctrine/extension.neon
+<<<<<<< HEAD
     - vendor/phpstan/phpstan-symfony/extension.neon
+=======
+    - vendor/phpstan/phpstan-symfony/extension.neon
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94

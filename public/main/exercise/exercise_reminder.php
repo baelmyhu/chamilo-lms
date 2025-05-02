@@ -76,7 +76,11 @@ if (!empty($exercise_stat_info['data_tracking'])) {
     $question_list = explode(',', $exercise_stat_info['data_tracking']);
 }
 
+<<<<<<< HEAD
 if (empty($exercise_stat_info) || empty($question_list)) {
+=======
+if (empty($exercise_stat_info) || empty($question_list) || $exercise_stat_info['exe_user_id'] != api_get_user_id()) {
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     api_not_allowed();
 }
 

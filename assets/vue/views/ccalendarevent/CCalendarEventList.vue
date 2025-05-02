@@ -300,11 +300,32 @@ const calendarOptions = ref({
     item.value["title"] = event.title
     item.value["startDate"] = event.start
     item.value["endDate"] = event.end
+<<<<<<< HEAD
     item.value["parentResourceNodeId"] = event.extendedProps.resourceNode.creator.id
 
     allowToEdit.value =
       (isEditableByUser(item.value, securityStore.user.id) || allowUserEditAgenda.value) &&
       event.extendedProps.resourceNode.creator.id === securityStore.user.id
+=======
+    item.value["parentResourceNodeId"] = event.extendedProps?.resourceNode?.creator?.id
+
+    if (
+      !(route.query.sid === "0" && item.value.type === "session") &&
+      !(route.query.sid !== "0" && item.value.type === "course") &&
+      !(route.query.type === "global" && item.value.type !== "global") &&
+      !(!route.query.cid && !route.query.sid && !route.query.type && item.value.type !== "personal")
+    ) {
+      currentContext.value = item.value.type
+    }
+
+    allowToEdit.value =
+      (isEditableByUser(item.value, securityStore.user.id) ||
+        allowUserEditAgenda.value ||
+        securityStore.isCourseAdmin ||
+        securityStore.isSessionAdmin) &&
+      (event.extendedProps?.resourceNode?.creator?.id === securityStore.user.id || securityStore.isCourseAdmin)
+
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
     allowToSubscribe.value = !allowToEdit.value && allowSubscribeToEvent(item.value)
     allowToUnsubscribe.value = !allowToEdit.value && allowUnsubscribeToEvent(item.value, securityStore.user.id)
 
@@ -328,6 +349,7 @@ const calendarOptions = ref({
   },
 })
 
+<<<<<<< HEAD
 const currentContext = computed(() => {
   if (route.query.type === "global") {
     return "global"
@@ -339,6 +361,24 @@ const currentContext = computed(() => {
     return "personal"
   }
 })
+=======
+const currentContext = ref("course")
+watch(
+  () => route.query,
+  (query) => {
+    if (query.type === "global") {
+      currentContext.value = "global"
+    } else if (query.sid && query.sid !== "0") {
+      currentContext.value = "session"
+    } else if (query.cid && (!query.sid || query.sid === "0")) {
+      currentContext.value = "course"
+    } else {
+      currentContext.value = "personal"
+    }
+  },
+  { immediate: true },
+)
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 const allowAction = (eventType) => {
   const contextRules = {
@@ -351,11 +391,23 @@ const allowAction = (eventType) => {
   return contextRules[currentContext.value].includes(eventType)
 }
 
+<<<<<<< HEAD
 const showEditButton = computed(() => allowToEdit.value && allowAction(item.value.type))
 const showDeleteButton = computed(
   () =>
     (isEditableByUser(item.value, securityStore.user.id) || allowUserEditAgenda.value) && allowAction(item.value.type),
 )
+=======
+const showEditButton = computed(() => {
+  return allowToEdit.value && allowAction(item.value.type)
+})
+
+const showDeleteButton = computed(() => {
+  return (
+    (isEditableByUser(item.value, securityStore.user.id) || allowUserEditAgenda.value) && allowAction(item.value.type)
+  )
+})
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 const cal = ref(null)
 

@@ -3,7 +3,11 @@
 
 require_once __DIR__.'/../inc/global.inc.php';
 
+<<<<<<< HEAD
 $token = isset($_GET['token']) ? $_GET['token'] : '';
+=======
+$token = $_GET['token'] ?? '';
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
 
 if (!ctype_alnum($token)) {
     $token = '';

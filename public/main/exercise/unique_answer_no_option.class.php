@@ -243,6 +243,10 @@ class UniqueAnswerNoOption extends Question
         $form->addHtmlEditor('answer['.$i.']', null, true, [], $editor_config);
 
         $form->addRule('answer['.$i.']', get_lang('Required field'), 'required');
+<<<<<<< HEAD
+=======
+        $form->applyFilter("answer[$i]", 'attr_on_filter');
+>>>>>>> 8289a8907bd6f2f5489816fb57201d885aa00f94
         $form->addHtmlEditor('comment['.$i.']', null, true, [], $editor_config);
         $form->addElement('text', "weighting[$i]", null)->freeze();
 
